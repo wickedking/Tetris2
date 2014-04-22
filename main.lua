@@ -91,6 +91,20 @@ local background = display.newImage("bkg_bricks.png")
 background.x = display.contentWidth/2
 background.y = display.contentHeight/2
 
+
+local leftB = display.newImage("left_button.png")
+leftB.x = display.contentWidth - 50
+leftB.y = display.contentHeight / 8
+
+local rightB = display.newImage("right_button.png")
+rightB.x = display.contentWidth - 50
+rightB.y = display.contentHeight / 2
+
+local rotateB = display.newImage("rotate.png")
+rotateB.x = display.contentWidth - 50
+rotateB.y = display.contentHeight - 100
+
+
 createPiece()
 local floor = display.newImage("base.png")
 floor.x = display.contentWidth/2
