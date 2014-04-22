@@ -6,33 +6,25 @@
 update = 0
 currentPiece ={}
 
---function currentPiece:collision(inEvent)
---	timer.performWithDelay(1, moveBalloon())
---
---end
-
 function createPiece()
 	local balloon = display.newRect(display.contentWidth/2,display.contentHeight/4,  60, 60 )
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
 	physics.addBody(balloon)
 	currentPiece = balloon
-	--currentPiece.collision = onCollision()
 	currentPiece:addEventListener("touch", onCollision) 
 	currentPiece:addEventListener("collision", onCollision)
 end
 
 function moveBalloon(event)
-	--print(event.name)
 	currentPiece:removeEventListener("touch", onCollision)
 	currentPiece:removeEventListener("collision", onCollision)
 	physics.removeBody(currentPiece)
 	physics.addBody(currentPiece, "static")
 	currentPiece.myName = "death"
-	--currentPiece.bodyType = "static"
-	print(currentPiece.bodyType)
 	createPiece()
 end
+
 function movePiece(event)
 	update = update + 1
 	if update %10 == 0 then
@@ -40,13 +32,9 @@ function movePiece(event)
 	end
 end
 
-
-
 function onCollision(event)
 	timer.performWithDelay(1, moveBalloon, 1)
 end
-
-
 
 local physics = require("physics")
 physics.setDrawMode("hybrid")
@@ -74,9 +62,4 @@ physics.addBody(ceiling, "static", {bounce = 0.1, friction = 1.0})
 
 display.setStatusBar(display.HiddenStatusBar)
 
-
-
---currentPiece:addEventListener("touch", onCollision) 
 Runtime:addEventListener("enterFrame", movePiece)
---currentPiece:addEventListener("preCollision", onCollision)
-
