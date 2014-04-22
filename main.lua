@@ -9,6 +9,8 @@ currentPiece ={}
 local menuScreen = {}
 local tweenMS = {}
 
+
+
 function addMenuScreen()
 	menuScreen = display.newGroup()
 	local mScreen = display.newImage("menuScreen.png")
@@ -29,7 +31,9 @@ end
 function tweenMS:tap(e)
 	if (e.target.name == 'startB') then
 		transition.to(menuScreen, {time = 400, y = -menuScreen.height * 2, transition = easing.outExpo, onComplete = addGameScreen})
+		create()
 	end
+	
 end
 
 
@@ -76,8 +80,10 @@ function moveRight()
 	currentPiece.x = currentPiece.x + 21
 end
 
+function create()
+
 local physics = require("physics")
-physics.setDrawMode("debug")
+physics.setDrawMode("hybrid")
 physics.start()
 physics.setGravity(0, 0)
 
@@ -102,7 +108,9 @@ display.setStatusBar(display.HiddenStatusBar)
 
 Runtime:addEventListener("enterFrame", movePiece)
 
-
 --local function Main()
-addMenuScreen()
+
 --end
+end
+addMenuScreen()
+
