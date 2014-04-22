@@ -9,16 +9,22 @@ currentPiece ={}
 function createPiece()
 	local balloon = display.newRect(display.contentWidth/2,display.contentHeight/4,  60, 60 )
 	balloon.myName = "Square"
+--	balloon.bodyType = "dynamic"
 	physics.addBody(balloon, "dynamic")
 	currentPiece = balloon
-	currentPiece:addEventListener("touch", moveBalloon) 
+	currentPiece:addEventListener("touch", onCollision) 
+	currentPiece:addEventListener("collision", onCollision)
 end
 
 function moveBalloon(event)
 	print("called")
-	currentPiece:removeEventListener("touch", moveBalloon)
-	physics.removeBody(currentPiece)
-	physics.addBody(currentPiece, "static")
+	currentPiece:removeEventListener("touch", onCollision)
+	currentPiece:removeEventListener("collision", onCollision)
+--	physics.removeBody(currentPiece)
+--	physics.addBody(currentPiece, "static")
+	currentPiece.myName = "death"
+	currentPiece.bodyType = "static"
+	print("change to static")
 	createPiece()
 end
 function movePiece(event)
@@ -31,12 +37,7 @@ end
 
 
 function onCollision(event)
-print("things")
-	if(event.phase == "began") then
-		if event.object1.myName == "Square" or event.object2.myName == "Square" then
-			moveBalloon(event)
-		end
-	end
+	timer.performWithDelay(200, moveBalloon, 1)
 end
 
 
@@ -81,7 +82,7 @@ display.setStatusBar(display.HiddenStatusBar)
 
 
 
-currentPiece:addEventListener("touch", moveBalloon) 
+--currentPiece:addEventListener("touch", onCollision) 
 Runtime:addEventListener("enterFrame", movePiece)
-Runtime:addEventListener("collision", onCollision)
+--currentPiece:addEventListener("preCollision", onCollision)
 
