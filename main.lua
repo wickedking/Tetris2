@@ -36,17 +36,17 @@ end
 
 
 function createPiece()
-	local balloon = display.newRect(105, 0,  21, 21 )
+	local balloon = display.newRect(100, 0,  21, 21 )
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
 	physics.addBody(balloon)
 	currentPiece = balloon
-	currentPiece:addEventListener("touch", moveRight) 
+	--currentPiece:addEventListener("touch", moveRight) 
 	currentPiece:addEventListener("collision", onCollision)
 end
 
 function moveBalloon(event)
-	currentPiece:removeEventListener("touch", moveRight)
+	--currentPiece:removeEventListener("touch", moveRight)
 	currentPiece:removeEventListener("collision", onCollision)
 	physics.removeBody(currentPiece)
 	physics.addBody(currentPiece, "static")
@@ -62,9 +62,10 @@ function movePiece(event)
 end
 
 function onCollision(event)
-	--if event.element1.name ~= "Wall" and event.element2.name ~= "Wall" then
+	print(event)
+	if event.object1.myName ~= "Wall" and event.object2.myName ~= "Wall" then
 		timer.performWithDelay(1, moveBalloon, 1)
-	--end
+	end
 end
 
 function rotate()
@@ -76,7 +77,8 @@ function moveLeft()
 	currentPiece.x = currentPiece.x - 21
 end
 
-function moveRight(event)
+function moveRight()
+	print("moveRight")
 	currentPiece.x = currentPiece.x + 21
 end
  
@@ -95,14 +97,18 @@ background.y = display.contentHeight/2
 local leftB = display.newImage("left_button.png")
 leftB.x = display.contentWidth - 50
 leftB.y = display.contentHeight / 8
+physics.addBody(leftB, "static")
+leftB:addEventListener("tap", moveLeft)
 
 local rightB = display.newImage("right_button.png")
 rightB.x = display.contentWidth - 50
 rightB.y = display.contentHeight / 2
+rightB:addEventListener("tap", moveRight)
 
 local rotateB = display.newImage("rotate.png")
 rotateB.x = display.contentWidth - 50
 rotateB.y = display.contentHeight - 100
+rotateB:addEventListener("touch", rotate)
 
 
 createPiece()
@@ -114,8 +120,8 @@ floor.myName = "Floor"
 
 local leftWall = display.newRect(0,0,1, display.contentHeight*2 + 50)
 local rightWall = display.newRect(210, 0, 5, display.contentHeight*2 + 52)
-leftWall.name = "Wall"
-rightWall.name = "Wall"
+leftWall.myName = "Wall"
+rightWall.myName = "Wall"
 
 physics.addBody(leftWall, "static", {bounce = 0.1, friction = 1.0})
 physics.addBody(rightWall, "static", {bounce = 0.1, friction = 1.0})
