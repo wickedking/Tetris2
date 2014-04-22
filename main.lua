@@ -6,25 +6,31 @@
 update = 0
 currentPiece ={}
 
+--function currentPiece:collision(inEvent)
+--	timer.performWithDelay(1, moveBalloon())
+--
+--end
+
 function createPiece()
 	local balloon = display.newRect(display.contentWidth/2,display.contentHeight/4,  60, 60 )
 	balloon.myName = "Square"
---	balloon.bodyType = "dynamic"
-	physics.addBody(balloon, "dynamic")
+	balloon.bodyType = "dynamic"
+	physics.addBody(balloon)
 	currentPiece = balloon
+	--currentPiece.collision = onCollision()
 	currentPiece:addEventListener("touch", onCollision) 
 	currentPiece:addEventListener("collision", onCollision)
 end
 
 function moveBalloon(event)
-	print("called")
+	--print(event.name)
 	currentPiece:removeEventListener("touch", onCollision)
 	currentPiece:removeEventListener("collision", onCollision)
---	physics.removeBody(currentPiece)
---	physics.addBody(currentPiece, "static")
+	physics.removeBody(currentPiece)
+	physics.addBody(currentPiece, "static")
 	currentPiece.myName = "death"
-	currentPiece.bodyType = "static"
-	print("change to static")
+	--currentPiece.bodyType = "static"
+	print(currentPiece.bodyType)
 	createPiece()
 end
 function movePiece(event)
@@ -37,7 +43,7 @@ end
 
 
 function onCollision(event)
-	timer.performWithDelay(200, moveBalloon, 1)
+	timer.performWithDelay(1, moveBalloon, 1)
 end
 
 
@@ -50,18 +56,6 @@ physics.setGravity(0, 0)
 local background = display.newImage("bkg_bricks.png")
 background.x = display.contentWidth/2
 background.y = display.contentHeight/2
-
-
-
---local balloon = display.newRect(display.contentWidth/2,display.contentHeight/2,  50, 50 )
---balloon.x = display.contentWidth/2
---balloon.y = display.contentHeight/3
---local balloon = display.newRect(display.contentWidth/2,display.contentHeight/4,  60, 60 )
---balloon.myName = "Square"
---currentPiece = balloon
-
---physics.addBody(balloon, "dynamic")
---physics.addBody(balloon1, {bounce = 0.8, radius = 20, friction = 1.0})
 
 createPiece()
 local floor = display.newImage("base.png")
