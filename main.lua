@@ -9,8 +9,6 @@ currentPiece ={}
 local menuScreen = {}
 local tweenMS = {}
 
-
-
 function addMenuScreen()
 	menuScreen = display.newGroup()
 	local mScreen = display.newImage("menuScreen.png")
@@ -64,7 +62,9 @@ function movePiece(event)
 end
 
 function onCollision(event)
-	timer.performWithDelay(1, moveBalloon, 1)
+	--if event.element1.name ~= "Wall" and event.element2.name ~= "Wall" then
+		timer.performWithDelay(1, moveBalloon, 1)
+	--end
 end
 
 function rotate()
@@ -76,10 +76,10 @@ function moveLeft()
 	currentPiece.x = currentPiece.x - 21
 end
 
-function moveRight()
+function moveRight(event)
 	currentPiece.x = currentPiece.x + 21
 end
-
+ 
 function create()
 
 local physics = require("physics")
@@ -100,6 +100,8 @@ floor.myName = "Floor"
 
 local leftWall = display.newRect(0,0,1, display.contentHeight*2 + 50)
 local rightWall = display.newRect(210, 0, 5, display.contentHeight*2 + 52)
+leftWall.name = "Wall"
+rightWall.name = "Wall"
 
 physics.addBody(leftWall, "static", {bounce = 0.1, friction = 1.0})
 physics.addBody(rightWall, "static", {bounce = 0.1, friction = 1.0})
