@@ -34,17 +34,17 @@ end
 
 
 function createPiece()
-	local balloon = display.newRect(display.contentWidth/2,display.contentHeight/4,  60, 60 )
+	local balloon = display.newRect(105, 0,  21, 21 )
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
 	physics.addBody(balloon)
 	currentPiece = balloon
-	currentPiece:addEventListener("touch", onCollision) 
+	currentPiece:addEventListener("touch", moveRight) 
 	currentPiece:addEventListener("collision", onCollision)
 end
 
 function moveBalloon(event)
-	currentPiece:removeEventListener("touch", onCollision)
+	currentPiece:removeEventListener("touch", moveRight)
 	currentPiece:removeEventListener("collision", onCollision)
 	physics.removeBody(currentPiece)
 	physics.addBody(currentPiece, "static")
@@ -63,8 +63,21 @@ function onCollision(event)
 	timer.performWithDelay(1, moveBalloon, 1)
 end
 
+function rotate()
+
+--do special things
+end
+
+function moveLeft()
+	currentPiece.x = currentPiece.x - 21
+end
+
+function moveRight()
+	currentPiece.x = currentPiece.x + 21
+end
+
 local physics = require("physics")
-physics.setDrawMode("hybrid")
+physics.setDrawMode("debug")
 physics.start()
 physics.setGravity(0, 0)
 
@@ -75,17 +88,15 @@ background.y = display.contentHeight/2
 createPiece()
 local floor = display.newImage("base.png")
 floor.x = display.contentWidth/2
-floor.y = display.contentHeight
+floor.y = display.contentHeight + 55
 physics.addBody(floor, "static")
 floor.myName = "Floor"
 
-local leftWall = display.newRect(0,0,1, display.contentHeight*2)
-local rightWall = display.newRect(display.contentWidth+1, 0, 1, display.contentHeight*2)
-local ceiling = display.newRect(0,0,display.contentWidth*2, 1)
+local leftWall = display.newRect(0,0,1, display.contentHeight*2 + 50)
+local rightWall = display.newRect(210, 0, 5, display.contentHeight*2 + 52)
 
 physics.addBody(leftWall, "static", {bounce = 0.1, friction = 1.0})
 physics.addBody(rightWall, "static", {bounce = 0.1, friction = 1.0})
-physics.addBody(ceiling, "static", {bounce = 0.1, friction = 1.0})
 
 display.setStatusBar(display.HiddenStatusBar)
 
