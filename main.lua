@@ -6,6 +6,33 @@
 update = 0
 currentPiece ={}
 
+local menuScreen = {}
+local tweenMS = {}
+
+function addMenuScreen()
+	menuScreen = display.newGroup()
+	local mScreen = display.newImage("menuScreen.png")
+	local startButton = display.newImage("play_button.png")
+	
+	mScreen.x = display.contentWidth/2
+	mScreen.y = display.contentHeight/2
+	startButton.name = 'startB'
+	menuScreen:insert(mScreen)
+	startButton.x = display.contentWidth/2
+	startButton.y = display.contentHeight/2
+	menuScreen:insert(startButton)
+	
+	startButton:addEventListener('tap', tweenMS)
+
+end
+
+function tweenMS:tap(e)
+	if (e.target.name == 'startB') then
+		transition.to(menuScreen, {time = 400, y = -menuScreen.height * 2, transition = easing.outExpo, onComplete = addGameScreen})
+	end
+end
+
+
 function createPiece()
 	local balloon = display.newRect(display.contentWidth/2,display.contentHeight/4,  60, 60 )
 	balloon.myName = "Square"
@@ -63,3 +90,8 @@ physics.addBody(ceiling, "static", {bounce = 0.1, friction = 1.0})
 display.setStatusBar(display.HiddenStatusBar)
 
 Runtime:addEventListener("enterFrame", movePiece)
+
+
+--local function Main()
+addMenuScreen()
+--end
