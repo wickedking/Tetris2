@@ -88,7 +88,10 @@ function onCollision(event)
 end
 
 function rotate()
-
+	currentPiece.rotation = currentPiece.rotation + 45
+	if currentPiece.rotation >= 360 then
+		currentPiece.rotation = 0
+	end
 --do special things
 end
 
