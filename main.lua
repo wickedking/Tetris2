@@ -6,6 +6,7 @@
 update = 0
 currentPiece ={}
 index = 6
+pieceCreate = false
 
 local menuScreen = {}
 local tweenMS = {}
@@ -39,8 +40,9 @@ end
 
 
 function createPiece()
-	
-	local balloon = display.newImage("blue_balloon.png")
+	print("create Piece")
+	pieceCreate = true
+	local balloon = display.newRect(100, 0, 0, 0)
 	part1, part2, part3, part4 = piece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
@@ -48,6 +50,7 @@ function createPiece()
 	balloon.y = 0
 	physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
 	currentPiece = balloon
+	balloon.isFixedRotation = true
 	index = index + 1
 	if index > 6 then
 		index = 0
@@ -64,10 +67,14 @@ end
 function moveBalloon(freezeEvent)
 	--currentPiece:removeEventListener("touch", moveRight)
 	--currentPiece:removeEventListener("collision", onCollision)
-	physics.removeBody(currentPiece)
-	physics.addBody(currentPiece, "static")
-	currentPiece.myName = "death"
-	createPiece()
+	if pieceCreate == true then
+		physics.removeBody(currentPiece)
+		physics.addBody(currentPiece, "static")
+		currentPiece.myName = "death"
+		createPiece()
+		pieceCreate = false
+	end
+	
 end
 
 function movePiece(moveEvent)
@@ -80,7 +87,7 @@ end
 function onCollision(event)
 	print(event.object1.myName)
 	print(event.object2.myName)
-	if event.object1.myName == "Square" or event.object1.myName == "Square" then
+	if event.object1.myName == "Square" or event.object2.myName == "Square" then
 		if event.object1.myName ~= "Wall" and event.object2.myName ~= "Wall" then
 			timer.performWithDelay(1, moveBalloon, 1)
 		end
@@ -107,7 +114,7 @@ end
 function create()
 
 local physics = require("physics")
-physics.setDrawMode("hybrid")
+physics.setDrawMode("debug")
 physics.start()
 physics.setGravity(0, 0)
 
