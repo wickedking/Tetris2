@@ -6,7 +6,7 @@
 update = 0
 currentPiece ={}
 index = 6
-pieceCreate = false
+pieceCreate = true
 
 local menuScreen = {}
 local tweenMS = {}
@@ -68,13 +68,14 @@ function moveBalloon(freezeEvent)
 	--currentPiece:removeEventListener("touch", moveRight)
 	--currentPiece:removeEventListener("collision", onCollision)
 	if pieceCreate == true then
+		--timer.performWithDelay(100, createPiece, 1)
 		physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
-		createPiece()
+		--createPiece()
 		pieceCreate = false
+		timer.performWithDelay(100, createPiece, 1)
 	end
-	
 end
 
 function movePiece(moveEvent)
