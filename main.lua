@@ -5,9 +5,12 @@
 -----------------------------------------------------------------------------------------
 update = 0
 currentPiece ={}
+index = 6
 
 local menuScreen = {}
 local tweenMS = {}
+--currentPiece:addEventListener("collision", onCollision)
+
 
 function addMenuScreen()
 	menuScreen = display.newGroup()
@@ -36,25 +39,38 @@ end
 
 
 function createPiece()
-	local balloon = display.newRect(100, 0,  21, 21 )
+	
+	local balloon = display.newImage("blue_balloon.png")
+	part1, part2, part3, part4 = piece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
-	physics.addBody(balloon)
+	balloon.x = 100
+	balloon.y = 0
+	physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
 	currentPiece = balloon
+	index = index + 1
+	if index > 6 then
+		index = 0
+	end
+	--local balloon = display.newRect(100, 0,  21, 21 )
+	--balloon.myName = "Square"
+	--balloon.bodyType = "dynamic"
+	--physics.addBody(balloon)
+	--currentPiece = balloon
 	--currentPiece:addEventListener("touch", moveRight) 
-	currentPiece:addEventListener("collision", onCollision)
+	--currentPiece:addEventListener("collision", onCollision)
 end
 
-function moveBalloon(event)
+function moveBalloon(freezeEvent)
 	--currentPiece:removeEventListener("touch", moveRight)
-	currentPiece:removeEventListener("collision", onCollision)
+	--currentPiece:removeEventListener("collision", onCollision)
 	physics.removeBody(currentPiece)
 	physics.addBody(currentPiece, "static")
 	currentPiece.myName = "death"
 	createPiece()
 end
 
-function movePiece(event)
+function movePiece(moveEvent)
 	update = update + 1
 	if update %10 == 0 then
 		currentPiece.y = currentPiece.y + 10
@@ -62,9 +78,12 @@ function movePiece(event)
 end
 
 function onCollision(event)
-	print(event)
-	if event.object1.myName ~= "Wall" and event.object2.myName ~= "Wall" then
-		timer.performWithDelay(1, moveBalloon, 1)
+	print(event.object1.myName)
+	print(event.object2.myName)
+	if event.object1.myName == "Square" or event.object1.myName == "Square" then
+		if event.object1.myName ~= "Wall" and event.object2.myName ~= "Wall" then
+			timer.performWithDelay(1, moveBalloon, 1)
+		end
 	end
 end
 
@@ -112,6 +131,17 @@ rotateB:addEventListener("touch", rotate)
 
 
 createPiece()
+	--local balloon = display.newRect(100, 0,  21, 21 )
+--	local balloon = display.newImage("blue_balloon.png")
+--	balloon.x = 100
+--	balloon.y = 0
+--	local part1 = {-21, 0, -21, 21, 0, 21, 0,0}
+--	local part2 = {0,0, 0, 21, 21, 21, 21,0}
+--	local part3 = {21, 0, 21,21, 42,21, 42,0}
+--	local part4 = {0,21, 0,42, 21, 42, 21, 21}
+	
+	
+	
 local floor = display.newImage("base.png")
 floor.x = display.contentWidth/2
 floor.y = display.contentHeight + 55
@@ -129,10 +159,76 @@ physics.addBody(rightWall, "static", {bounce = 0.1, friction = 1.0})
 display.setStatusBar(display.HiddenStatusBar)
 
 Runtime:addEventListener("enterFrame", movePiece)
+Runtime:addEventListener("collision", onCollision)
 
 --local function Main()
 
 --end
 end
+
+
+
+
+function piece() --TODO refactor each piece into its own method better coding
+	--t piece table coodinates
+	local partt2 = {-21, 0, -21, 21, 0, 21, 0,0}
+	local partt1 = {0,0, 0, 21, 21, 21, 21,0}
+	local partt3 = {21, 0, 21,21, 42,21, 42,0}
+	local partt4 = {0,21, 0,42, 21, 42, 21, 21} --done
+	
+	--z piece
+	local partz1 = {0,0,  0,21, 21,21, 21,0}
+	local partz2 = {-21,0, -21,21, 0,21, 0,0}
+	local partz3 = {0,21, 0,42, 21,42, 21,21}
+	local partz4 = {21,21, 21,42, 42,42, 42,21} --done
+	
+	--s piece
+	local parts1 = {0,0, 0,21, 21,21, 21,0}
+	local parts2 = {-21,21, -21,42, 0,42, 0,21}
+	local parts3 = {0,21, 0,42, 21,42, 21,21}
+	local parts4 = {21,0, 21,21, 42,21, 42,0} --done
+	
+	--o piece
+	local parto1 = {0,0, 0,21, 21,21, 21,0}
+	local parto2 = {0,21, 0,42, 21,42, 21,21}
+	local parto3 = {21,0, 21,21, 42,21, 42,0}
+	local parto4 = {21,21, 21,42, 42,42, 42,21} --done
+	
+	--i piece
+	local parti1 = {0,0, 0,21, 21,21, 21,0}
+	local parti2 = {0,-21, 0,0, 21,0, 21,-21}
+	local parti3 = {0,-42, 0,-21, 21,-21, 21,-42}
+	local parti4 = {0,21, 0,42, 21,42, 21,21}-- done
+	
+	--l piece
+	local partl2 = {0,-21, 0,0, 21,0, 21,-21}
+	local partl1 = {0,0, 0,21, 21,21, 21,0}
+	local partl3 = {0,21, 0,42, 21,42, 21,21}
+	local partl4 = {21,21, 21,42, 42,42, 42,21} -- done
+	
+	--j piece
+	local partj2 = {0,-21, 0,0, 21,0, 21,-21}
+	local partj1 = {0,0, 0,21, 21,21, 21,0}
+	local partj3 = {0,21, 0,42, 21,42, 21,21}
+	local partj4 = {-21,21, -21,42, 0,42, 0,21} -- done
+	
+	if index == 0 then
+		return partt1, partt2, partt3, partt4
+	elseif index == 1 then
+		return partz1, partz2, partz3, partz4
+	elseif index == 2 then
+		return parts1, parts2, parts3, parts4
+	elseif index == 3 then
+		return parto1, parto2, parto3, parto4
+	elseif index == 4 then
+		return parti1, parti2, parti3, parti4
+	elseif index == 5 then
+		return partl1, partl2, partl3, partl4
+	else 
+		return partj1, partj2, partj3, partj4
+	end
+end
 addMenuScreen()
+
+--piece moves past the wall. Needed to stop movement against wall better
 
