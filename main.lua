@@ -132,11 +132,12 @@ function freezePiece(freezeEvent)
 	--currentPiece:removeEventListener("touch", moveRight)
 	--currentPiece:removeEventListener("collision", onCollision)
 	if pieceCreate == true then
+		pieces = pieceRotation()
 		physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
 		pieceCreate = false
-		pieces = pieceRotation()
+
 		updateBoard(pieces)
 		--need to find out sub piece locations then add to table in those locations
 		
@@ -148,7 +149,7 @@ end
 function movePiece(moveEvent)
 	update = update + 1
 	if update %10 == 0 then
-		--currentPiece.y = currentPiece.y + 21
+		currentPiece.y = currentPiece.y + 21
 	end
 end
 
@@ -261,190 +262,191 @@ function pieceRotation()
 --so a t piece in the down position at 105, 21 would return
 --assuming xy location is down and right square
 locations = {}
+
 	if currentPiece.type == "tPiece" then
 		if currentPiece.rotation == 0 then
-		locations[piece1x] = -1
-		locations[piece1y] = 0
-		locations[piece2x] = 0
-		locations[piece2y] = 0
-		locations[piece3x] = 0
-		locations[piece3y] = 1
-		locations[piece4x] = 1
-		locations[piece4y] = 1
+		locations["piece1x"] = -1
+		locations["piece1y"] = 0
+		locations["piece2x"] = 0
+		locations["piece2y"] = 0
+		locations["piece3x"] = 0
+		locations["piece3y"] = 1
+		locations["piece4x"] = 1
+		locations["piece4y"] = 1
 		elseif currentPiece.rotation == 90 then 
-		locations[piece1x] = -1
-		locations[piece1y] = 0
-		locations[piece2x] = -1
-		locations[piece2y] = 1
-		locations[piece3x] = -2
-		locations[piece3y] = 0
-		locations[piece4x] = -1
-		locations[piece4y] = -1
+		locations["piece1x"] = -1
+		locations["piece1y"] = 0
+		locations["piece2x"] = -1
+		locations["piece2y"] = 1
+		locations["piece3x"] = -2
+		locations["piece3y"] = 0
+		locations["piece4x"] = -1
+		locations["piece4y"] = -1
 		elseif currentPiece.rotation == 180 then
-		locations[piece1x] = -2
-		locations[piece1y] = -1
-		locations[piece2x] = -1
-		locations[piece2y] = -1
-		locations[piece3x] = -1
-		locations[piece3y] = -2
-		locations[piece4x] = 0
-		locations[piece4y] = -1
+		locations["piece1x"] = -2
+		locations["piece1y"] = -1
+		locations["piece2x"] = -1
+		locations["piece2y"] = -1
+		locations["piece3x"] = -1
+		locations["piece3y"] = -2
+		locations["piece4x"] = 0
+		locations["piece4y"] = -1
 		else  --0,-1, 0,-2, 1,-1, 0,0
-		locations[piece1x] = 0
-		locations[piece1y] = -1
-		locations[piece2x] = 0
-		locations[piece2y] = -2
-		locations[piece3x] =  1
-		locations[piece3y] = -1
-		locations[piece4x] = 0
-		locations[piece4y] = 0
+		locations["piece1x"] = 0
+		locations["piece1y"] = -1
+		locations["piece2x"] = 0
+		locations["piece2y"] = -2
+		locations["piece3x"] =  1
+		locations["piece3y"] = -1
+		locations["piece4x"] = 0
+		locations["piece4y"] = 0
 		end
 	
 	elseif currentPiece.type == "sPiece" then
 	if currentPiece.rotation == 0 then 
-		locations[piece1x] = 0
-		locations[piece1y] = 0
-		locations[piece2x] = 1
-		locations[piece2y] = 0
-		locations[piece3x] = 0
-		locations[piece3y] = 1
-		locations[piece4x] = -1
-		locations[piece4y] = 1
+		locations["piece1x"] = 0
+		locations["piece1y"] = 0
+		locations["piece2x"] = 1
+		locations["piece2y"] = 0
+		locations["piece3x"] = 0
+		locations["piece3y"] = 1
+		locations["piece4x"] = -1
+		locations["piece4y"] = 1
 		elseif currentPiece.rotation == 90 then
-		locations[piece1x] = -2
-		locations[piece1y] = -1
-		locations[piece2x] = -2
-		locations[piece2y] = 0
-		locations[piece3x] = -1
-		locations[piece3y] = 0
-		locations[piece4x] = -1
-		locations[piece4y] = 1
+		locations["piece1x"] = -2
+		locations["piece1y"] = -1
+		locations["piece2x"] = -2
+		locations["piece2y"] = 0
+		locations["piece3x"] = -1
+		locations["piece3y"] = 0
+		locations["piece4x"] = -1
+		locations["piece4y"] = 1
 	end
 	elseif currentPiece.type == "zPiece" then
 		if currentPiece.rotation == 0 then -- 1,0, 0,0, 1,0, 1,1
-		locations[piece1x] = 1
-		locations[piece1y] = 0
-		locations[piece2x] = 0
-		locations[piece2y] = 0
-		locations[piece3x] = 1
-		locations[piece3y] = 0
-		locations[piece4x] = 1
-		locations[piece4y] = 1
+		locations["piece1x"] = 1
+		locations["piece1y"] = 0
+		locations["piece2x"] = 0
+		locations["piece2y"] = 0
+		locations["piece3x"] = 1
+		locations["piece3y"] = 0
+		locations["piece4x"] = 1
+		locations["piece4y"] = 1
 		elseif currentPiece.rotation == 90 then -- -1,0, -2,0, -2,1, -1,-1
-		locations[piece1x] = -1
-		locations[piece1y] = 0
-		locations[piece2x] = -2
-		locations[piece2y] = 0
-		locations[piece3x] = -2
-		locations[piece3y] = 1
-		locations[piece4x] = -1
-		locations[piece4y] = -1
+		locations["piece1x"] = -1
+		locations["piece1y"] = 0
+		locations["piece2x"] = -2
+		locations["piece2y"] = 0
+		locations["piece3x"] = -2
+		locations["piece3y"] = 1
+		locations["piece4x"] = -1
+		locations["piece4y"] = -1
 	end
 	
 	elseif currentPiece.type == "oPiece" then
-		locations[piece1x] = 0
-		locations[piece1y] = 0
-		locations[piece2x] = 0
-		locations[piece2y] = 1
-		locations[piece3x] = 1
-		locations[piece3y] = 0
-		locations[piece4x] = 1
-		locations[piece4y] = 1
+		locations["piece1x"] = 0
+		locations["piece1y"] = 0
+		locations["piece2x"] = 0
+		locations["piece2y"] = 1
+		locations["piece3x"] = 1
+		locations["piece3y"] = 0
+		locations["piece4x"] = 1
+		locations["piece4y"] = 1
 	elseif currentPiece.type == "iPiece" then
 		if currentPiece.rotation == 0 then -- 0,0, 0,1, 0,-1, 0,-21
-		locations[piece1x] = 0
-		locations[piece1y] = 0
-		locations[piece2x] = 0
-		locations[piece2y] = 1
-		locations[piece3x] = 0
-		locations[piece3y] = -1
-		locations[piece4x] = 0
-		locations[piece4y] = -2
+		locations["piece1x"] = 0
+		locations["piece1y"] = 0
+		locations["piece2x"] = 0
+		locations["piece2y"] = 1
+		locations["piece3x"] = 0
+		locations["piece3y"] = -1
+		locations["piece4x"] = 0
+		locations["piece4y"] = -2
 		elseif currentPiece.rotation == 90 then -- 0,0 1,0, -1,0, -2,0
-		locations[piece1x] = 0
-		locations[piece1y] = 0
-		locations[piece2x] = 1
-		locations[piece2y] = 0
-		locations[piece3x] = -1
-		locations[piece3y] = 0
-		locations[piece4x] = -2
-		locations[piece4y] = 0
+		locations["piece1x"] = 0
+		locations["piece1y"] = 0
+		locations["piece2x"] = 1
+		locations["piece2y"] = 0
+		locations["piece3x"] = -1
+		locations["piece3y"] = 0
+		locations["piece4x"] = -2
+		locations["piece4y"] = 0
 		end
 	elseif currentPiece.type == "lPiece" then
 		if currentPiece.rotation == 0 then -- 0,0, 0,-1, 0,1, 1,1
-		locations[piece1x] = 0
-		locations[piece1y] = 0
-		locations[piece2x] = 0
-		locations[piece2y] = -1
-		locations[piece3x] = 0
-		locations[piece3y] = 1
-		locations[piece4x] = 1
-		locations[piece4y] = 1
+		locations["piece1x"] = 0
+		locations["piece1y"] = 0
+		locations["piece2x"] = 0
+		locations["piece2y"] = -1
+		locations["piece3x"] = 0
+		locations["piece3y"] = 1
+		locations["piece4x"] = 1
+		locations["piece4y"] = 1
 		elseif currentPiece.rotation == 90 then -- 0,0, -1,0, -2,0, -2,10
-		locations[piece1x] = 0
-		locations[piece1y] = 0
-		locations[piece2x] = -1
-		locations[piece2y] = 0
-		locations[piece3x] = -2
-		locations[piece3y] = 0
-		locations[piece4x] = -2
-		locations[piece4y] = -1
+		locations["piece1x"] = 0
+		locations["piece1y"] = 0
+		locations["piece2x"] = -1
+		locations["piece2y"] = 0
+		locations["piece3x"] = -2
+		locations["piece3y"] = 0
+		locations["piece4x"] = -2
+		locations["piece4y"] = -1
 		elseif currentPiece.rotation == 180 then -- -1,0, -1,-1, -1,-2, -2,-21
-		locations[piece1x] = -1
-		locations[piece1y] = 0
-		locations[piece2x] = -1
-		locations[piece2y] = -1
-		locations[piece3x] = -1
-		locations[piece3y] = -2
-		locations[piece4x] = -2
-		locations[piece4y] = -2
+		locations["piece1x"] = -1
+		locations["piece1y"] = 0
+		locations["piece2x"] = -1
+		locations["piece2y"] = -1
+		locations["piece3x"] = -1
+		locations["piece3y"] = -2
+		locations["piece4x"] = -2
+		locations["piece4y"] = -2
 		else  -- -1,-1, 0,-1, 1,-1, 1,-2
-		locations[piece1x] = -1
-		locations[piece1y] = -1
-		locations[piece2x] = 0
-		locations[piece2y] = -1
-		locations[piece3x] =  1
-		locations[piece3y] = -1
-		locations[piece4x] = 1
-		locations[piece4y] = -2
+		locations["piece1x"] = -1
+		locations["piece1y"] = -1
+		locations["piece2x"] = 0
+		locations["piece2y"] = -1
+		locations["piece3x"] =  1
+		locations["piece3y"] = -1
+		locations["piece4x"] = 1
+		locations["piece4y"] = -2
 		end
 	else
 		if currentPiece.rotation == 0 then -- 0,0, 0,1, -1,1, 0,-10
-		locations[piece1x] = 0
-		locations[piece1y] = 0
-		locations[piece2x] = 0
-		locations[piece2y] = 1
-		locations[piece3x] = -1
-		locations[piece3y] = 1
-		locations[piece4x] = 0
-		locations[piece4y] = -1
+		locations["piece1x"] = 0
+		locations["piece1y"] = 0
+		locations["piece2x"] = 0
+		locations["piece2y"] = 1
+		locations["piece3x"] = -1
+		locations["piece3y"] = 1
+		locations["piece4x"] = 0
+		locations["piece4y"] = -1
 		elseif currentPiece.rotation == 90 then -- -2,-1, -2,0, -1,0, 0,0
-		locations[piece1x] = -2
-		locations[piece1y] = -1
-		locations[piece2x] = -2
-		locations[piece2y] = 0
-		locations[piece3x] = -1
-		locations[piece3y] = 0
-		locations[piece4x] = 0
-		locations[piece4y] = 0
+		locations["piece1x"] = -2
+		locations["piece1y"] = -1
+		locations["piece2x"] = -2
+		locations["piece2y"] = 0
+		locations["piece3x"] = -1
+		locations["piece3y"] = 0
+		locations["piece4x"] = 0
+		locations["piece4y"] = 0
 		elseif currentPiece.rotation == 180 then -- -1,0, -1,-1, -1,-2, 0,-2
-		locations[piece1x] = -1
-		locations[piece1y] = 0
-		locations[piece2x] = -1
-		locations[piece2y] = -1
-		locations[piece3x] = -1
-		locations[piece3y] = -2
-		locations[piece4x] = 0
-		locations[piece4y] = -2
+		locations["piece1x"] = -1
+		locations["piece1y"] = 0
+		locations["piece2x"] = -1
+		locations["piece2y"] = -1
+		locations["piece3x"] = -1
+		locations["piece3y"] = -2
+		locations["piece4x"] = 0
+		locations["piece4y"] = -2
 		else  -- 0,-1, -1,-1, 1,-1, 1,0
-		locations[piece1x] = 0
-		locations[piece1y] = -1
-		locations[piece2x] = -1
-		locations[piece2y] = -1
-		locations[piece3x] =  1
-		locations[piece3y] = -1
-		locations[piece4x] = 1
-		locations[piece4y] = 0
+		locations["piece1x"] = 0
+		locations["piece1y"] = -1
+		locations["piece2x"] = -1
+		locations["piece2y"] = -1
+		locations["piece3x"] =  1
+		locations["piece3y"] = -1
+		locations["piece4x"] = 1
+		locations["piece4y"] = 0
 
 		end
 	end
