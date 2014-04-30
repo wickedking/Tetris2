@@ -5,13 +5,22 @@
 -----------------------------------------------------------------------------------------
 update = 0
 currentPiece ={}
-index = 6
+index = 3
 pieceCreate = true
+board = {}
 
 local menuScreen = {}
 local tweenMS = {}
 --currentPiece:addEventListener("collision", onCollision)
 
+function createBoard()
+	for i = 0, 22 do
+	board[i] = {}
+		for j = 0, 10 do
+		board[i][j] = 0
+		end
+	end
+end
 
 function addMenuScreen()
 	menuScreen = display.newGroup()
@@ -42,13 +51,21 @@ end
 function createPiece()
 	print("create Piece")
 	pieceCreate = true
-	local balloon = display.newRect(100, 0, 0, 0)
+	local balloon = display.newImage("box.png")
+	local balloon2 = display.newImage("box.png")
+	local balloon3 = display.newImage("box.png")
+	local balloon4 = display.newImage("box.png")
+	balloon.height = 21
+	balloon.width = 21
+	balloon:scale(.3, .3)
 	part1, part2, part3, part4 = piece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
 	balloon.x = 100
 	balloon.y = 0
+	
 	physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
+	physics.addBody(balloon, "dynamic")
 	currentPiece = balloon
 	balloon.isFixedRotation = true
 	index = index + 1
@@ -68,12 +85,18 @@ function moveBalloon(freezeEvent)
 	--currentPiece:removeEventListener("touch", moveRight)
 	--currentPiece:removeEventListener("collision", onCollision)
 	if pieceCreate == true then
-		--timer.performWithDelay(100, createPiece, 1)
 		physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
-		--createPiece()
 		pieceCreate = false
+		
+		x = currentPiece.x
+		y = currentPiece.y
+		rotation = currentPiece.rotation
+		
+		--need to find out sub piece locations then add to table in those locations
+		
+		currentPiece:removeSelf()
 		timer.performWithDelay(100, createPiece, 1)
 	end
 end
@@ -81,7 +104,7 @@ end
 function movePiece(moveEvent)
 	update = update + 1
 	if update %10 == 0 then
-		currentPiece.y = currentPiece.y + 10
+		currentPiece.y = currentPiece.y + 21
 	end
 end
 
@@ -113,15 +136,16 @@ function moveRight()
 end
  
 function create()
+createBoard()
 
 local physics = require("physics")
-physics.setDrawMode("debug")
+physics.setDrawMode("hybrid")
 physics.start()
 physics.setGravity(0, 0)
 
-local background = display.newImage("bkg_bricks.png")
-background.x = display.contentWidth/2
-background.y = display.contentHeight/2
+--local background = display.newImage("bkg_bricks.png")
+--background.x = display.contentWidth/2
+--background.y = display.contentHeight/2
 
 
 local leftB = display.newImage("left_button.png")
