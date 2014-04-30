@@ -5,9 +5,10 @@
 -----------------------------------------------------------------------------------------
 update = 0
 currentPiece ={}
-index = 1
+index = 6
 pieceCreate = true
 board = {}
+canRotate = true
 
 local menuScreen = {}
 local tweenMS = {}
@@ -50,6 +51,7 @@ end
 
 function createPiece()
 	print("create Piece")
+	canRotate = true
 	pieceCreate = true
 	local balloon = display.newImage("box.png")
 	local balloon2 = display.newImage("box.png")
@@ -98,7 +100,35 @@ function createPiece()
 	--currentPiece:addEventListener("collision", onCollision)
 end
 
-function moveBalloon(freezeEvent)
+
+function updateBoard(the_pieces)
+--will be called will freezeing piece
+--will create new objects on board and then display.
+--will be able to keep a reference to all "destroyed" pieces
+--will check rows to see if deletion is necassary
+
+
+i = math.round(currentPiece.y/21)
+j = math.round(currentPiece.x/21)
+
+board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + piece1x)*21, (i + piece1y)*21, 21,21)
+physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "static")
+
+board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + piece2x)*21, (i + piece2y)*21, 21,21)
+physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "static")
+
+board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + piece3x)*21, (i + piece3y)*21, 21,21)
+physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "static")
+
+board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + piece4x)*21, (i + piece4y)*21, 21,21)
+physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "static")
+
+
+--call to check for rows
+
+end
+
+function freezePiece(freezeEvent)
 	--currentPiece:removeEventListener("touch", moveRight)
 	--currentPiece:removeEventListener("collision", onCollision)
 	if pieceCreate == true then
@@ -106,11 +136,8 @@ function moveBalloon(freezeEvent)
 		physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
 		pieceCreate = false
-		
-		x = currentPiece.x
-		y = currentPiece.y
-		rotation = currentPiece.rotation
-		
+		pieces = pieceRotation()
+		updateBoard(pieces)
 		--need to find out sub piece locations then add to table in those locations
 		
 		currentPiece:removeSelf()
@@ -130,13 +157,29 @@ function onCollision(event)
 	print(event.object2.myName)
 	if event.object1.myName == "Square" or event.object2.myName == "Square" then
 		if event.object1.myName ~= "Wall" and event.object2.myName ~= "Wall" then
-			timer.performWithDelay(1, moveBalloon, 1)
+			timer.performWithDelay(1, freezePiece, 1)
 		end
 	end
 end
 
 function rotate()
-	currentPiece.rotation = currentPiece.rotation + 45
+	if canRotate == false then
+		canRotate = true
+		return
+	else 
+		canRotate = false
+	end
+	if currentPiece.type == "oPiece" then
+		return
+	elseif currentPiece.type == "iPiece" or currentPiece.type == "zPiece" or currentPiece.type == "sPiece" then
+		if currentPiece.rotation == 90 then
+			currentPiece.rotation = 0
+		else
+			currentPiece.rotation = 90
+		end
+		return
+	end
+	currentPiece.rotation = currentPiece.rotation + 90
 	if currentPiece.rotation >= 360 then
 		currentPiece.rotation = 0
 	end
@@ -213,58 +256,200 @@ Runtime:addEventListener("collision", onCollision)
 end
 
 
-function pieceRotation(piece, rotation)
+function pieceRotation()
 --return xy, xy, xy, xy from current location of subpieces. 
 --so a t piece in the down position at 105, 21 would return
 --assuming xy location is down and right square
--- -1,0 1,0 2,0 1, 10
---left 
+locations = {}
+	if currentPiece.type == "tPiece" then
+		if currentPiece.rotation == 0 then
+		locations[piece1x] = -1
+		locations[piece1y] = 0
+		locations[piece2x] = 0
+		locations[piece2y] = 0
+		locations[piece3x] = 0
+		locations[piece3y] = 1
+		locations[piece4x] = 1
+		locations[piece4y] = 1
+		elseif currentPiece.rotation == 90 then 
+		locations[piece1x] = -1
+		locations[piece1y] = 0
+		locations[piece2x] = -1
+		locations[piece2y] = 1
+		locations[piece3x] = -2
+		locations[piece3y] = 0
+		locations[piece4x] = -1
+		locations[piece4y] = -1
+		elseif currentPiece.rotation == 180 then
+		locations[piece1x] = -2
+		locations[piece1y] = -1
+		locations[piece2x] = -1
+		locations[piece2y] = -1
+		locations[piece3x] = -1
+		locations[piece3y] = -2
+		locations[piece4x] = 0
+		locations[piece4y] = -1
+		else  --0,-1, 0,-2, 1,-1, 0,0
+		locations[piece1x] = 0
+		locations[piece1y] = -1
+		locations[piece2x] = 0
+		locations[piece2y] = -2
+		locations[piece3x] =  1
+		locations[piece3y] = -1
+		locations[piece4x] = 0
+		locations[piece4y] = 0
+		end
+	
+	elseif currentPiece.type == "sPiece" then
+	if currentPiece.rotation == 0 then 
+		locations[piece1x] = 0
+		locations[piece1y] = 0
+		locations[piece2x] = 1
+		locations[piece2y] = 0
+		locations[piece3x] = 0
+		locations[piece3y] = 1
+		locations[piece4x] = -1
+		locations[piece4y] = 1
+		elseif currentPiece.rotation == 90 then
+		locations[piece1x] = -2
+		locations[piece1y] = -1
+		locations[piece2x] = -2
+		locations[piece2y] = 0
+		locations[piece3x] = -1
+		locations[piece3y] = 0
+		locations[piece4x] = -1
+		locations[piece4y] = 1
+	end
+	elseif currentPiece.type == "zPiece" then
+		if currentPiece.rotation == 0 then -- 1,0, 0,0, 1,0, 1,1
+		locations[piece1x] = 1
+		locations[piece1y] = 0
+		locations[piece2x] = 0
+		locations[piece2y] = 0
+		locations[piece3x] = 1
+		locations[piece3y] = 0
+		locations[piece4x] = 1
+		locations[piece4y] = 1
+		elseif currentPiece.rotation == 90 then -- -1,0, -2,0, -2,1, -1,-1
+		locations[piece1x] = -1
+		locations[piece1y] = 0
+		locations[piece2x] = -2
+		locations[piece2y] = 0
+		locations[piece3x] = -2
+		locations[piece3y] = 1
+		locations[piece4x] = -1
+		locations[piece4y] = -1
+	end
+	
+	elseif currentPiece.type == "oPiece" then
+		locations[piece1x] = 0
+		locations[piece1y] = 0
+		locations[piece2x] = 0
+		locations[piece2y] = 1
+		locations[piece3x] = 1
+		locations[piece3y] = 0
+		locations[piece4x] = 1
+		locations[piece4y] = 1
+	elseif currentPiece.type == "iPiece" then
+		if currentPiece.rotation == 0 then -- 0,0, 0,1, 0,-1, 0,-21
+		locations[piece1x] = 0
+		locations[piece1y] = 0
+		locations[piece2x] = 0
+		locations[piece2y] = 1
+		locations[piece3x] = 0
+		locations[piece3y] = -1
+		locations[piece4x] = 0
+		locations[piece4y] = -2
+		elseif currentPiece.rotation == 90 then -- 0,0 1,0, -1,0, -2,0
+		locations[piece1x] = 0
+		locations[piece1y] = 0
+		locations[piece2x] = 1
+		locations[piece2y] = 0
+		locations[piece3x] = -1
+		locations[piece3y] = 0
+		locations[piece4x] = -2
+		locations[piece4y] = 0
+		end
+	elseif currentPiece.type == "lPiece" then
+		if currentPiece.rotation == 0 then -- 0,0, 0,-1, 0,1, 1,1
+		locations[piece1x] = 0
+		locations[piece1y] = 0
+		locations[piece2x] = 0
+		locations[piece2y] = -1
+		locations[piece3x] = 0
+		locations[piece3y] = 1
+		locations[piece4x] = 1
+		locations[piece4y] = 1
+		elseif currentPiece.rotation == 90 then -- 0,0, -1,0, -2,0, -2,10
+		locations[piece1x] = 0
+		locations[piece1y] = 0
+		locations[piece2x] = -1
+		locations[piece2y] = 0
+		locations[piece3x] = -2
+		locations[piece3y] = 0
+		locations[piece4x] = -2
+		locations[piece4y] = -1
+		elseif currentPiece.rotation == 180 then -- -1,0, -1,-1, -1,-2, -2,-21
+		locations[piece1x] = -1
+		locations[piece1y] = 0
+		locations[piece2x] = -1
+		locations[piece2y] = -1
+		locations[piece3x] = -1
+		locations[piece3y] = -2
+		locations[piece4x] = -2
+		locations[piece4y] = -2
+		else  -- -1,-1, 0,-1, 1,-1, 1,-2
+		locations[piece1x] = -1
+		locations[piece1y] = -1
+		locations[piece2x] = 0
+		locations[piece2y] = -1
+		locations[piece3x] =  1
+		locations[piece3y] = -1
+		locations[piece4x] = 1
+		locations[piece4y] = -2
+		end
+	else
+		if currentPiece.rotation == 0 then -- 0,0, 0,1, -1,1, 0,-10
+		locations[piece1x] = 0
+		locations[piece1y] = 0
+		locations[piece2x] = 0
+		locations[piece2y] = 1
+		locations[piece3x] = -1
+		locations[piece3y] = 1
+		locations[piece4x] = 0
+		locations[piece4y] = -1
+		elseif currentPiece.rotation == 90 then -- -2,-1, -2,0, -1,0, 0,0
+		locations[piece1x] = -2
+		locations[piece1y] = -1
+		locations[piece2x] = -2
+		locations[piece2y] = 0
+		locations[piece3x] = -1
+		locations[piece3y] = 0
+		locations[piece4x] = 0
+		locations[piece4y] = 0
+		elseif currentPiece.rotation == 180 then -- -1,0, -1,-1, -1,-2, 0,-2
+		locations[piece1x] = -1
+		locations[piece1y] = 0
+		locations[piece2x] = -1
+		locations[piece2y] = -1
+		locations[piece3x] = -1
+		locations[piece3y] = -2
+		locations[piece4x] = 0
+		locations[piece4y] = -2
+		else  -- 0,-1, -1,-1, 1,-1, 1,0
+		locations[piece1x] = 0
+		locations[piece1y] = -1
+		locations[piece2x] = -1
+		locations[piece2y] = -1
+		locations[piece3x] =  1
+		locations[piece3y] = -1
+		locations[piece4x] = 1
+		locations[piece4y] = 0
 
-
---tPiece
---if rotation == 0 then
---return -1,0, 0,0 0,1, 1,1
---elseif
---	return -1,0, -1,1, -2,0 -1,-1, 
---elseif
---	return -2,-1, -1,-1, -1,-2, 0,-1
---else
---	return 0,-1, 0,-2, 1,-1, 0,0
---end
-
---sPiece
-
--- 0,0, 1,0, 0,1, -1,1
--- -2,-1, -2,0, -1,0, -1,1
-
---zPiece
-
--- 1,0, 0,0, 1,0, 1,1 rotate 0
--- -1,0, -2,0, -2,1, -1,-1
-
---oPiece
-
--- 0,0, 0,1, 1,0, 1,1
-
---iPiece 
-
--- 0,0, 0,1, 0,-1, 0,-21
--- 0,0 1,0, -1,0, -2,0
-
---lPiece
-
--- 0,0, 0,-1, 0,1, 1,1
--- 0,0, -1,0, -2,0, -2,10
--- -1,0, -1,-1, -1,-2, -2,-21
--- -1,-1, 0,-1, 1,-1, 1,-2
-
---jPiece
-
--- 0,0, 0,1, -1,1, 0,-10
--- -2,-1, -2,0, -1,0, 0,0}
--- -1,0, -1,-1, -1,-2, 0,-21
--- 0,-1, -1,-1, 1,-1, 1,0
-
+		end
+	end
+	
+	return locations
 
 end
 
