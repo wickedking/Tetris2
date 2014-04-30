@@ -5,7 +5,7 @@
 -----------------------------------------------------------------------------------------
 update = 0
 currentPiece ={}
-index = 3
+index = 1
 pieceCreate = true
 board = {}
 
@@ -55,14 +55,31 @@ function createPiece()
 	local balloon2 = display.newImage("box.png")
 	local balloon3 = display.newImage("box.png")
 	local balloon4 = display.newImage("box.png")
+	
+	if index == 0 then
+		balloon.type = "tPiece"
+	elseif index == 1 then
+		balloon.type = "zPiece"
+	elseif index == 2 then
+		balloon.type = "sPiece"
+	elseif index == 3 then
+		balloon.type = "oPiece"
+	elseif index == 4 then
+		balloon.type = "iPiece"
+	elseif index == 5 then
+		balloon.type = "lPiece"
+	elseif index == 6 then
+		balloon.type = "jPiece"
+	end
+
 	balloon.height = 21
 	balloon.width = 21
 	balloon:scale(.3, .3)
 	part1, part2, part3, part4 = piece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
-	balloon.x = 100
-	balloon.y = 0
+	balloon.x = 105
+	balloon.y = 63
 	
 	physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
 	physics.addBody(balloon, "dynamic")
@@ -104,7 +121,7 @@ end
 function movePiece(moveEvent)
 	update = update + 1
 	if update %10 == 0 then
-		currentPiece.y = currentPiece.y + 21
+		--currentPiece.y = currentPiece.y + 21
 	end
 end
 
@@ -123,6 +140,9 @@ function rotate()
 	if currentPiece.rotation >= 360 then
 		currentPiece.rotation = 0
 	end
+	
+	--if iPiece or zPiece or sPiece force only 2 rotations. 0 piece force none
+	print(currentPiece.rotation)
 --do special things
 end
 
@@ -166,16 +186,7 @@ rotateB:addEventListener("touch", rotate)
 
 
 createPiece()
-	--local balloon = display.newRect(100, 0,  21, 21 )
---	local balloon = display.newImage("blue_balloon.png")
---	balloon.x = 100
---	balloon.y = 0
---	local part1 = {-21, 0, -21, 21, 0, 21, 0,0}
---	local part2 = {0,0, 0, 21, 21, 21, 21,0}
---	local part3 = {21, 0, 21,21, 42,21, 42,0}
---	local part4 = {0,21, 0,42, 21, 42, 21, 21}
-	
-	
+
 	
 local floor = display.newImage("base.png")
 floor.x = display.contentWidth/2
@@ -202,7 +213,60 @@ Runtime:addEventListener("collision", onCollision)
 end
 
 
+function pieceRotation(piece, rotation)
+--return xy, xy, xy, xy from current location of subpieces. 
+--so a t piece in the down position at 105, 21 would return
+--assuming xy location is down and right square
+-- -1,0 1,0 2,0 1, 10
+--left 
 
+
+--tPiece
+--if rotation == 0 then
+--return -1,0, 0,0 0,1, 1,1
+--elseif
+--	return -1,0, -1,1, -2,0 -1,-1, 
+--elseif
+--	return -2,-1, -1,-1, -1,-2, 0,-1
+--else
+--	return 0,-1, 0,-2, 1,-1, 0,0
+--end
+
+--sPiece
+
+-- 0,0, 1,0, 0,1, -1,1
+-- -2,-1, -2,0, -1,0, -1,1
+
+--zPiece
+
+-- 1,0, 0,0, 1,0, 1,1 rotate 0
+-- -1,0, -2,0, -2,1, -1,-1
+
+--oPiece
+
+-- 0,0, 0,1, 1,0, 1,1
+
+--iPiece 
+
+-- 0,0, 0,1, 0,-1, 0,-21
+-- 0,0 1,0, -1,0, -2,0
+
+--lPiece
+
+-- 0,0, 0,-1, 0,1, 1,1
+-- 0,0, -1,0, -2,0, -2,10
+-- -1,0, -1,-1, -1,-2, -2,-21
+-- -1,-1, 0,-1, 1,-1, 1,-2
+
+--jPiece
+
+-- 0,0, 0,1, -1,1, 0,-10
+-- -2,-1, -2,0, -1,0, 0,0}
+-- -1,0, -1,-1, -1,-2, 0,-21
+-- 0,-1, -1,-1, 1,-1, 1,0
+
+
+end
 
 function piece() --TODO refactor each piece into its own method better coding
 	--t piece table coodinates
