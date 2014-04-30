@@ -5,7 +5,7 @@
 -----------------------------------------------------------------------------------------
 update = 0
 currentPiece ={}
-index = 6
+index = 1
 pieceCreate = true
 board = {}
 canRotate = true
@@ -15,7 +15,7 @@ local tweenMS = {}
 --currentPiece:addEventListener("collision", onCollision)
 
 function createBoard()
-	for i = 0, 22 do
+	for i = 0, 23 do
 	board[i] = {}
 		for j = 0, 10 do
 		board[i][j] = 0
@@ -50,14 +50,18 @@ end
 
 
 function createPiece()
-	print("create Piece")
+	--print("create Piece")
 	canRotate = true
 	pieceCreate = true
-	local balloon = display.newImage("box.png")
-	local balloon2 = display.newImage("box.png")
-	local balloon3 = display.newImage("box.png")
-	local balloon4 = display.newImage("box.png")
 	
+	
+	local balloon = display.newImage("box.png")
+	balloon.width = 21
+	balloon.height = 21
+	--local balloon2 = display.newImage("box.png")
+	--local balloon3 = display.newImage("box.png")
+	--local balloon4 = display.newImage("box.png")
+	local balloon = display.newGroup()
 	if index == 0 then
 		balloon.type = "tPiece"
 	elseif index == 1 then
@@ -111,16 +115,18 @@ function updateBoard(the_pieces)
 i = math.round(currentPiece.y/21)
 j = math.round(currentPiece.x/21)
 
-board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + piece1x)*21, (i + piece1y)*21, 21,21)
+--print(i)
+--print(j)
+board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21, (i + the_pieces.piece1y)*21, 21,21)
 physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "static")
 
-board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + piece2x)*21, (i + piece2y)*21, 21,21)
+board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21, (i + the_pieces.piece2y)*21, 21,21)
 physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "static")
 
-board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + piece3x)*21, (i + piece3y)*21, 21,21)
+board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21, (i + the_pieces.piece3y)*21, 21,21)
 physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "static")
 
-board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + piece4x)*21, (i + piece4y)*21, 21,21)
+board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21, (i + the_pieces.piece4y)*21, 21,21)
 physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "static")
 
 
@@ -154,8 +160,8 @@ function movePiece(moveEvent)
 end
 
 function onCollision(event)
-	print(event.object1.myName)
-	print(event.object2.myName)
+	--print(event.object1.myName)
+	--print(event.object2.myName)
 	if event.object1.myName == "Square" or event.object2.myName == "Square" then
 		if event.object1.myName ~= "Wall" and event.object2.myName ~= "Wall" then
 			timer.performWithDelay(1, freezePiece, 1)
@@ -172,7 +178,7 @@ function rotate()
 	end
 	if currentPiece.type == "oPiece" then
 		return
-	elseif currentPiece.type == "iPiece" or currentPiece.type == "zPiece" or currentPiece.type == "sPiece" then
+	elseif currentPiece.type == "iPiece" or currentPiece.type == "zPiece" or  currentPiece.type == "sPiece" then
 		if currentPiece.rotation == 90 then
 			currentPiece.rotation = 0
 		else
@@ -186,7 +192,7 @@ function rotate()
 	end
 	
 	--if iPiece or zPiece or sPiece force only 2 rotations. 0 piece force none
-	print(currentPiece.rotation)
+	--print(currentPiece.rotation)
 --do special things
 end
 
@@ -195,7 +201,7 @@ function moveLeft()
 end
 
 function moveRight()
-	print("moveRight")
+	--print("moveRight")
 	currentPiece.x = currentPiece.x + 21
 end
  
@@ -263,7 +269,7 @@ function pieceRotation()
 --assuming xy location is down and right square
 locations = {}
 
-	if currentPiece.type == "tPiece" then
+	if currentPiece.type == "tPiece" then --screwed
 		if currentPiece.rotation == 0 then
 		locations["piece1x"] = -1
 		locations["piece1y"] = 0
@@ -272,7 +278,7 @@ locations = {}
 		locations["piece3x"] = 0
 		locations["piece3y"] = 1
 		locations["piece4x"] = 1
-		locations["piece4y"] = 1
+		locations["piece4y"] = 0
 		elseif currentPiece.rotation == 90 then 
 		locations["piece1x"] = -1
 		locations["piece1y"] = 0
@@ -322,14 +328,14 @@ locations = {}
 		locations["piece4x"] = -1
 		locations["piece4y"] = 1
 	end
-	elseif currentPiece.type == "zPiece" then
+	elseif currentPiece.type == "zPiece" then --screwed
 		if currentPiece.rotation == 0 then -- 1,0, 0,0, 1,0, 1,1
 		locations["piece1x"] = 1
 		locations["piece1y"] = 0
 		locations["piece2x"] = 0
 		locations["piece2y"] = 0
-		locations["piece3x"] = 1
-		locations["piece3y"] = 0
+		locations["piece3x"] = 2
+		locations["piece3y"] = 1
 		locations["piece4x"] = 1
 		locations["piece4y"] = 1
 		elseif currentPiece.rotation == 90 then -- -1,0, -2,0, -2,1, -1,-1
