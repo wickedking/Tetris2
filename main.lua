@@ -5,14 +5,36 @@
 -----------------------------------------------------------------------------------------
 update = 0
 currentPiece ={}
-index = 1
+index = 4
 pieceCreate = true
 board = {}
 canRotate = true
+pause = false
+
+display1 = display.newRect(0,0,0,0)
+display2 = display.newRect(0,0,0,0)
+display3 = display.newRect(0,0,0,0)
+display4 = display.newRect(0,0,0,0)
 
 local menuScreen = {}
 local tweenMS = {}
 --currentPiece:addEventListener("collision", onCollision)
+
+function drawPiece(the_pieces)
+	i = math.round(currentPiece.y/21)
+	j = math.round(currentPiece.x/21)
+	
+	display1:removeSelf()
+	display2:removeSelf()
+	display3:removeSelf()
+	display4:removeSelf()
+	
+	display1 = display.newRect((j + the_pieces.piece1x)*21 + 1, (i + the_pieces.piece1y)*21, 17,19)
+	display2 = display.newRect((j + the_pieces.piece2x)*21 + 1, (i + the_pieces.piece2y)*21, 17,19)
+	display3 = display.newRect((j + the_pieces.piece3x)*21 + 1, (i + the_pieces.piece3y)*21, 17,19)
+	display4 = display.newRect((j + the_pieces.piece4x)*21 + 1, (i + the_pieces.piece4y)*21, 17,19)
+
+end
 
 function createBoard()
 	for i = 0, 23 do
@@ -84,8 +106,8 @@ function createPiece()
 	part1, part2, part3, part4 = piece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
-	balloon.x = 105
-	balloon.y = 63
+	balloon.x = 95
+	balloon.y = -100
 	
 	physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
 	physics.addBody(balloon, "dynamic")
@@ -104,6 +126,12 @@ function createPiece()
 	--currentPiece:addEventListener("collision", onCollision)
 end
 
+function fail()
+	local bad = display.newRect(0,0,900,900)
+	bad:setFillColor(.5,.5,.5)
+	pause = true
+end
+
 
 function updateBoard(the_pieces)
 --will be called will freezeing piece
@@ -112,26 +140,64 @@ function updateBoard(the_pieces)
 --will check rows to see if deletion is necassary
 
 
-i = math.round(currentPiece.y/21)
-j = math.round(currentPiece.x/21)
+	i = math.round(currentPiece.y/21)
+	j = math.round(currentPiece.x/21)
 
 --print(i)
 --print(j)
-board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21, (i + the_pieces.piece1y)*21, 21,21)
-physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "static")
+	if i + the_pieces.piece1y > 23 or j + the_pieces.piece1x > 10 or j + the_pieces.piece1x < 0 or i + the_pieces.piece1y < 0 then
+		fail()
+	else
+		board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 1, (i + the_pieces.piece1y)*21, 17,19)
+		physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
+	end
+	
+	if i + the_pieces.piece2y > 23 or j + the_pieces.piece2x > 10 or j + the_pieces.piece2x < 0 or i + the_pieces.piece2y < 0 then
+		fail()
+	else
+		board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21 + 1, (i + the_pieces.piece2y)*21, 17,19)
+		physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
+	end
+	if i + the_pieces.piece3y > 23 or j + the_pieces.piece3x > 10  or j + the_pieces.piece3x < 0 or i + the_pieces.piece3y < 0 then
+		fail()
+	else
+		board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21 + 1, (i + the_pieces.piece3y)*21, 17,19)
+		physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
+	end
+	if i + the_pieces.piece4y > 23 or j + the_pieces.piece4x > 10  or j + the_pieces.piece4x < 0 or i + the_pieces.piece4y < 0 then
+		fail()
+	else
+		board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21 + 1, (i + the_pieces.piece4y)*21, 17,19)
+		physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "kinematic")
+	end
 
-board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21, (i + the_pieces.piece2y)*21, 21,21)
-physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "static")
-
-board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21, (i + the_pieces.piece3y)*21, 21,21)
-physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "static")
-
-board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21, (i + the_pieces.piece4y)*21, 21,21)
-physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "static")
-
-
+	removeRows()
 --call to check for rows
 
+end
+
+function removeRows()
+
+	for i = 0, 23 do
+		local boolean check = true
+		for j = 0, 10 do
+			if board[i][j] == 0 then
+			check = false
+			--print("0")
+			break
+			end
+			--print("piece")
+		end
+		--print("checking")
+		if check then
+		print("YOU DID IT")
+			for j = 0, 10 do
+			 board[i][j]:removeSelf()
+			 board[i][j] = 0
+			end
+		--go back and delete row
+		end
+	end
 end
 
 function freezePiece(freezeEvent)
@@ -144,7 +210,7 @@ function freezePiece(freezeEvent)
 		currentPiece.myName = "death"
 		pieceCreate = false
 
-		updateBoard(pieces)
+		timer.performWithDelay(1, updateBoard(pieces), 1)
 		--need to find out sub piece locations then add to table in those locations
 		
 		currentPiece:removeSelf()
@@ -154,8 +220,9 @@ end
 
 function movePiece(moveEvent)
 	update = update + 1
-	if update %10 == 0 then
+	if update %10 == 0  and pause == false then
 		currentPiece.y = currentPiece.y + 21
+		drawPiece(pieceRotation())
 	end
 end
 
@@ -184,32 +251,40 @@ function rotate()
 		else
 			currentPiece.rotation = 90
 		end
+		drawPiece(pieceRotation())
 		return
 	end
 	currentPiece.rotation = currentPiece.rotation + 90
 	if currentPiece.rotation >= 360 then
 		currentPiece.rotation = 0
 	end
-	
+	drawPiece(pieceRotation())
 	--if iPiece or zPiece or sPiece force only 2 rotations. 0 piece force none
 	--print(currentPiece.rotation)
 --do special things
 end
 
 function moveLeft()
+	if currentPiece.x < 10 then
+		return
+	end
 	currentPiece.x = currentPiece.x - 21
+	drawPiece(pieceRotation())
 end
 
 function moveRight()
-	--print("moveRight")
+	if currentPiece.x > 190 then
+		return
+	end
 	currentPiece.x = currentPiece.x + 21
+	drawPiece(pieceRotation())
 end
  
 function create()
 createBoard()
 
 local physics = require("physics")
-physics.setDrawMode("hybrid")
+--physics.setDrawMode("hybrid")
 physics.start()
 physics.setGravity(0, 0)
 
@@ -221,7 +296,7 @@ physics.setGravity(0, 0)
 local leftB = display.newImage("left_button.png")
 leftB.x = display.contentWidth - 50
 leftB.y = display.contentHeight / 8
-physics.addBody(leftB, "static")
+--physics.addBody(leftB, "static")
 leftB:addEventListener("tap", moveLeft)
 
 local rightB = display.newImage("right_button.png")
@@ -329,14 +404,14 @@ locations = {}
 		locations["piece4y"] = 1
 	end
 	elseif currentPiece.type == "zPiece" then --screwed
-		if currentPiece.rotation == 0 then -- 1,0, 0,0, 1,0, 1,1
-		locations["piece1x"] = 1
+		if currentPiece.rotation == 0 then -- 1,0, 0,0, 2,0, 1,1 -1x +1y
+		locations["piece1x"] = 0
 		locations["piece1y"] = 0
-		locations["piece2x"] = 0
+		locations["piece2x"] = -1
 		locations["piece2y"] = 0
-		locations["piece3x"] = 2
+		locations["piece3x"] = 1
 		locations["piece3y"] = 1
-		locations["piece4x"] = 1
+		locations["piece4x"] = 0
 		locations["piece4y"] = 1
 		elseif currentPiece.rotation == 90 then -- -1,0, -2,0, -2,1, -1,-1
 		locations["piece1x"] = -1
