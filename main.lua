@@ -10,6 +10,9 @@ pieceCreate = true
 board = {}
 canRotate = true
 pause = false
+group = {}
+start_over = true
+gameOverGroup = {}
 
 display1 = display.newRect(0,0,0,0)
 display2 = display.newRect(0,0,0,0)
@@ -18,22 +21,26 @@ display4 = display.newRect(0,0,0,0)
 
 local menuScreen = {}
 local tweenMS = {}
---currentPiece:addEventListener("collision", onCollision)
 
 function drawPiece(the_pieces)
 	i = math.round(currentPiece.y/21)
 	j = math.round(currentPiece.x/21)
-	
-	display1:removeSelf()
-	display2:removeSelf()
-	display3:removeSelf()
-	display4:removeSelf()
+	if display1 ~= nil then
+		display1:removeSelf()
+		display2:removeSelf()
+		display3:removeSelf()
+		display4:removeSelf()
+	end
 	
 	display1 = display.newRect((j + the_pieces.piece1x)*21 + 1, (i + the_pieces.piece1y)*21, 17,19)
 	display2 = display.newRect((j + the_pieces.piece2x)*21 + 1, (i + the_pieces.piece2y)*21, 17,19)
 	display3 = display.newRect((j + the_pieces.piece3x)*21 + 1, (i + the_pieces.piece3y)*21, 17,19)
 	display4 = display.newRect((j + the_pieces.piece4x)*21 + 1, (i + the_pieces.piece4y)*21, 17,19)
 
+	group:insert(display1)
+	group:insert(display2)
+	group:insert(display3)
+	group:insert(display4)
 end
 
 function createBoard()
@@ -67,22 +74,68 @@ function tweenMS:tap(e)
 		transition.to(menuScreen, {time = 400, y = -menuScreen.height * 2, transition = easing.outExpo, onComplete = addGameScreen})
 		create()
 	end
-	
 end
 
+function goAway()
+	print("goAway")
+	os.exit()
+end
+
+function recreate()
+	print("recreate")
+	board = {}
+	currentPiece = {}
+	gameOverGroup:removeSelf()
+	--create()
+	--addMenuScreen()
+	timer.performWithDelay(1000, create, 1)
+end
+
+function fail()
+	if start_over then
+		print("fail")
+		pieceCreate = false
+		gameOverGroup = display.newGroup()
+		start_over = false
+		--print(pause)
+		pause = true
+		--print(pause)
+		local yes = display.newImage("yes.png")
+		yes.x = display.contentWidth/4
+		yes.y = (display.contentHeight/4) * 3
+		yes:scale(0.4, 0.4)
+		local no = display.newImage("no.png")
+		no:scale(0.5, 0.5)
+		no.x = (display.contentWidth/4) * 3
+		no.y = (display.contentHeight/4) * 3
+		
+		local failed = display.newImage("fail.png")
+		
+		failed.x = display.contentWidth/2
+		failed.y = display.contentHeight/4
+		failed.name = "failed"
+		
+		yes.name = "yes"
+		no.nmae = "no"
+		
+		gameOverGroup:insert(yes)
+		gameOverGroup:insert(no)
+		gameOverGroup:insert(failed)
+		
+		yes:addEventListener('tap', recreate)
+		no:addEventListener('tap', goAway)
+		group:removeSelf()
+	end
+end
 
 function createPiece()
-	--print("create Piece")
 	canRotate = true
 	pieceCreate = true
-	
 	
 	local balloon = display.newImage("box.png")
 	balloon.width = 21
 	balloon.height = 21
-	--local balloon2 = display.newImage("box.png")
-	--local balloon3 = display.newImage("box.png")
-	--local balloon4 = display.newImage("box.png")
+
 	local balloon = display.newGroup()
 	if index == 0 then
 		balloon.type = "tPiece"
@@ -113,106 +166,100 @@ function createPiece()
 	physics.addBody(balloon, "dynamic")
 	currentPiece = balloon
 	balloon.isFixedRotation = true
-	index = index + 1
+	--index = index + 1
 	if index > 6 then
 		index = 0
 	end
-	--local balloon = display.newRect(100, 0,  21, 21 )
-	--balloon.myName = "Square"
-	--balloon.bodyType = "dynamic"
-	--physics.addBody(balloon)
-	--currentPiece = balloon
-	--currentPiece:addEventListener("touch", moveRight) 
-	--currentPiece:addEventListener("collision", onCollision)
+	
+	--group:insert(balloon)
+	--group:insert(currentPiece)
 end
-
-function fail()
-	local bad = display.newRect(0,0,900,900)
-	bad:setFillColor(.5,.5,.5)
-	pause = true
-end
-
 
 function updateBoard(the_pieces)
 --will be called will freezeing piece
 --will create new objects on board and then display.
 --will be able to keep a reference to all "destroyed" pieces
 --will check rows to see if deletion is necassary
+print(currentPiece.x)
+print(currentPiece.y)
+print(currentPiece.name)
+	if pause == false then
 
+		i = math.round(currentPiece.y/21)
+		j = math.round(currentPiece.x/21)
+		
+		--well checks are actually working at the moment. 
 
-	i = math.round(currentPiece.y/21)
-	j = math.round(currentPiece.x/21)
-
---print(i)
---print(j)
-	if i + the_pieces.piece1y > 23 or j + the_pieces.piece1x > 10 or j + the_pieces.piece1x < 0 or i + the_pieces.piece1y < 0 then
-		fail()
-	else
-		board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 1, (i + the_pieces.piece1y)*21, 17,19)
-		physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
+		if i + the_pieces.piece1y > 23 or j + the_pieces.piece1x > 10 or j + the_pieces.piece1x < 0 or i + the_pieces.piece1y < 0 then
+			pause = true
+			fail()
+			return
+		else
+			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 1, (i + the_pieces.piece1y)*21, 17,19)
+			group:insert(board[i + the_pieces.piece1y][j + the_pieces.piece1x])
+			physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
+		end
+		
+		if i + the_pieces.piece2y > 23 or j + the_pieces.piece2x > 10 or j + the_pieces.piece2x < 0 or i + the_pieces.piece2y < 0 then
+			pause = true
+			fail()
+			return
+		else
+			board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21 + 1, (i + the_pieces.piece2y)*21, 17,19)
+			group:insert(board[i + the_pieces.piece2y][j + the_pieces.piece2x])
+			physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
+		end
+		if i + the_pieces.piece3y > 23 or j + the_pieces.piece3x > 10  or j + the_pieces.piece3x < 0 or i + the_pieces.piece3y < 0 then
+			fail()
+			pause = true
+			return
+		else
+			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21 + 1, (i + the_pieces.piece3y)*21, 17,19)
+			group:insert(board[i + the_pieces.piece3y][j + the_pieces.piece3x])
+			physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
+		end
+		if i + the_pieces.piece4y > 23 or j + the_pieces.piece4x > 10  or j + the_pieces.piece4x < 0 or i + the_pieces.piece4y < 0 then
+			fail()
+			pause = true
+			return
+		else
+			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21 + 1, (i + the_pieces.piece4y)*21, 17,19)
+			group:insert(board[i + the_pieces.piece4y][j + the_pieces.piece4x])
+			physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "kinematic")
+		end
+		removeRows()
+	--call to check for rows
 	end
-	
-	if i + the_pieces.piece2y > 23 or j + the_pieces.piece2x > 10 or j + the_pieces.piece2x < 0 or i + the_pieces.piece2y < 0 then
-		fail()
-	else
-		board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21 + 1, (i + the_pieces.piece2y)*21, 17,19)
-		physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
-	end
-	if i + the_pieces.piece3y > 23 or j + the_pieces.piece3x > 10  or j + the_pieces.piece3x < 0 or i + the_pieces.piece3y < 0 then
-		fail()
-	else
-		board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21 + 1, (i + the_pieces.piece3y)*21, 17,19)
-		physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
-	end
-	if i + the_pieces.piece4y > 23 or j + the_pieces.piece4x > 10  or j + the_pieces.piece4x < 0 or i + the_pieces.piece4y < 0 then
-		fail()
-	else
-		board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21 + 1, (i + the_pieces.piece4y)*21, 17,19)
-		physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "kinematic")
-	end
-
-	removeRows()
---call to check for rows
-
 end
 
 function removeRows()
-
 	for i = 0, 23 do
 		local boolean check = true
 		for j = 0, 10 do
 			if board[i][j] == 0 then
 			check = false
-			--print("0")
 			break
 			end
-			--print("piece")
 		end
-		--print("checking")
 		if check then
-		print("YOU DID IT")
 			for j = 0, 10 do
 			 board[i][j]:removeSelf()
 			 board[i][j] = 0
 			end
 		--go back and delete row
+		--need to move pieces down
 		end
 	end
 end
 
 function freezePiece(freezeEvent)
-	--currentPiece:removeEventListener("touch", moveRight)
-	--currentPiece:removeEventListener("collision", onCollision)
-	if pieceCreate == true then
+	if pieceCreate == true and pause == false then
 		pieces = pieceRotation()
 		physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
 		pieceCreate = false
-
 		timer.performWithDelay(1, updateBoard(pieces), 1)
-		--need to find out sub piece locations then add to table in those locations
-		
 		currentPiece:removeSelf()
 		timer.performWithDelay(100, createPiece, 1)
 	end
@@ -227,8 +274,6 @@ function movePiece(moveEvent)
 end
 
 function onCollision(event)
-	--print(event.object1.myName)
-	--print(event.object2.myName)
 	if event.object1.myName == "Square" or event.object2.myName == "Square" then
 		if event.object1.myName ~= "Wall" and event.object2.myName ~= "Wall" then
 			timer.performWithDelay(1, freezePiece, 1)
@@ -259,9 +304,6 @@ function rotate()
 		currentPiece.rotation = 0
 	end
 	drawPiece(pieceRotation())
-	--if iPiece or zPiece or sPiece force only 2 rotations. 0 piece force none
-	--print(currentPiece.rotation)
---do special things
 end
 
 function moveLeft()
@@ -281,60 +323,64 @@ function moveRight()
 end
  
 function create()
-createBoard()
-
-local physics = require("physics")
---physics.setDrawMode("hybrid")
-physics.start()
-physics.setGravity(0, 0)
-
---local background = display.newImage("bkg_bricks.png")
---background.x = display.contentWidth/2
---background.y = display.contentHeight/2
-
-
-local leftB = display.newImage("left_button.png")
-leftB.x = display.contentWidth - 50
-leftB.y = display.contentHeight / 8
---physics.addBody(leftB, "static")
-leftB:addEventListener("tap", moveLeft)
-
-local rightB = display.newImage("right_button.png")
-rightB.x = display.contentWidth - 50
-rightB.y = display.contentHeight / 2
-rightB:addEventListener("tap", moveRight)
-
-local rotateB = display.newImage("rotate.png")
-rotateB.x = display.contentWidth - 50
-rotateB.y = display.contentHeight - 100
-rotateB:addEventListener("touch", rotate)
-
-
-createPiece()
-
+	start_over = true
+	pause = false
 	
-local floor = display.newImage("base.png")
-floor.x = display.contentWidth/2
-floor.y = display.contentHeight + 55
-physics.addBody(floor, "static")
-floor.myName = "Floor"
+	display1 = display.newRect(0,0,0,0)
+	display2 = display.newRect(0,0,0,0)
+	display3 = display.newRect(0,0,0,0)
+	display4 = display.newRect(0,0,0,0)
 
-local leftWall = display.newRect(0,0,1, display.contentHeight*2 + 50)
-local rightWall = display.newRect(210, 0, 5, display.contentHeight*2 + 52)
-leftWall.myName = "Wall"
-rightWall.myName = "Wall"
+	group = display.newGroup()
+	createBoard()
+	local physics = require("physics")
+	--physics.setDrawMode("hybrid")
+	physics.start()
+	physics.setGravity(0, 0)
 
-physics.addBody(leftWall, "static", {bounce = 0.1, friction = 1.0})
-physics.addBody(rightWall, "static", {bounce = 0.1, friction = 1.0})
+	local leftB = display.newImage("left_button.png")
+	leftB.x = display.contentWidth - 50
+	leftB.y = display.contentHeight / 8
+	leftB:addEventListener("tap", moveLeft)
 
-display.setStatusBar(display.HiddenStatusBar)
+	local rightB = display.newImage("right_button.png")
+	rightB.x = display.contentWidth - 50
+	rightB.y = display.contentHeight / 2
+	rightB:addEventListener("tap", moveRight)
 
-Runtime:addEventListener("enterFrame", movePiece)
-Runtime:addEventListener("collision", onCollision)
+	local rotateB = display.newImage("rotate.png")
+	rotateB.x = display.contentWidth - 50
+	rotateB.y = display.contentHeight - 100
+	rotateB:addEventListener("touch", rotate)
+	
+	group:insert(leftB)
+	group:insert(rightB)
+	group:insert(rotateB)
 
---local function Main()
+	createPiece()
 
---end
+	local floor = display.newImage("base.png")
+	floor.x = display.contentWidth/2
+	floor.y = display.contentHeight + 55
+	physics.addBody(floor, "static")
+	floor.myName = "Floor"
+
+	local leftWall = display.newRect(0,0,1, display.contentHeight*2 + 50)
+	local rightWall = display.newRect(210, 0, 5, display.contentHeight*2 + 52)
+	leftWall.myName = "Wall"
+	rightWall.myName = "Wall"
+
+	physics.addBody(leftWall, "static", {bounce = 0.1, friction = 1.0})
+	physics.addBody(rightWall, "static", {bounce = 0.1, friction = 1.0})
+
+	display.setStatusBar(display.HiddenStatusBar)
+	
+	group:insert(floor)
+	group:insert(leftWall)
+	group:insert(rightWall)
+
+	Runtime:addEventListener("enterFrame", movePiece)
+	Runtime:addEventListener("collision", onCollision)
 end
 
 
@@ -346,84 +392,82 @@ locations = {}
 
 	if currentPiece.type == "tPiece" then --screwed
 		if currentPiece.rotation == 0 then
-		locations["piece1x"] = -1
-		locations["piece1y"] = 0
-		locations["piece2x"] = 0
-		locations["piece2y"] = 0
-		locations["piece3x"] = 0
-		locations["piece3y"] = 1
-		locations["piece4x"] = 1
-		locations["piece4y"] = 0
+			locations["piece1x"] = -1
+			locations["piece1y"] = 0
+			locations["piece2x"] = 0
+			locations["piece2y"] = 0
+			locations["piece3x"] = 0
+			locations["piece3y"] = 1
+			locations["piece4x"] = 1
+			locations["piece4y"] = 0
 		elseif currentPiece.rotation == 90 then 
-		locations["piece1x"] = -1
-		locations["piece1y"] = 0
-		locations["piece2x"] = -1
-		locations["piece2y"] = 1
-		locations["piece3x"] = -2
-		locations["piece3y"] = 0
-		locations["piece4x"] = -1
-		locations["piece4y"] = -1
+			locations["piece1x"] = -1
+			locations["piece1y"] = 0
+			locations["piece2x"] = -1
+			locations["piece2y"] = 1
+			locations["piece3x"] = -2
+			locations["piece3y"] = 0
+			locations["piece4x"] = -1
+			locations["piece4y"] = -1
 		elseif currentPiece.rotation == 180 then
-		locations["piece1x"] = -2
-		locations["piece1y"] = -1
-		locations["piece2x"] = -1
-		locations["piece2y"] = -1
-		locations["piece3x"] = -1
-		locations["piece3y"] = -2
-		locations["piece4x"] = 0
-		locations["piece4y"] = -1
+			locations["piece1x"] = -2
+			locations["piece1y"] = -1
+			locations["piece2x"] = -1
+			locations["piece2y"] = -1
+			locations["piece3x"] = -1
+			locations["piece3y"] = -2
+			locations["piece4x"] = 0
+			locations["piece4y"] = -1
 		else  --0,-1, 0,-2, 1,-1, 0,0
-		locations["piece1x"] = 0
-		locations["piece1y"] = -1
-		locations["piece2x"] = 0
-		locations["piece2y"] = -2
-		locations["piece3x"] =  1
-		locations["piece3y"] = -1
-		locations["piece4x"] = 0
-		locations["piece4y"] = 0
+			locations["piece1x"] = 0
+			locations["piece1y"] = -1
+			locations["piece2x"] = 0
+			locations["piece2y"] = -2
+			locations["piece3x"] =  1
+			locations["piece3y"] = -1
+			locations["piece4x"] = 0
+			locations["piece4y"] = 0
 		end
-	
 	elseif currentPiece.type == "sPiece" then
-	if currentPiece.rotation == 0 then 
-		locations["piece1x"] = 0
-		locations["piece1y"] = 0
-		locations["piece2x"] = 1
-		locations["piece2y"] = 0
-		locations["piece3x"] = 0
-		locations["piece3y"] = 1
-		locations["piece4x"] = -1
-		locations["piece4y"] = 1
+		if currentPiece.rotation == 0 then 
+			locations["piece1x"] = 0
+			locations["piece1y"] = 0
+			locations["piece2x"] = 1
+			locations["piece2y"] = 0
+			locations["piece3x"] = 0
+			locations["piece3y"] = 1
+			locations["piece4x"] = -1
+			locations["piece4y"] = 1
 		elseif currentPiece.rotation == 90 then
-		locations["piece1x"] = -2
-		locations["piece1y"] = -1
-		locations["piece2x"] = -2
-		locations["piece2y"] = 0
-		locations["piece3x"] = -1
-		locations["piece3y"] = 0
-		locations["piece4x"] = -1
-		locations["piece4y"] = 1
+			locations["piece1x"] = -2
+			locations["piece1y"] = -1
+			locations["piece2x"] = -2
+			locations["piece2y"] = 0
+			locations["piece3x"] = -1
+			locations["piece3y"] = 0
+			locations["piece4x"] = -1
+			locations["piece4y"] = 1
 	end
 	elseif currentPiece.type == "zPiece" then --screwed
 		if currentPiece.rotation == 0 then -- 1,0, 0,0, 2,0, 1,1 -1x +1y
-		locations["piece1x"] = 0
-		locations["piece1y"] = 0
-		locations["piece2x"] = -1
-		locations["piece2y"] = 0
-		locations["piece3x"] = 1
-		locations["piece3y"] = 1
-		locations["piece4x"] = 0
-		locations["piece4y"] = 1
+			locations["piece1x"] = 0
+			locations["piece1y"] = 0
+			locations["piece2x"] = -1
+			locations["piece2y"] = 0
+			locations["piece3x"] = 1
+			locations["piece3y"] = 1
+			locations["piece4x"] = 0
+			locations["piece4y"] = 1
 		elseif currentPiece.rotation == 90 then -- -1,0, -2,0, -2,1, -1,-1
-		locations["piece1x"] = -1
-		locations["piece1y"] = 0
-		locations["piece2x"] = -2
-		locations["piece2y"] = 0
-		locations["piece3x"] = -2
-		locations["piece3y"] = 1
-		locations["piece4x"] = -1
-		locations["piece4y"] = -1
+			locations["piece1x"] = -1
+			locations["piece1y"] = 0
+			locations["piece2x"] = -2
+			locations["piece2y"] = 0
+			locations["piece3x"] = -2
+			locations["piece3y"] = 1
+			locations["piece4x"] = -1
+			locations["piece4y"] = -1
 	end
-	
 	elseif currentPiece.type == "oPiece" then
 		locations["piece1x"] = 0
 		locations["piece1y"] = 0
@@ -435,105 +479,102 @@ locations = {}
 		locations["piece4y"] = 1
 	elseif currentPiece.type == "iPiece" then
 		if currentPiece.rotation == 0 then -- 0,0, 0,1, 0,-1, 0,-21
-		locations["piece1x"] = 0
-		locations["piece1y"] = 0
-		locations["piece2x"] = 0
-		locations["piece2y"] = 1
-		locations["piece3x"] = 0
-		locations["piece3y"] = -1
-		locations["piece4x"] = 0
-		locations["piece4y"] = -2
+			locations["piece1x"] = 0
+			locations["piece1y"] = 0
+			locations["piece2x"] = 0
+			locations["piece2y"] = 1
+			locations["piece3x"] = 0
+			locations["piece3y"] = -1
+			locations["piece4x"] = 0
+			locations["piece4y"] = -2
 		elseif currentPiece.rotation == 90 then -- 0,0 1,0, -1,0, -2,0
-		locations["piece1x"] = 0
-		locations["piece1y"] = 0
-		locations["piece2x"] = 1
-		locations["piece2y"] = 0
-		locations["piece3x"] = -1
-		locations["piece3y"] = 0
-		locations["piece4x"] = -2
-		locations["piece4y"] = 0
+			locations["piece1x"] = 0
+			locations["piece1y"] = 0
+			locations["piece2x"] = 1
+			locations["piece2y"] = 0
+			locations["piece3x"] = -1
+			locations["piece3y"] = 0
+			locations["piece4x"] = -2
+			locations["piece4y"] = 0
 		end
 	elseif currentPiece.type == "lPiece" then
 		if currentPiece.rotation == 0 then -- 0,0, 0,-1, 0,1, 1,1
-		locations["piece1x"] = 0
-		locations["piece1y"] = 0
-		locations["piece2x"] = 0
-		locations["piece2y"] = -1
-		locations["piece3x"] = 0
-		locations["piece3y"] = 1
-		locations["piece4x"] = 1
-		locations["piece4y"] = 1
+			locations["piece1x"] = 0
+			locations["piece1y"] = 0
+			locations["piece2x"] = 0
+			locations["piece2y"] = -1
+			locations["piece3x"] = 0
+			locations["piece3y"] = 1
+			locations["piece4x"] = 1
+			locations["piece4y"] = 1
 		elseif currentPiece.rotation == 90 then -- 0,0, -1,0, -2,0, -2,10
-		locations["piece1x"] = 0
-		locations["piece1y"] = 0
-		locations["piece2x"] = -1
-		locations["piece2y"] = 0
-		locations["piece3x"] = -2
-		locations["piece3y"] = 0
-		locations["piece4x"] = -2
-		locations["piece4y"] = -1
+			locations["piece1x"] = 0
+			locations["piece1y"] = 0
+			locations["piece2x"] = -1
+			locations["piece2y"] = 0
+			locations["piece3x"] = -2
+			locations["piece3y"] = 0
+			locations["piece4x"] = -2
+			locations["piece4y"] = -1
 		elseif currentPiece.rotation == 180 then -- -1,0, -1,-1, -1,-2, -2,-21
-		locations["piece1x"] = -1
-		locations["piece1y"] = 0
-		locations["piece2x"] = -1
-		locations["piece2y"] = -1
-		locations["piece3x"] = -1
-		locations["piece3y"] = -2
-		locations["piece4x"] = -2
-		locations["piece4y"] = -2
+			locations["piece1x"] = -1
+			locations["piece1y"] = 0
+			locations["piece2x"] = -1
+			locations["piece2y"] = -1
+			locations["piece3x"] = -1
+			locations["piece3y"] = -2
+			locations["piece4x"] = -2
+			locations["piece4y"] = -2
 		else  -- -1,-1, 0,-1, 1,-1, 1,-2
-		locations["piece1x"] = -1
-		locations["piece1y"] = -1
-		locations["piece2x"] = 0
-		locations["piece2y"] = -1
-		locations["piece3x"] =  1
-		locations["piece3y"] = -1
-		locations["piece4x"] = 1
-		locations["piece4y"] = -2
+			locations["piece1x"] = -1
+			locations["piece1y"] = -1
+			locations["piece2x"] = 0
+			locations["piece2y"] = -1
+			locations["piece3x"] =  1
+			locations["piece3y"] = -1
+			locations["piece4x"] = 1
+			locations["piece4y"] = -2
 		end
 	else
 		if currentPiece.rotation == 0 then -- 0,0, 0,1, -1,1, 0,-10
-		locations["piece1x"] = 0
-		locations["piece1y"] = 0
-		locations["piece2x"] = 0
-		locations["piece2y"] = 1
-		locations["piece3x"] = -1
-		locations["piece3y"] = 1
-		locations["piece4x"] = 0
-		locations["piece4y"] = -1
+			locations["piece1x"] = 0
+			locations["piece1y"] = 0
+			locations["piece2x"] = 0
+			locations["piece2y"] = 1
+			locations["piece3x"] = -1
+			locations["piece3y"] = 1
+			locations["piece4x"] = 0
+			locations["piece4y"] = -1
 		elseif currentPiece.rotation == 90 then -- -2,-1, -2,0, -1,0, 0,0
-		locations["piece1x"] = -2
-		locations["piece1y"] = -1
-		locations["piece2x"] = -2
-		locations["piece2y"] = 0
-		locations["piece3x"] = -1
-		locations["piece3y"] = 0
-		locations["piece4x"] = 0
-		locations["piece4y"] = 0
+			locations["piece1x"] = -2
+			locations["piece1y"] = -1
+			locations["piece2x"] = -2
+			locations["piece2y"] = 0
+			locations["piece3x"] = -1
+			locations["piece3y"] = 0
+			locations["piece4x"] = 0
+			locations["piece4y"] = 0
 		elseif currentPiece.rotation == 180 then -- -1,0, -1,-1, -1,-2, 0,-2
-		locations["piece1x"] = -1
-		locations["piece1y"] = 0
-		locations["piece2x"] = -1
-		locations["piece2y"] = -1
-		locations["piece3x"] = -1
-		locations["piece3y"] = -2
-		locations["piece4x"] = 0
-		locations["piece4y"] = -2
+			locations["piece1x"] = -1
+			locations["piece1y"] = 0
+			locations["piece2x"] = -1
+			locations["piece2y"] = -1
+			locations["piece3x"] = -1
+			locations["piece3y"] = -2
+			locations["piece4x"] = 0
+			locations["piece4y"] = -2
 		else  -- 0,-1, -1,-1, 1,-1, 1,0
-		locations["piece1x"] = 0
-		locations["piece1y"] = -1
-		locations["piece2x"] = -1
-		locations["piece2y"] = -1
-		locations["piece3x"] =  1
-		locations["piece3y"] = -1
-		locations["piece4x"] = 1
-		locations["piece4y"] = 0
-
+			locations["piece1x"] = 0
+			locations["piece1y"] = -1
+			locations["piece2x"] = -1
+			locations["piece2y"] = -1
+			locations["piece3x"] =  1
+			locations["piece3y"] = -1
+			locations["piece4x"] = 1
+			locations["piece4y"] = 0
 		end
 	end
-	
 	return locations
-
 end
 
 function piece() --TODO refactor each piece into its own method better coding
