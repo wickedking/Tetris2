@@ -83,17 +83,19 @@ end
 
 function recreate()
 	print("recreate")
-	board = {}
-	currentPiece = {}
+	--board = {}
+	----printBoard()
+	--currentPiece = {}
 	gameOverGroup:removeSelf()
-	--create()
-	--addMenuScreen()
+	----create()
+	----addMenuScreen()
 	timer.performWithDelay(1000, create, 1)
 end
 
 function fail()
 	if start_over then
 		print("fail")
+		board = {}
 		pieceCreate = false
 		gameOverGroup = display.newGroup()
 		start_over = false
@@ -129,6 +131,7 @@ function fail()
 end
 
 function createPiece()
+	print("createPiece")
 	canRotate = true
 	pieceCreate = true
 	
@@ -160,7 +163,7 @@ function createPiece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
 	balloon.x = 95
-	balloon.y = -100
+	balloon.y = -50
 	
 	physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
 	physics.addBody(balloon, "dynamic")
@@ -180,9 +183,9 @@ function updateBoard(the_pieces)
 --will create new objects on board and then display.
 --will be able to keep a reference to all "destroyed" pieces
 --will check rows to see if deletion is necassary
-print(currentPiece.x)
-print(currentPiece.y)
-print(currentPiece.name)
+--print(currentPiece.x)
+--print(currentPiece.y)
+--print(currentPiece.name)
 	if pause == false then
 
 		i = math.round(currentPiece.y/21)
@@ -232,6 +235,15 @@ print(currentPiece.name)
 	end
 end
 
+function printBoard()
+	for i = 0, 23 do
+		for j = 0, 10 do
+			print(board[i][j])
+		end
+	end
+
+end
+
 function removeRows()
 	for i = 0, 23 do
 		local boolean check = true
@@ -253,7 +265,8 @@ function removeRows()
 end
 
 function freezePiece(freezeEvent)
-	if pieceCreate == true and pause == false then
+	if pieceCreate == true then
+		print("freezePiece")
 		pieces = pieceRotation()
 		physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
@@ -274,8 +287,11 @@ function movePiece(moveEvent)
 end
 
 function onCollision(event)
+	print(event.object1.myName)
+	print(event.object2.myName)
 	if event.object1.myName == "Square" or event.object2.myName == "Square" then
 		if event.object1.myName ~= "Wall" and event.object2.myName ~= "Wall" then
+			--print("collision")
 			timer.performWithDelay(1, freezePiece, 1)
 		end
 	end
