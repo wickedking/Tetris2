@@ -83,7 +83,6 @@ function goAway()
 end
 
 function recreate()
-	--print("recreate")
 	--board = {}
 	----printBoard()
 	--currentPiece = {}
@@ -95,7 +94,6 @@ end
 
 function fail()
 	if start_over then
-
 		board = {}
 		pieceCreate = false
 		gameOverGroup = display.newGroup()
@@ -131,6 +129,7 @@ function fail()
 end
 
 function createPiece()
+	print("createPiece")
 	canRotate = true
 	pieceCreate = true
 	
@@ -182,7 +181,6 @@ function updateBoard(the_pieces)
 --will create new objects on board and then display.
 --will be able to keep a reference to all "destroyed" pieces
 --will check rows to see if deletion is necassary
-
 	if pause == false then
 
 		i = math.floor(currentPiece.y/21)
@@ -263,7 +261,6 @@ end
 
 function freezePiece(freezeEvent)
 	if pieceCreate == true then
-
 		pieces = pieceRotation()
 		physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
@@ -284,6 +281,8 @@ function movePiece(moveEvent)
 end
 
 function onCollision(event)
+	print(event.object1.myName)
+	print(event.object2.myName)
 	if event.object1.myName == "Square" or event.object2.myName == "Square" then
 		if event.object1.myName ~= "leftWall" and event.object2.myName ~= "leftWall" then
 			if event.object1.myName ~= "rightWall" and event.object2.myName ~= "rightWall" then
