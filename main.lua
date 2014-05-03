@@ -13,6 +13,9 @@ pause = false
 group = {}
 start_over = true
 gameOverGroup = {}
+totalScore = 0
+scoreGroup = {}
+nextPieceGroup = display.newGroup()
 
 display1 = display.newRect(0,0,0,0)
 display2 = display.newRect(0,0,0,0)
@@ -43,6 +46,59 @@ function drawPiece(the_pieces)
 	group:insert(display3)
 	group:insert(display4)
 end
+
+function drawNextPiece()
+
+	nextPieceGroup:removeSelf()
+	nextPieceGroup = display.newGroup()
+	local nextPiece = {}
+	local type = {}
+	if index == 0 then
+		type = "tPiece"
+	elseif index == 1 then
+		type = "zPiece"
+	elseif index == 2 then
+		type = "sPiece"
+	elseif index == 3 then
+		type = "oPiece"
+	elseif index == 4 then
+		type = "iPiece"
+	elseif index == 5 then
+		type = "lPiece"
+	elseif index == 6 then
+		type = "jPiece"
+	end
+	
+	i = 20
+	j = 13
+	
+	nextPiece["rotation"] = 0
+	nextPiece["type"] = type
+	local the_pieces = pieceRotation(nextPiece)
+	
+	local displayNext1 = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 + 21 , 17,19)
+	local displayNext2 = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 + 21 , 17,19)
+	local displayNext3 = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 + 21 , 17,19)
+	local displayNext4 = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21 + 21 , 17,19)
+	
+	nextPieceGroup:insert(displayNext1)
+	nextPieceGroup:insert(displayNext2)
+	nextPieceGroup:insert(displayNext3)
+	nextPieceGroup:insert(displayNext4)
+	
+	
+end
+
+function updateScore(rows)
+	totalScore = totalScore + ( rows * 100)
+	scoreGroup = display.newGroup()
+	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/4) * 3, 50, 50)
+	scoreBox:setFillColor(1,1,1)
+	scoreGroup:insert(scoreBox)
+	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 4) * 3)
+	text:setFillColor(0,0,0)
+end
+
 
 function createBoard()
 	for i = 0, 23 do
@@ -129,6 +185,7 @@ function fail()
 end
 
 function createPiece()
+	updateScore(0)
 	--print("createPiece")
 	canRotate = true
 	pieceCreate = true
@@ -171,6 +228,7 @@ function createPiece()
 	if index > 6 then
 		index = 0
 	end
+	drawNextPiece()
 	
 	--group:insert(balloon)
 	--group:insert(currentPiece)
@@ -240,6 +298,7 @@ function printBoard()
 end
 
 function removeRows()
+	rows = 0
 	for i = 0, 23 do
 		local boolean check = true
 		for j = 0, 10 do
@@ -249,6 +308,7 @@ function removeRows()
 			end
 		end
 		if check then
+			rows = rows + 1
 			for j = 0, 10 do
 			 board[i][j]:removeSelf()
 			 board[i][j] = 0
@@ -257,11 +317,12 @@ function removeRows()
 		--need to move pieces down
 		end
 	end
+	updateScore(rows)
 end
 
 function freezePiece(freezeEvent)
 	if pieceCreate == true then
-		pieces = pieceRotation()
+		pieces = pieceRotation(currentPiece)
 		physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
@@ -276,7 +337,7 @@ function movePiece(moveEvent)
 	update = update + 1
 	if update %20 == 0  and pause == false then
 		currentPiece.y = currentPiece.y + 21
-		drawPiece(pieceRotation())
+		drawPiece(pieceRotation(currentPiece))
 	end
 end
 
@@ -305,7 +366,7 @@ function rotate()
 		else
 			currentPiece.rotation = 90
 		end
-		drawPiece(pieceRotation())
+		drawPiece(pieceRotation(currentPiece))
 		return
 	end
 	currentPiece.rotation = currentPiece.rotation + 90
@@ -313,11 +374,11 @@ function rotate()
 		currentPiece.rotation = 0
 	end
 	--print(currentPiece.rotation)
-	drawPiece(pieceRotation())
+	drawPiece(pieceRotation(currentPiece))
 end
 
 function moveLeft()
-	moves = pieceRotation()
+	moves = pieceRotation(currentPiece)
 	index = 1
 	if moves["piece1x"] < index then
 		index = moves["piece1x"]
@@ -340,7 +401,7 @@ function moveLeft()
 	if index > 0 then
 		currentPiece.x = math.floor(currentPiece.x - 21)
 		print(currentPiece.x)
-	drawPiece(pieceRotation())
+	drawPiece(pieceRotation(currentPiece))
 	else
 		return
 	end	
@@ -350,20 +411,20 @@ function moveRight()
 	if math.floor(currentPiece.x/21) >= 10 then
 		return
 	end
-	moves = pieceRotation()
+	moves = pieceRotation(currentPiece)
 	if (moves["piece1x"] * 21) + currentPiece.x < 11 then
 		if (moves["piece2x"] * 21) + currentPiece.x < 11 then
 			if (moves["piece3x"] * 21) + currentPiece.x < 11 then
 				if (moves["piece4x"] * 21) + currentPiece.x < 11 then
 					currentPiece.x = currentPiece.x + 21
-					drawPiece(pieceRotation())
+					drawPiece(pieceRotation(currentPiece))
 				end
 			end
 		end
 	end
 	
 	currentPiece.x = currentPiece.x + 21
-	drawPiece(pieceRotation())
+	drawPiece(pieceRotation(currentPiece))
 end
 
 function rightWallCollision(event)
@@ -400,24 +461,24 @@ function create()
 	physics.start()
 	physics.setGravity(0, 0)
 
-	local leftB = display.newImage("left_button.png")
-	leftB.x = display.contentWidth - 50
-	leftB.y = display.contentHeight / 8
-	leftB:addEventListener("tap", moveLeft)
+	--local leftB = display.newImage("left_button.png")
+	--leftB.x = display.contentWidth - 50
+	--leftB.y = display.contentHeight / 8
+	--leftB:addEventListener("tap", moveLeft)
 
-	local rightB = display.newImage("right_button.png")
-	rightB.x = display.contentWidth - 50
-	rightB.y = display.contentHeight / 2
-	rightB:addEventListener("tap", moveRight)
+	--local rightB = display.newImage("right_button.png")
+	--rightB.x = display.contentWidth - 50
+	--rightB.y = display.contentHeight / 2
+	--rightB:addEventListener("tap", moveRight)
 
-	local rotateB = display.newImage("rotate.png")
-	rotateB.x = display.contentWidth - 50
-	rotateB.y = display.contentHeight - 100
-	rotateB:addEventListener("touch", rotate)
+	--local rotateB = display.newImage("rotate.png")
+	--rotateB.x = display.contentWidth - 50
+	--rotateB.y = display.contentHeight - 100
+	--rotateB:addEventListener("touch", rotate)
 	
-	group:insert(leftB)
-	group:insert(rightB)
-	group:insert(rotateB)
+	--group:insert(leftB)
+	--group:insert(rightB)
+	--group:insert(rotateB)
 
 	createPiece()
 
@@ -448,11 +509,12 @@ function create()
 end
 
 
-function pieceRotation()
+function pieceRotation(currentPiece)
 --return xy, xy, xy, xy from current location of subpieces. 
 --so a t piece in the down position at 105, 21 would return
 --assuming xy location is down and right square
 locations = {}
+	
 
 	if currentPiece.type == "tPiece" then --screwed
 		if currentPiece.rotation == 0 then
@@ -531,15 +593,15 @@ locations = {}
 			locations["piece3y"] = 1
 			locations["piece4x"] = -1
 			locations["piece4y"] = -1
-	end
+		end
 	elseif currentPiece.type == "oPiece" then
-		locations["piece1x"] = 0
+		locations["piece1x"] = 1
 		locations["piece1y"] = 0
-		locations["piece2x"] = 0
+		locations["piece2x"] = 1
 		locations["piece2y"] = 1
-		locations["piece3x"] = 1
+		locations["piece3x"] = 2
 		locations["piece3y"] = 0
-		locations["piece4x"] = 1
+		locations["piece4x"] = 2
 		locations["piece4y"] = 1
 	elseif currentPiece.type == "iPiece" then
 		if currentPiece.rotation == 0 then -- 0,0, 0,1, 0,-1, 0,-21
