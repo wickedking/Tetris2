@@ -5,7 +5,7 @@
 -----------------------------------------------------------------------------------------
 update = 0
 currentPiece ={}
-index = 4
+index = 5
 pieceCreate = true
 board = {}
 canRotate = true
@@ -23,8 +23,9 @@ local menuScreen = {}
 local tweenMS = {}
 
 function drawPiece(the_pieces)
-	i = math.round(currentPiece.y/21)
-	j = math.round(currentPiece.x/21)
+	i = math.floor(currentPiece.y/21)
+	j = math.floor(currentPiece.x/21)
+
 	if display1 ~= nil then
 		display1:removeSelf()
 		display2:removeSelf()
@@ -32,10 +33,10 @@ function drawPiece(the_pieces)
 		display4:removeSelf()
 	end
 	
-	display1 = display.newRect((j + the_pieces.piece1x)*21 + 1, (i + the_pieces.piece1y)*21, 17,19)
-	display2 = display.newRect((j + the_pieces.piece2x)*21 + 1, (i + the_pieces.piece2y)*21, 17,19)
-	display3 = display.newRect((j + the_pieces.piece3x)*21 + 1, (i + the_pieces.piece3y)*21, 17,19)
-	display4 = display.newRect((j + the_pieces.piece4x)*21 + 1, (i + the_pieces.piece4y)*21, 17,19)
+	display1 = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 + 21 , 17,19)
+	display2 = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 + 21 , 17,19)
+	display3 = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 + 21 , 17,19)
+	display4 = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21 + 21 , 17,19)
 
 	group:insert(display1)
 	group:insert(display2)
@@ -77,29 +78,30 @@ function tweenMS:tap(e)
 end
 
 function goAway()
-	print("goAway")
+	--print("goAway")
 	os.exit()
 end
 
 function recreate()
-	print("recreate")
-	board = {}
-	currentPiece = {}
+	--print("recreate")
+	--board = {}
+	----printBoard()
+	--currentPiece = {}
 	gameOverGroup:removeSelf()
-	--create()
-	--addMenuScreen()
+	----create()
+	----addMenuScreen()
 	timer.performWithDelay(1000, create, 1)
 end
 
 function fail()
 	if start_over then
-		print("fail")
+
+		board = {}
 		pieceCreate = false
 		gameOverGroup = display.newGroup()
 		start_over = false
-		--print(pause)
 		pause = true
-		--print(pause)
+
 		local yes = display.newImage("yes.png")
 		yes.x = display.contentWidth/4
 		yes.y = (display.contentHeight/4) * 3
@@ -159,14 +161,14 @@ function createPiece()
 	part1, part2, part3, part4 = piece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
-	balloon.x = 95
-	balloon.y = -100
+	balloon.x = 21 * 5
+	balloon.y = -50
 	
 	physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
-	physics.addBody(balloon, "dynamic")
+--	physics.addBody(balloon, "dynamic")
 	currentPiece = balloon
 	balloon.isFixedRotation = true
-	--index = index + 1
+	index = index + 1
 	if index > 6 then
 		index = 0
 	end
@@ -180,13 +182,11 @@ function updateBoard(the_pieces)
 --will create new objects on board and then display.
 --will be able to keep a reference to all "destroyed" pieces
 --will check rows to see if deletion is necassary
-print(currentPiece.x)
-print(currentPiece.y)
-print(currentPiece.name)
+
 	if pause == false then
 
-		i = math.round(currentPiece.y/21)
-		j = math.round(currentPiece.x/21)
+		i = math.floor(currentPiece.y/21)
+		j = math.floor(currentPiece.x/21)
 		
 		--well checks are actually working at the moment. 
 
@@ -195,7 +195,7 @@ print(currentPiece.name)
 			fail()
 			return
 		else
-			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 1, (i + the_pieces.piece1y)*21, 17,19)
+			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 +21, 17,19)
 			group:insert(board[i + the_pieces.piece1y][j + the_pieces.piece1x])
 			physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
 		end
@@ -205,7 +205,7 @@ print(currentPiece.name)
 			fail()
 			return
 		else
-			board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21 + 1, (i + the_pieces.piece2y)*21, 17,19)
+			board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 +21, 17,19)
 			group:insert(board[i + the_pieces.piece2y][j + the_pieces.piece2x])
 			physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
 		end
@@ -214,7 +214,7 @@ print(currentPiece.name)
 			pause = true
 			return
 		else
-			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21 + 1, (i + the_pieces.piece3y)*21, 17,19)
+			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 +21, 17,19)
 			group:insert(board[i + the_pieces.piece3y][j + the_pieces.piece3x])
 			physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
 		end
@@ -223,13 +223,22 @@ print(currentPiece.name)
 			pause = true
 			return
 		else
-			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21 + 1, (i + the_pieces.piece4y)*21, 17,19)
+			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21+21, 17,19)
 			group:insert(board[i + the_pieces.piece4y][j + the_pieces.piece4x])
 			physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "kinematic")
 		end
 		removeRows()
 	--call to check for rows
 	end
+end
+
+function printBoard()
+	for i = 0, 23 do
+		for j = 0, 10 do
+			print(board[i][j])
+		end
+	end
+
 end
 
 function removeRows()
@@ -253,7 +262,8 @@ function removeRows()
 end
 
 function freezePiece(freezeEvent)
-	if pieceCreate == true and pause == false then
+	if pieceCreate == true then
+
 		pieces = pieceRotation()
 		physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
@@ -267,7 +277,7 @@ end
 
 function movePiece(moveEvent)
 	update = update + 1
-	if update %10 == 0  and pause == false then
+	if update %20 == 0  and pause == false then
 		currentPiece.y = currentPiece.y + 21
 		drawPiece(pieceRotation())
 	end
@@ -275,8 +285,10 @@ end
 
 function onCollision(event)
 	if event.object1.myName == "Square" or event.object2.myName == "Square" then
-		if event.object1.myName ~= "Wall" and event.object2.myName ~= "Wall" then
-			timer.performWithDelay(1, freezePiece, 1)
+		if event.object1.myName ~= "leftWall" and event.object2.myName ~= "leftWall" then
+			if event.object1.myName ~= "rightWall" and event.object2.myName ~= "rightWall" then
+				timer.performWithDelay(1, freezePiece, 1)
+			end
 		end
 	end
 end
@@ -303,23 +315,63 @@ function rotate()
 	if currentPiece.rotation >= 360 then
 		currentPiece.rotation = 0
 	end
+	print(currentPiece.rotation)
 	drawPiece(pieceRotation())
 end
 
 function moveLeft()
-	if currentPiece.x < 10 then
+	if currentPiece.x < 20 then
 		return
 	end
-	currentPiece.x = currentPiece.x - 21
-	drawPiece(pieceRotation())
+	moves = pieceRotation()
+	if (moves["piece1x"] * 21) + currentPiece.x > 0 then
+		if (moves["piece2x"] * 21) + currentPiece.x > 0 then
+			if (moves["piece3x"] * 21) + currentPiece.x > 0 then
+				if (moves["piece4x"] * 21) + currentPiece.x > 0 then
+					currentPiece.x = currentPiece.x - 21
+					drawPiece(pieceRotation())
+				end
+			end
+		end
+	end
 end
 
 function moveRight()
-	if currentPiece.x > 190 then
+	if math.floor(currentPiece.x/21) >= 10 then
 		return
 	end
+	moves = pieceRotation()
+	if (moves["piece1x"] * 21) + currentPiece.x < 11 then
+		if (moves["piece2x"] * 21) + currentPiece.x < 11 then
+			if (moves["piece3x"] * 21) + currentPiece.x < 11 then
+				if (moves["piece4x"] * 21) + currentPiece.x < 11 then
+					currentPiece.x = currentPiece.x + 21
+					drawPiece(pieceRotation())
+				end
+			end
+		end
+	end
+	
 	currentPiece.x = currentPiece.x + 21
 	drawPiece(pieceRotation())
+end
+
+function rightWallCollision(event)
+	if event.object1.myName == "Square" or event.object2.myName == "Square" then
+		if event.object1.myName == "rightWall" and event.object2.myName == "rightWall" then
+			moveLeft()
+		end
+	end
+
+end
+
+function leftWallCollision(event)
+	if event.object1.myName == "Square" or event.object2.myName == "Square" then
+		if event.object1.myName == "leftWall" or event.object2.myName == "leftWall" then
+			moveRight()
+		end
+	end
+
 end
  
 function create()
@@ -334,7 +386,7 @@ function create()
 	group = display.newGroup()
 	createBoard()
 	local physics = require("physics")
-	--physics.setDrawMode("hybrid")
+	physics.setDrawMode("hybrid")
 	physics.start()
 	physics.setGravity(0, 0)
 
@@ -366,9 +418,9 @@ function create()
 	floor.myName = "Floor"
 
 	local leftWall = display.newRect(0,0,1, display.contentHeight*2 + 50)
-	local rightWall = display.newRect(210, 0, 5, display.contentHeight*2 + 52)
-	leftWall.myName = "Wall"
-	rightWall.myName = "Wall"
+	local rightWall = display.newRect(221, 0, 5, display.contentHeight*2 + 52)
+	leftWall.myName = "leftWall"
+	rightWall.myName = "rightWall"
 
 	physics.addBody(leftWall, "static", {bounce = 0.1, friction = 1.0})
 	physics.addBody(rightWall, "static", {bounce = 0.1, friction = 1.0})
@@ -381,6 +433,8 @@ function create()
 
 	Runtime:addEventListener("enterFrame", movePiece)
 	Runtime:addEventListener("collision", onCollision)
+	--Runtime:addEventListener("preCollision", leftWallCollision)
+	--Runtime:addEventListener("preCollision", rightWallCollision)
 end
 
 
@@ -507,7 +561,7 @@ locations = {}
 			locations["piece3y"] = 1
 			locations["piece4x"] = 1
 			locations["piece4y"] = 1
-		elseif currentPiece.rotation == 90 then -- 0,0, -1,0, -2,0, -2,10
+		elseif currentPiece.rotation == 90 then -- 0,0, -1,0, -2,0, -2,1
 			locations["piece1x"] = 0
 			locations["piece1y"] = 0
 			locations["piece2x"] = -1
@@ -515,8 +569,8 @@ locations = {}
 			locations["piece3x"] = -2
 			locations["piece3y"] = 0
 			locations["piece4x"] = -2
-			locations["piece4y"] = -1
-		elseif currentPiece.rotation == 180 then -- -1,0, -1,-1, -1,-2, -2,-21
+			locations["piece4y"] = 1
+		elseif currentPiece.rotation == 180 then -- -1,0, -1,-1, -1,-2, -2,-2
 			locations["piece1x"] = -1
 			locations["piece1y"] = 0
 			locations["piece2x"] = -1
