@@ -129,7 +129,7 @@ function fail()
 end
 
 function createPiece()
-	print("createPiece")
+	--print("createPiece")
 	canRotate = true
 	pieceCreate = true
 	
@@ -281,8 +281,6 @@ function movePiece(moveEvent)
 end
 
 function onCollision(event)
-	print(event.object1.myName)
-	print(event.object2.myName)
 	if event.object1.myName == "Square" or event.object2.myName == "Square" then
 		if event.object1.myName ~= "leftWall" and event.object2.myName ~= "leftWall" then
 			if event.object1.myName ~= "rightWall" and event.object2.myName ~= "rightWall" then
@@ -314,25 +312,38 @@ function rotate()
 	if currentPiece.rotation >= 360 then
 		currentPiece.rotation = 0
 	end
-	print(currentPiece.rotation)
+	--print(currentPiece.rotation)
 	drawPiece(pieceRotation())
 end
 
 function moveLeft()
-	if currentPiece.x < 20 then
-		return
-	end
 	moves = pieceRotation()
-	if (moves["piece1x"] * 21) + currentPiece.x > 0 then
-		if (moves["piece2x"] * 21) + currentPiece.x > 0 then
-			if (moves["piece3x"] * 21) + currentPiece.x > 0 then
-				if (moves["piece4x"] * 21) + currentPiece.x > 0 then
-					currentPiece.x = currentPiece.x - 21
-					drawPiece(pieceRotation())
-				end
-			end
-		end
+	index = 1
+	if moves["piece1x"] < index then
+		index = moves["piece1x"]
 	end
+	if moves["piece2x"] < index then
+		index = moves["piece1x"]
+	end
+	if moves["piece3x"] < index then
+		index = moves["piece1x"]
+	end
+	if moves["piece4x"] < index then
+		index = moves["piece1x"]
+	end
+	print()
+	print(index)
+	index = index * 21
+	print(index)
+	index = (math.floor(currentPiece.x) + index)
+	print(index)
+	if index > 0 then
+		currentPiece.x = math.floor(currentPiece.x - 21)
+		print(currentPiece.x)
+	drawPiece(pieceRotation())
+	else
+		return
+	end	
 end
 
 function moveRight()
