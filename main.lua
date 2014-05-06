@@ -374,14 +374,13 @@ function checkMove(dx, dy)
 		end
 	end
 	
-	
 	return can
 end
 
 function freezePiece(freezeEvent)
 	if pieceCreate == true then
 		local pieces = pieceRotation(currentPiece)
-		physics.removeBody(currentPiece)
+		--physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
 		pieceCreate = false
@@ -425,13 +424,28 @@ function rotate()
 	elseif currentPiece.type == "iPiece" or currentPiece.type == "zPiece" or  currentPiece.type == "sPiece" then
 		if currentPiece.rotation == 90 then
 			currentPiece.rotation = 0
+			if checkMove(0,0) then
+				--do nothing
+			else 
+				currentPiece.rotation = 0
+			end
 		else
 			currentPiece.rotation = 90
+			if checkMove(0,0) then
+				--do nothing
+			else 
+				currentPiece.rotation = 0
+			end
 		end
 		drawPiece(pieceRotation(currentPiece))
 		return
 	end
 	currentPiece.rotation = currentPiece.rotation + 90
+	if checkMove(0,0) then
+		--do nothing
+	else 
+		currentPiece.rotation = currentPiece.rotation - 90
+	end
 	if currentPiece.rotation >= 360 then
 		currentPiece.rotation = 0
 	end
