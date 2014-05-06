@@ -25,6 +25,14 @@ display4 = display.newRect(0,0,0,0)
 local menuScreen = {}
 local tweenMS = {}
 
+function deleteBoard()
+	for i =0, 23 do
+		for j = 0, 10 do
+			board[i][j] = 0
+		end
+	end
+end
+
 function drawPiece(the_pieces)
 	i = math.floor(currentPiece.y/21)
 	j = math.floor(currentPiece.x/21)
@@ -150,6 +158,7 @@ end
 
 function fail()
 	if start_over then
+		deleteBoard()
 		board = {}
 		pieceCreate = false
 		gameOverGroup = display.newGroup()
@@ -218,7 +227,7 @@ function createPiece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
 	balloon.x = 21 * 5
-	balloon.y = 42
+	balloon.y = -50
 	
 	--physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
 	--physics.addBody(balloon, "dynamic")
@@ -339,8 +348,23 @@ function removeRows()
 	updateScore(rows)
 end
 
+function checkTopRow()
+	local isPiece = false
+	for j = 0, 10 do
+		if board[0][j] ~= 0 then
+		isPiece = true
+		break
+		end
+	end
+	return isPiece
+end
+
 function checkMove(dx, dy)
-	can = false
+	local can = false
+	local piece1 = false
+	local piece2 = false
+	local piece3 = false
+	local piece4 = false
 	local piece = pieceRotation(currentPiece)
 	x = math.floor(currentPiece.x/21)
 	y = math.floor(currentPiece.y/21)
@@ -348,19 +372,22 @@ function checkMove(dx, dy)
 		if piece.piece2x + x + dx >= 0 and piece.piece2x + x + dx <= 10 then
 			if piece.piece3x + x + dx >= 0 and piece.piece3x + x + dx <= 10 then
 				if piece.piece4x + x + dx >= 0 and piece.piece4x + x + dx <= 10 then
-					if piece.piece1y + y + dy >=0 and piece.piece1y + y + dy <= 23 then
-						if piece.piece2y + y + dy >=0 and piece.piece2y + y + dy <= 23 then
-							if piece.piece3y + y + dy >=0 and piece.piece3y + y + dy <= 23 then
-								if piece.piece4y + y + dy >=0 and piece.piece4y + y + dy <= 23 then
-									--take current position add x and y and then check for a piece
-									print(y + piece.piece1y + dy)
-									print(x + piece.piece1x + dx)
-									if board[y + piece.piece1y + dy][x + piece.piece1x + dx] == 0 then
-										if board[y + piece.piece2y + dy][x + piece.piece2x + dx] == 0 then
-											if board[y + piece.piece3y + dy][x + piece.piece3x + dx] == 0 then
-												if board[y + piece.piece4y + dy][x + piece.piece4x + dx] == 0 then
-													can = true
-													print("true")
+					if  piece.piece1y + y + dy >=  0 and piece.piece2y + y + dy >=  0 and piece.piece3y + y + dy >=  0 and piece.piece4y + y + dy >=  0 then
+						if  piece.piece1y + y + dy <= 23 then
+							piece1 = true
+							if  piece.piece2y + y + dy <= 23 then
+								piece2 = true
+								if  piece.piece3y + y + dy <= 23 then
+									piece3 = true
+									if piece.piece4y + y + dy <= 23 then
+										piece4 = true
+										--take current position add x and y and then check for a piece
+										if board[y + piece.piece1y + dy][x + piece.piece1x + dx] == 0 then
+											if board[y + piece.piece2y + dy][x + piece.piece2x + dx] == 0 then
+												if board[y + piece.piece3y + dy][x + piece.piece3x + dx] == 0 then
+													if board[y + piece.piece4y + dy][x + piece.piece4x + dx] == 0 then
+														can = true
+													end
 												end
 											end
 										end
@@ -368,6 +395,12 @@ function checkMove(dx, dy)
 								end
 							end
 						end
+					else
+						local test = checkTopRow()
+						if test == false then
+							can = true
+						end
+					
 					end
 				end
 			end
