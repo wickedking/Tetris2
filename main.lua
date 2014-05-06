@@ -5,7 +5,7 @@
 -----------------------------------------------------------------------------------------
 update = 0
 currentPiece ={}
-index = 5
+index = 4
 pieceCreate = true
 board = {}
 canRotate = true
@@ -95,7 +95,7 @@ function updateScore(rows)
 	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/4) * 3, 50, 50)
 	scoreBox:setFillColor(1,1,1)
 	scoreGroup:insert(scoreBox)
-	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 4) * 3)
+	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 4) * 3, native.systemFontBold, 14)
 	text:setFillColor(0,0,0)
 end
 
@@ -214,17 +214,17 @@ function createPiece()
 	balloon.height = 21
 	balloon.width = 21
 	balloon:scale(.3, .3)
-	part1, part2, part3, part4 = piece()
+	--part1, part2, part3, part4 = piece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
 	balloon.x = 21 * 5
-	balloon.y = -50
+	balloon.y = 42
 	
-	physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
---	physics.addBody(balloon, "dynamic")
+	--physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
+	--physics.addBody(balloon, "dynamic")
 	currentPiece = balloon
 	balloon.isFixedRotation = true
-	index = index + 1
+	--index = index + 1
 	if index > 6 then
 		index = 0
 	end
@@ -297,8 +297,21 @@ function printBoard()
 
 end
 
+function rowFall(inital_row, total_rows)
+	print("rowFall")
+	for i = inital_row, 0 do
+		for j = 0, 10 do
+			if board[i][j] ~= 0 then
+				board[i + total_rows][j] = board[i][j]
+			end
+		end
+	end
+end
+
 function removeRows()
 	rows = 0
+	the_row = 0
+	
 	for i = 0, 23 do
 		local boolean check = true
 		for j = 0, 10 do
@@ -308,6 +321,9 @@ function removeRows()
 			end
 		end
 		if check then
+			if the_row == 0 then
+				the_row = i
+			end
 			rows = rows + 1
 			for j = 0, 10 do
 			 board[i][j]:removeSelf()
@@ -317,12 +333,54 @@ function removeRows()
 		--need to move pieces down
 		end
 	end
+	if rows ~= 0 then
+		rowFall(the_row, rows)
+	end
 	updateScore(rows)
+end
+
+function checkMove(dx, dy)
+	can = false
+	local piece = pieceRotation(currentPiece)
+	x = math.floor(currentPiece.x/21)
+	y = math.floor(currentPiece.y/21)
+	if piece.piece1x + x + dx >= 0 and piece.piece1x + x + dx <= 10 then
+		if piece.piece2x + x + dx >= 0 and piece.piece2x + x + dx <= 10 then
+			if piece.piece3x + x + dx >= 0 and piece.piece3x + x + dx <= 10 then
+				if piece.piece4x + x + dx >= 0 and piece.piece4x + x + dx <= 10 then
+					if piece.piece1y + y + dy >=0 and piece.piece1y + y + dy <= 23 then
+						if piece.piece2y + y + dy >=0 and piece.piece2y + y + dy <= 23 then
+							if piece.piece3y + y + dy >=0 and piece.piece3y + y + dy <= 23 then
+								if piece.piece4y + y + dy >=0 and piece.piece4y + y + dy <= 23 then
+									--take current position add x and y and then check for a piece
+									print(y + piece.piece1y + dy)
+									print(x + piece.piece1x + dx)
+									if board[y + piece.piece1y + dy][x + piece.piece1x + dx] == 0 then
+										if board[y + piece.piece2y + dy][x + piece.piece2x + dx] == 0 then
+											if board[y + piece.piece3y + dy][x + piece.piece3x + dx] == 0 then
+												if board[y + piece.piece4y + dy][x + piece.piece4x + dx] == 0 then
+													can = true
+													print("true")
+												end
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	
+	
+	return can
 end
 
 function freezePiece(freezeEvent)
 	if pieceCreate == true then
-		pieces = pieceRotation(currentPiece)
+		local pieces = pieceRotation(currentPiece)
 		physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
@@ -336,7 +394,11 @@ end
 function movePiece(moveEvent)
 	update = update + 1
 	if update %20 == 0  and pause == false then
+		if checkMove(0,1) then
 		currentPiece.y = currentPiece.y + 21
+		else
+			freezePiece()
+		end
 		drawPiece(pieceRotation(currentPiece))
 	end
 end
@@ -378,52 +440,30 @@ function rotate()
 end
 
 function moveLeft()
-	moves = pieceRotation(currentPiece)
-	index = 1
-	if moves["piece1x"] < index then
-		index = moves["piece1x"]
+	if checkMove(-1, 0) then
+		currentPiece.x = currentPiece.x - 21
 	end
-	if moves["piece2x"] < index then
-		index = moves["piece1x"]
-	end
-	if moves["piece3x"] < index then
-		index = moves["piece1x"]
-	end
-	if moves["piece4x"] < index then
-		index = moves["piece1x"]
-	end
-	print()
-	print(index)
-	index = index * 21
-	print(index)
-	index = (math.floor(currentPiece.x) + index)
-	print(index)
-	if index > 0 then
-		currentPiece.x = math.floor(currentPiece.x - 21)
-		print(currentPiece.x)
 	drawPiece(pieceRotation(currentPiece))
-	else
-		return
-	end	
 end
 
 function moveRight()
-	if math.floor(currentPiece.x/21) >= 10 then
-		return
+	--if math.floor(currentPiece.x/21) >= 10 then
+	--	return
+	--end
+	--moves = pieceRotation(currentPiece)
+	--if (moves["piece1x"] * 21) + currentPiece.x < 11 then
+	--	if (moves["piece2x"] * 21) + currentPiece.x < 11 then
+	--		if (moves["piece3x"] * 21) + currentPiece.x < 11 then
+	--			if (moves["piece4x"] * 21) + currentPiece.x < 11 then
+	--				currentPiece.x = currentPiece.x + 21
+	--				drawPiece(pieceRotation(currentPiece))
+	--			end
+	--		end
+	--	end
+	--end
+	if checkMove(1,0) then
+		currentPiece.x = currentPiece.x + 21
 	end
-	moves = pieceRotation(currentPiece)
-	if (moves["piece1x"] * 21) + currentPiece.x < 11 then
-		if (moves["piece2x"] * 21) + currentPiece.x < 11 then
-			if (moves["piece3x"] * 21) + currentPiece.x < 11 then
-				if (moves["piece4x"] * 21) + currentPiece.x < 11 then
-					currentPiece.x = currentPiece.x + 21
-					drawPiece(pieceRotation(currentPiece))
-				end
-			end
-		end
-	end
-	
-	currentPiece.x = currentPiece.x + 21
 	drawPiece(pieceRotation(currentPiece))
 end
 
@@ -461,24 +501,24 @@ function create()
 	physics.start()
 	physics.setGravity(0, 0)
 
-	--local leftB = display.newImage("left_button.png")
-	--leftB.x = display.contentWidth - 50
-	--leftB.y = display.contentHeight / 8
-	--leftB:addEventListener("tap", moveLeft)
+	local leftB = display.newImage("left_button.png")
+	leftB.x = display.contentWidth - 50
+	leftB.y = display.contentHeight / 8
+	leftB:addEventListener("tap", moveLeft)
 
-	--local rightB = display.newImage("right_button.png")
-	--rightB.x = display.contentWidth - 50
-	--rightB.y = display.contentHeight / 2
-	--rightB:addEventListener("tap", moveRight)
+	local rightB = display.newImage("right_button.png")
+	rightB.x = display.contentWidth - 50
+	rightB.y = display.contentHeight / 2
+	rightB:addEventListener("tap", moveRight)
 
-	--local rotateB = display.newImage("rotate.png")
-	--rotateB.x = display.contentWidth - 50
-	--rotateB.y = display.contentHeight - 100
-	--rotateB:addEventListener("touch", rotate)
+	local rotateB = display.newImage("rotate.png")
+	rotateB.x = display.contentWidth - 50
+	rotateB.y = display.contentHeight - 100
+	rotateB:addEventListener("touch", rotate)
 	
-	--group:insert(leftB)
-	--group:insert(rightB)
-	--group:insert(rotateB)
+	group:insert(leftB)
+	group:insert(rightB)
+	group:insert(rotateB)
 
 	createPiece()
 
