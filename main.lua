@@ -18,6 +18,9 @@ totalScore = 0
 scoreGroup = display.newGroup()
 nextPieceGroup = display.newGroup()
 
+click = audio.loadSound("tap4.wav")
+
+
 display1 = display.newRect(0,0,0,0)
 display2 = display.newRect(0,0,0,0)
 display3 = display.newRect(0,0,0,0)
@@ -459,6 +462,7 @@ end
 
 function freezePiece(freezeEvent)
 	if pieceCreate == true then
+		audio.play(click)
 		local pieces = pieceRotation(currentPiece)
 		--physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
@@ -467,7 +471,7 @@ function freezePiece(freezeEvent)
 		randomizeColor()
 		timer.performWithDelay(1, updateBoard(pieces), 1)
 		currentPiece:removeSelf()
-		timer.performWithDelay(100, createPiece, 1)
+		timer.performWithDelay(10, createPiece, 1)
 	end
 end
 
