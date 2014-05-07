@@ -30,7 +30,7 @@ function randomizeColor()
 	for i = 0, 23 do
 		for j = 0, 10 do
 			if board[i][j] ~= 0 then
-				board[i][j]:setFillColor(math.random(), math.random(), math.random())
+				board[i][j]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
 			end
 		end
 	end
@@ -55,10 +55,10 @@ function drawPiece(the_pieces)
 		display4:removeSelf()
 	end
 	
-	display1 = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 + 21 , 17,19)
-	display2 = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 + 21 , 17,19)
-	display3 = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 + 21 , 17,19)
-	display4 = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21 + 21 , 17,19)
+	display1 = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 + 21 , 19,19)
+	display2 = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 + 21 , 19,19)
+	display3 = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 + 21 , 19,19)
+	display4 = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21 + 21 , 19,19)
 
 	group:insert(display1)
 	group:insert(display2)
@@ -207,7 +207,7 @@ function fail()
 		yes:addEventListener('tap', recreate)
 		no:addEventListener('tap', goAway)
 		group:removeSelf()
-		scoreGroup:removeSelf()
+		--scoreGroup:removeSelf()
 		--nextPieceGroup:removeSelf()
 	end
 end
@@ -280,7 +280,7 @@ function updateBoard(the_pieces)
 			return
 		else
 			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 +21, 19,19)
-			board[i + the_pieces.piece1y][j + the_pieces.piece1x]:setFillColor(math.random(),math.random(), math.random())
+			board[i + the_pieces.piece1y][j + the_pieces.piece1x]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
 			group:insert(board[i + the_pieces.piece1y][j + the_pieces.piece1x])
 			physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
 		end
@@ -290,8 +290,8 @@ function updateBoard(the_pieces)
 			fail()
 			return
 		else
-			board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 +21, 17,19)
-			board[i + the_pieces.piece2y][j + the_pieces.piece2x]:setFillColor(math.random(),math.random(), math.random())
+			board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 +21, 19,19)
+			board[i + the_pieces.piece2y][j + the_pieces.piece2x]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
 			group:insert(board[i + the_pieces.piece2y][j + the_pieces.piece2x])
 			physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
 		end
@@ -300,8 +300,8 @@ function updateBoard(the_pieces)
 			pause = true
 			return
 		else
-			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 +21, 17,19)
-			board[i + the_pieces.piece3y][j + the_pieces.piece3x]:setFillColor(math.random(),math.random(), math.random())
+			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 +21, 19,19)
+			board[i + the_pieces.piece3y][j + the_pieces.piece3x]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
 			group:insert(board[i + the_pieces.piece3y][j + the_pieces.piece3x])
 			physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
 		end
@@ -310,8 +310,8 @@ function updateBoard(the_pieces)
 			pause = true
 			return
 		else
-			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21+21, 17,19)
-			board[i + the_pieces.piece4y][j + the_pieces.piece4x]:setFillColor(math.random(),math.random(), math.random())
+			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21+21, 19,19)
+			board[i + the_pieces.piece4y][j + the_pieces.piece4x]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
 			group:insert(board[i + the_pieces.piece4y][j + the_pieces.piece4x])
 			physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "kinematic")
 		end
@@ -338,7 +338,7 @@ function redraw()
 				print(i.." i value")
 				print(j)
 				board[i][j] = display.newRect((j * 21) + 10, (i *21) + 21, 19, 19)
-				board[i][j]:setFillColor(math.random(), math.random(), math.random())
+				board[i][j]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
 				group:insert(board[i][j])
 			end
 		end
