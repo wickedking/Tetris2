@@ -25,6 +25,16 @@ display4 = display.newRect(0,0,0,0)
 local menuScreen = {}
 local tweenMS = {}
 
+function randomizeColor()
+	for i = 0, 23 do
+		for j = 0, 10 do
+			if board[i][j] ~= 0 then
+				board[i][j]:setFillColor(math.random(), math.random(), math.random())
+			end
+		end
+	end
+end
+
 function deleteBoard()
 	for i =0, 23 do
 		for j = 0, 10 do
@@ -107,7 +117,6 @@ function updateScore(rows)
 	text:setFillColor(0,0,0)
 end
 
-
 function createBoard()
 	for i = 0, 23 do
 	board[i] = {}
@@ -154,6 +163,7 @@ function recreate()
 	----create()
 	----addMenuScreen()
 	timer.performWithDelay(1000, create, 1)
+	nextPieceGroup = display.newGroup()
 end
 
 function fail()
@@ -164,6 +174,9 @@ function fail()
 		gameOverGroup = display.newGroup()
 		start_over = false
 		pause = true
+		
+		Runtime:removeEventListener("enterFrame", movePiece)
+		Runtime:removeEventListener("collision", onCollision)
 
 		local yes = display.newImage("yes.png")
 		yes.x = display.contentWidth/4
@@ -190,6 +203,8 @@ function fail()
 		yes:addEventListener('tap', recreate)
 		no:addEventListener('tap', goAway)
 		group:removeSelf()
+		scoreGroup:removeSelf()
+		--nextPieceGroup:removeSelf()
 	end
 end
 
@@ -233,7 +248,7 @@ function createPiece()
 	--physics.addBody(balloon, "dynamic")
 	currentPiece = balloon
 	balloon.isFixedRotation = true
-	--index = index + 1
+	index = index + 1
 	if index > 6 then
 		index = 0
 	end
@@ -261,6 +276,7 @@ function updateBoard(the_pieces)
 			return
 		else
 			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 +21, 17,19)
+			board[i + the_pieces.piece1y][j + the_pieces.piece1x]:setFillColor(math.random(),math.random(), math.random())
 			group:insert(board[i + the_pieces.piece1y][j + the_pieces.piece1x])
 			physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
 		end
@@ -271,6 +287,7 @@ function updateBoard(the_pieces)
 			return
 		else
 			board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 +21, 17,19)
+			board[i + the_pieces.piece2y][j + the_pieces.piece2x]:setFillColor(math.random(),math.random(), math.random())
 			group:insert(board[i + the_pieces.piece2y][j + the_pieces.piece2x])
 			physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
 		end
@@ -280,6 +297,7 @@ function updateBoard(the_pieces)
 			return
 		else
 			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 +21, 17,19)
+			board[i + the_pieces.piece3y][j + the_pieces.piece3x]:setFillColor(math.random(),math.random(), math.random())
 			group:insert(board[i + the_pieces.piece3y][j + the_pieces.piece3x])
 			physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
 		end
@@ -289,6 +307,7 @@ function updateBoard(the_pieces)
 			return
 		else
 			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21+21, 17,19)
+			board[i + the_pieces.piece4y][j + the_pieces.piece4x]:setFillColor(math.random(),math.random(), math.random())
 			group:insert(board[i + the_pieces.piece4y][j + the_pieces.piece4x])
 			physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "kinematic")
 		end
@@ -417,6 +436,7 @@ function freezePiece(freezeEvent)
 		physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
 		pieceCreate = false
+		randomizeColor()
 		timer.performWithDelay(1, updateBoard(pieces), 1)
 		currentPiece:removeSelf()
 		timer.performWithDelay(100, createPiece, 1)
@@ -536,6 +556,9 @@ function create()
 	start_over = true
 	pause = false
 	
+	nextPieceGroup:removeSelf()
+	nextPieceGroup:removeSelf()
+	
 	display1 = display.newRect(0,0,0,0)
 	display2 = display.newRect(0,0,0,0)
 	display3 = display.newRect(0,0,0,0)
@@ -544,7 +567,7 @@ function create()
 	group = display.newGroup()
 	createBoard()
 	local physics = require("physics")
-	physics.setDrawMode("hybrid")
+	--physics.setDrawMode("hybrid")
 	physics.start()
 	physics.setGravity(0, 0)
 
@@ -594,7 +617,6 @@ function create()
 	--Runtime:addEventListener("preCollision", leftWallCollision)
 	--Runtime:addEventListener("preCollision", rightWallCollision)
 end
-
 
 function pieceRotation(currentPiece)
 --return xy, xy, xy, xy from current location of subpieces. 
@@ -682,13 +704,13 @@ locations = {}
 			locations["piece4y"] = -1
 		end
 	elseif currentPiece.type == "oPiece" then
-		locations["piece1x"] = 1
+		locations["piece1x"] = 0
 		locations["piece1y"] = 0
-		locations["piece2x"] = 1
+		locations["piece2x"] = 0
 		locations["piece2y"] = 1
-		locations["piece3x"] = 2
+		locations["piece3x"] = 1
 		locations["piece3y"] = 0
-		locations["piece4x"] = 2
+		locations["piece4x"] = 1
 		locations["piece4y"] = 1
 	elseif currentPiece.type == "iPiece" then
 		if currentPiece.rotation == 0 then -- 0,0, 0,1, 0,-1, 0,-21
