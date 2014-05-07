@@ -11,6 +11,7 @@ board = {}
 canRotate = true
 pause = false
 group = {}
+extra_group = {}
 start_over = true
 gameOverGroup = {}
 totalScore = 0
@@ -175,6 +176,8 @@ function fail()
 		start_over = false
 		pause = true
 		
+		extra_group:removeSelf()
+		
 		Runtime:removeEventListener("enterFrame", movePiece)
 		Runtime:removeEventListener("collision", onCollision)
 
@@ -248,7 +251,7 @@ function createPiece()
 	--physics.addBody(balloon, "dynamic")
 	currentPiece = balloon
 	balloon.isFixedRotation = true
-	index = index + 1
+	--index = index + 1
 	if index > 6 then
 		index = 0
 	end
@@ -275,7 +278,7 @@ function updateBoard(the_pieces)
 			fail()
 			return
 		else
-			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 +21, 17,19)
+			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 +21, 19,19)
 			board[i + the_pieces.piece1y][j + the_pieces.piece1x]:setFillColor(math.random(),math.random(), math.random())
 			group:insert(board[i + the_pieces.piece1y][j + the_pieces.piece1x])
 			physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
@@ -325,15 +328,39 @@ function printBoard()
 
 end
 
-function rowFall(inital_row, total_rows)
-	print("rowFall")
-	for i = inital_row, 0 do
+function redraw() --need to draw it a bit down, and a bit to the right
+	group:removeSelf()
+	group = display.newGroup()
+	for i = 0, 23 do
 		for j = 0, 10 do
 			if board[i][j] ~= 0 then
-				board[i + total_rows][j] = board[i][j]
+				print(i.." i value")
+				print(j)
+				board[i][j] = display.newRect((j * 21) + 10, (i *21) + 21, 19, 19)
+				board[i][j]:setFillColor(math.random(), math.random(), math.random())
+				group:insert(board[i][j])
 			end
 		end
 	end
+end
+
+function rowFall(inital_row, total_rows)
+	print("rowFall")
+	print(inital_row)
+	print(total_rows)
+	for i = inital_row, 0, -1 do
+		for j = 0, 10 do
+			--print(board[i][j])
+			if board[i][j] ~= 0 then
+				--print("something happended")
+				board[i + total_rows][j] = board[i][j]
+				board[i][j] = 0
+				--print(board[i][j])
+				--print(board[i+ total_rows][j])
+			end
+		end
+	end
+	redraw()
 end
 
 function removeRows()
@@ -565,6 +592,7 @@ function create()
 	display4 = display.newRect(0,0,0,0)
 
 	group = display.newGroup()
+	extra_group = display.newGroup()
 	createBoard()
 	local physics = require("physics")
 	--physics.setDrawMode("hybrid")
@@ -586,9 +614,9 @@ function create()
 	rotateB.y = display.contentHeight - 100
 	rotateB:addEventListener("touch", rotate)
 	
-	group:insert(leftB)
-	group:insert(rightB)
-	group:insert(rotateB)
+	extra_group:insert(leftB)
+	extra_group:insert(rightB)
+	extra_group:insert(rotateB)
 
 	createPiece()
 
@@ -608,9 +636,9 @@ function create()
 
 	display.setStatusBar(display.HiddenStatusBar)
 	
-	group:insert(floor)
-	group:insert(leftWall)
-	group:insert(rightWall)
+	extra_group:insert(floor)
+	extra_group:insert(leftWall)
+	extra_group:insert(rightWall)
 
 	Runtime:addEventListener("enterFrame", movePiece)
 	Runtime:addEventListener("collision", onCollision)
