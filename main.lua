@@ -15,7 +15,7 @@ extra_group = {}
 start_over = true
 gameOverGroup = {}
 totalScore = 0
-scoreGroup = {}
+scoreGroup = display.newGroup()
 nextPieceGroup = display.newGroup()
 
 display1 = display.newRect(0,0,0,0)
@@ -109,6 +109,7 @@ function drawNextPiece()
 end
 
 function updateScore(rows)
+	scoreGroup:removeSelf()
 	totalScore = totalScore + ( rows * 100)
 	scoreGroup = display.newGroup()
 	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/4) * 3, 50, 50)
@@ -328,7 +329,7 @@ function printBoard()
 
 end
 
-function redraw() --need to draw it a bit down, and a bit to the right
+function redraw()
 	group:removeSelf()
 	group = display.newGroup()
 	for i = 0, 23 do
