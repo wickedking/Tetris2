@@ -18,6 +18,23 @@ totalScore = 0
 scoreGroup = display.newGroup()
 nextPieceGroup = display.newGroup()
 
+--Used to change range of random colors
+low_color = 20
+high_color = 100
+
+--Constants for the printing on screen. The offset for each
+x_offset = 10
+y_offset = 12
+
+--the multiplier for the board values.
+board_offset = 21 --need to be set at run time
+
+board_height = 23
+board_width = 10
+
+block_size = 19
+
+
 click = audio.loadSound("tap4.wav")
 
 
@@ -30,26 +47,26 @@ local menuScreen = {}
 local tweenMS = {}
 
 function randomizeColor()
-	for i = 0, 23 do
-		for j = 0, 10 do
+	for i = 0, board_height do
+		for j = 0, board_width do
 			if board[i][j] ~= 0 then
-				board[i][j]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
+				board[i][j]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 			end
 		end
 	end
 end
 
 function deleteBoard()
-	for i =0, 23 do
-		for j = 0, 10 do
+	for i =0, board_height do
+		for j = 0, board_width do
 			board[i][j] = 0
 		end
 	end
 end
 
 function drawPiece(the_pieces)
-	i = math.floor(currentPiece.y/21)
-	j = math.floor(currentPiece.x/21)
+	i = math.floor(currentPiece.y/board_offset)
+	j = math.floor(currentPiece.x/board_offset)
 
 	if display1 ~= nil then
 		display1:removeSelf()
@@ -58,10 +75,10 @@ function drawPiece(the_pieces)
 		display4:removeSelf()
 	end
 	
-	display1 = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 + 21 , 19,19)
-	display2 = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 + 21 , 19,19)
-	display3 = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 + 21 , 19,19)
-	display4 = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21 + 21 , 19,19)
+	display1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset , block_size, block_size)
+	display2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + the_pieces.piece2y) * board_offset + y_offset , block_size, block_size)
+	display3 = display.newRect((j + the_pieces.piece3x) * board_offset + x_offset, (i + the_pieces.piece3y) * board_offset + y_offset , block_size, block_size)
+	display4 = display.newRect((j + the_pieces.piece4x) * board_offset + x_offset, (i + the_pieces.piece4y) * board_offset + y_offset , block_size, block_size)
 
 	group:insert(display1)
 	group:insert(display2)
@@ -69,7 +86,7 @@ function drawPiece(the_pieces)
 	group:insert(display4)
 end
 
-function drawNextPiece()
+function drawNextPiece() --might need to undo
 
 	nextPieceGroup:removeSelf()
 	nextPieceGroup = display.newGroup()
@@ -98,10 +115,10 @@ function drawNextPiece()
 	nextPiece["type"] = type
 	local the_pieces = pieceRotation(nextPiece)
 	
-	local displayNext1 = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 + 21 , 17,19)
-	local displayNext2 = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 + 21 , 17,19)
-	local displayNext3 = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 + 21 , 17,19)
-	local displayNext4 = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21 + 21 , 17,19)
+	local displayNext1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset , block_size, block_size)
+	local displayNext2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + the_pieces.piece2y) * board_offset + y_offset , block_size, block_size)
+	local displayNext3 = display.newRect((j + the_pieces.piece3x) * board_offset + x_offset, (i + the_pieces.piece3y) * board_offset + y_offset , block_size, block_size)
+	local displayNext4 = display.newRect((j + the_pieces.piece4x) * board_offset + x_offset, (i + the_pieces.piece4y) * board_offset + y_offset , block_size, block_size)
 	
 	nextPieceGroup:insert(displayNext1)
 	nextPieceGroup:insert(displayNext2)
@@ -123,9 +140,9 @@ function updateScore(rows)
 end
 
 function createBoard()
-	for i = 0, 23 do
+	for i = 0, board_height do
 	board[i] = {}
-		for j = 0, 10 do
+		for j = 0, board_width do
 		board[i][j] = 0
 		end
 	end
@@ -156,23 +173,19 @@ function tweenMS:tap(e)
 end
 
 function goAway()
-	--print("goAway")
 	os.exit()
 end
 
 function recreate()
-	--board = {}
-	----printBoard()
-	--currentPiece = {}
 	gameOverGroup:removeSelf()
-	----create()
-	----addMenuScreen()
 	timer.performWithDelay(1000, create, 1)
 	nextPieceGroup = display.newGroup()
 end
 
 function fail()
 	if start_over then
+		print(board_offset)
+		print(block_size)
 		deleteBoard()
 		board = {}
 		pieceCreate = false
@@ -251,18 +264,13 @@ function createPiece()
 	balloon.x = 21 * 5
 	balloon.y = -50
 	
-	--physics.addBody(balloon, "dynamic",{shape=part1}, {shape=part2}, {shape=part3}, {shape=part4})
-	--physics.addBody(balloon, "dynamic")
 	currentPiece = balloon
 	balloon.isFixedRotation = true
-	--index = index + 1
+	index = index + 1
 	if index > 6 then
 		index = 0
 	end
 	drawNextPiece()
-	
-	--group:insert(balloon)
-	--group:insert(currentPiece)
 end
 
 function updateBoard(the_pieces)
@@ -272,95 +280,76 @@ function updateBoard(the_pieces)
 --will check rows to see if deletion is necassary
 	if pause == false then
 
-		i = math.floor(currentPiece.y/21)
-		j = math.floor(currentPiece.x/21)
+		i = math.floor(currentPiece.y/board_offset)
+		j = math.floor(currentPiece.x/board_offset)
 		
 		--well checks are actually working at the moment. 
 
-		if i + the_pieces.piece1y > 23 or j + the_pieces.piece1x > 10 or j + the_pieces.piece1x < 0 or i + the_pieces.piece1y < 0 then
+		if i + the_pieces.piece1y > board_height or j + the_pieces.piece1x > board_width or j + the_pieces.piece1x < 0 or i + the_pieces.piece1y < 0 then
 			pause = true
 			fail()
 			return
 		else
-			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)*21 + 10, (i + the_pieces.piece1y)*21 +21, 19,19)
-			board[i + the_pieces.piece1y][j + the_pieces.piece1x]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
+			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)* board_offset + x_offset, (i + the_pieces.piece1y)*board_offset + y_offset, block_size, block_size)
+			board[i + the_pieces.piece1y][j + the_pieces.piece1x]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 			group:insert(board[i + the_pieces.piece1y][j + the_pieces.piece1x])
 			physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
 		end
 		
-		if i + the_pieces.piece2y > 23 or j + the_pieces.piece2x > 10 or j + the_pieces.piece2x < 0 or i + the_pieces.piece2y < 0 then
+		if i + the_pieces.piece2y > board_height or j + the_pieces.piece2x > board_width or j + the_pieces.piece2x < 0 or i + the_pieces.piece2y < 0 then
 			pause = true
 			fail()
 			return
 		else
-			board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)*21 + 10, (i + the_pieces.piece2y)*21 +21, 19,19)
-			board[i + the_pieces.piece2y][j + the_pieces.piece2x]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
+			board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)* board_offset + x_offset, (i + the_pieces.piece2y)*board_offset + y_offset, block_size, block_size)
+			board[i + the_pieces.piece2y][j + the_pieces.piece2x]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 			group:insert(board[i + the_pieces.piece2y][j + the_pieces.piece2x])
 			physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
 		end
-		if i + the_pieces.piece3y > 23 or j + the_pieces.piece3x > 10  or j + the_pieces.piece3x < 0 or i + the_pieces.piece3y < 0 then
+		if i + the_pieces.piece3y > board_offset or j + the_pieces.piece3x > board_width  or j + the_pieces.piece3x < 0 or i + the_pieces.piece3y < 0 then
 			fail()
 			pause = true
 			return
 		else
-			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*21 + 10, (i + the_pieces.piece3y)*21 +21, 19,19)
-			board[i + the_pieces.piece3y][j + the_pieces.piece3x]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
+			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*board_offset + x_offset, (i + the_pieces.piece3y)*board_offset + y_offset, block_size, block_size)
+			board[i + the_pieces.piece3y][j + the_pieces.piece3x]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 			group:insert(board[i + the_pieces.piece3y][j + the_pieces.piece3x])
 			physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
 		end
-		if i + the_pieces.piece4y > 23 or j + the_pieces.piece4x > 10  or j + the_pieces.piece4x < 0 or i + the_pieces.piece4y < 0 then
+		if i + the_pieces.piece4y > board_height or j + the_pieces.piece4x > board_width  or j + the_pieces.piece4x < 0 or i + the_pieces.piece4y < 0 then
 			fail()
 			pause = true
 			return
 		else
-			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)*21 + 10, (i + the_pieces.piece4y)*21+21, 19,19)
-			board[i + the_pieces.piece4y][j + the_pieces.piece4x]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
+			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)* board_offset + x_offset, (i + the_pieces.piece4y)* board_offset + y_offset, block_size, block_size)
+			board[i + the_pieces.piece4y][j + the_pieces.piece4x]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 			group:insert(board[i + the_pieces.piece4y][j + the_pieces.piece4x])
 			physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "kinematic")
 		end
 		removeRows()
-	--call to check for rows
 	end
-end
-
-function printBoard()
-	for i = 0, 23 do
-		for j = 0, 10 do
-			print(board[i][j])
-		end
-	end
-
 end
 
 function redraw()
 	group:removeSelf()
 	group = display.newGroup()
-	for i = 0, 23 do
-		for j = 0, 10 do
+	for i = 0, board_height do
+		for j = 0, board_width do
 			if board[i][j] ~= 0 then
-				print(i.." i value")
-				print(j)
-				board[i][j] = display.newRect((j * 21) + 10, (i *21) + 21, 19, 19)
-				board[i][j]:setFillColor(math.random(20, 100) / 100 ,math.random(20, 100) / 100, math.random(20, 100) / 100)
+				board[i][j] = display.newRect((j * board_offset) + x_offset, (i * board_offset) + y_offset, block_size, block_size)
+				board[i][j]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 				group:insert(board[i][j])
 			end
 		end
 	end
 end
 
-function rowFall(inital_row, total_rows)
-	print("rowFall")
-	print(inital_row)
-	print(total_rows)
+function rowFall(inital_row, total_rows) --need to redo for handling case of remove 1 and 3
 	for i = inital_row, 0, -1 do
-		for j = 0, 10 do
-			--print(board[i][j])
+		for j = 0, board_width do
 			if board[i][j] ~= 0 then
-				--print("something happended")
 				board[i + total_rows][j] = board[i][j]
 				board[i][j] = 0
-				--print(board[i][j])
-				--print(board[i+ total_rows][j])
 			end
 		end
 	end
@@ -371,9 +360,9 @@ function removeRows()
 	rows = 0
 	the_row = 0
 	
-	for i = 0, 23 do
+	for i = 0, board_height do
 		local boolean check = true
-		for j = 0, 10 do
+		for j = 0, board_width do
 			if board[i][j] == 0 then
 			check = false
 			break
@@ -384,7 +373,7 @@ function removeRows()
 				the_row = i
 			end
 			rows = rows + 1
-			for j = 0, 10 do
+			for j = 0, board_width do
 			 board[i][j]:removeSelf()
 			 board[i][j] = 0
 			end
@@ -400,7 +389,7 @@ end
 
 function checkTopRow()
 	local isPiece = false
-	for j = 0, 10 do
+	for j = 0, board_width do
 		if board[0][j] ~= 0 then
 		isPiece = true
 		break
@@ -410,26 +399,29 @@ function checkTopRow()
 end
 
 function checkMove(dx, dy)
+	if currentPiece == nil then
+		return false
+	end
 	local can = false
 	local piece1 = false
 	local piece2 = false
 	local piece3 = false
 	local piece4 = false
 	local piece = pieceRotation(currentPiece)
-	x = math.floor(currentPiece.x/21)
-	y = math.floor(currentPiece.y/21)
-	if piece.piece1x + x + dx >= 0 and piece.piece1x + x + dx <= 10 then
-		if piece.piece2x + x + dx >= 0 and piece.piece2x + x + dx <= 10 then
-			if piece.piece3x + x + dx >= 0 and piece.piece3x + x + dx <= 10 then
-				if piece.piece4x + x + dx >= 0 and piece.piece4x + x + dx <= 10 then
+	x = math.floor(currentPiece.x/board_offset)
+	y = math.floor(currentPiece.y/board_offset)
+	if piece.piece1x + x + dx >= 0 and piece.piece1x + x + dx <= board_width then
+		if piece.piece2x + x + dx >= 0 and piece.piece2x + x + dx <= board_width then
+			if piece.piece3x + x + dx >= 0 and piece.piece3x + x + dx <= board_width then
+				if piece.piece4x + x + dx >= 0 and piece.piece4x + x + dx <= board_width then
 					if  piece.piece1y + y + dy >=  0 and piece.piece2y + y + dy >=  0 and piece.piece3y + y + dy >=  0 and piece.piece4y + y + dy >=  0 then
-						if  piece.piece1y + y + dy <= 23 then
+						if  piece.piece1y + y + dy <= board_height then
 							piece1 = true
-							if  piece.piece2y + y + dy <= 23 then
+							if  piece.piece2y + y + dy <= board_height then
 								piece2 = true
-								if  piece.piece3y + y + dy <= 23 then
+								if  piece.piece3y + y + dy <= board_height then
 									piece3 = true
-									if piece.piece4y + y + dy <= 23 then
+									if piece.piece4y + y + dy <= board_height then
 										piece4 = true
 										--take current position add x and y and then check for a piece
 										if board[y + piece.piece1y + dy][x + piece.piece1x + dx] == 0 then
@@ -477,9 +469,9 @@ end
 
 function movePiece(moveEvent)
 	update = update + 1
-	if update %20 == 0  and pause == false then
+	if update % 20 == 0  and pause == false then
 		if checkMove(0,1) then
-		currentPiece.y = currentPiece.y + 21
+			currentPiece.y = currentPiece.y + board_offset
 		else
 			freezePiece()
 		end
@@ -498,6 +490,9 @@ function onCollision(event)
 end
 
 function rotate()
+	if currentPiece == nil then
+		return
+	end
 	if canRotate == false then
 		canRotate = true
 		return
@@ -534,34 +529,25 @@ function rotate()
 	if currentPiece.rotation >= 360 then
 		currentPiece.rotation = 0
 	end
-	--print(currentPiece.rotation)
 	drawPiece(pieceRotation(currentPiece))
 end
 
 function moveLeft()
+	if currentPiece == nil then
+		return
+	end
 	if checkMove(-1, 0) then
-		currentPiece.x = currentPiece.x - 21
+		currentPiece.x = currentPiece.x - board_offset
 	end
 	drawPiece(pieceRotation(currentPiece))
 end
 
 function moveRight()
-	--if math.floor(currentPiece.x/21) >= 10 then
-	--	return
-	--end
-	--moves = pieceRotation(currentPiece)
-	--if (moves["piece1x"] * 21) + currentPiece.x < 11 then
-	--	if (moves["piece2x"] * 21) + currentPiece.x < 11 then
-	--		if (moves["piece3x"] * 21) + currentPiece.x < 11 then
-	--			if (moves["piece4x"] * 21) + currentPiece.x < 11 then
-	--				currentPiece.x = currentPiece.x + 21
-	--				drawPiece(pieceRotation(currentPiece))
-	--			end
-	--		end
-	--	end
-	--end
+	if currentPiece == nil then
+		return
+	end
 	if checkMove(1,0) then
-		currentPiece.x = currentPiece.x + 21
+		currentPiece.x = currentPiece.x + board_offset
 	end
 	drawPiece(pieceRotation(currentPiece))
 end
@@ -607,17 +593,20 @@ function create()
 	local leftB = display.newImage("left_button.png")
 	leftB.x = display.contentWidth - 50
 	leftB.y = display.contentHeight / 8
+	leftB:scale(0.6, 0.6)
 	leftB:addEventListener("tap", moveLeft)
 
 	local rightB = display.newImage("right_button.png")
 	rightB.x = display.contentWidth - 50
-	rightB.y = display.contentHeight / 2
+	rightB.y = display.contentHeight / 4 + 5
+	rightB:scale(0.6, 0.6)
 	rightB:addEventListener("tap", moveRight)
 
 	local rotateB = display.newImage("rotate.png")
 	rotateB.x = display.contentWidth - 50
-	rotateB.y = display.contentHeight - 100
-	rotateB:addEventListener("touch", rotate)
+	rotateB.y = display.contentHeight /3 + 30
+	rotateB:scale(0.6, 0.6)
+	rotateB:addEventListener("touch", rotate) --switch to tap
 	
 	extra_group:insert(leftB)
 	extra_group:insert(rightB)
@@ -632,7 +621,7 @@ function create()
 	floor.myName = "Floor"
 
 	local leftWall = display.newRect(0,0,1, display.contentHeight*2 + 50)
-	local rightWall = display.newRect(221, 0, 5, display.contentHeight*2 + 52)
+	local rightWall = display.newRect(235, 0, 5, display.contentHeight*2 + 52)
 	leftWall.myName = "leftWall"
 	rightWall.myName = "rightWall"
 
@@ -646,7 +635,7 @@ function create()
 	extra_group:insert(rightWall)
 
 	Runtime:addEventListener("enterFrame", movePiece)
-	Runtime:addEventListener("collision", onCollision)
+	--Runtime:addEventListener("collision", onCollision)
 	--Runtime:addEventListener("preCollision", leftWallCollision)
 	--Runtime:addEventListener("preCollision", rightWallCollision)
 end
@@ -906,5 +895,7 @@ function piece() --TODO refactor each piece into its own method better coding
 end
 addMenuScreen()
 
---piece moves past the wall. Needed to stop movement against wall better
+--need to potentaily fix error on check move
+--potentially implement breakout.
+
 
