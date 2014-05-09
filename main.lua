@@ -8,6 +8,16 @@ highScores = require("highScore")
 fillBoard = true
 fillBoardCircle = {}
 
+soundEffects = true
+soundEffectsCircle = {}
+
+music = true
+musicCircle = {}
+
+tapControl = true
+tapCircle = {}
+buttonCircle = {}
+
 update = 0
 currentPiece = {}
 index = 4
@@ -236,16 +246,73 @@ function changeFill()
 	end
 end
 
+
+function soundEffect()
+	if soundEffects then
+		soundEffects = false
+		soundEffectsCircle = display.newImage("blockout.png")
+		soundEffectsCircle.x = display.contentWidth/4
+		soundEffectsCircle.y = display.contentHeight/4* 3 + 20
+		menuScreen:insert(soundEffectsCircle)
+	else
+		soundEffects = true
+		soundEffectsCircle:removeSelf()
+	end
+end
+
+function soundMusic()
+	if music then
+		music = false
+		musicCircle = display.newImage("blockout.png")
+		musicCircle.x = display.contentWidth/4*3
+		musicCircle.y = display.contentHeight/4 * 3 + 20
+		menuScreen:insert(musicCircle)
+	else
+		music = true
+		musicCircle:removeSelf()
+	end
+end
+
+function displayControl()
+	if tapControl then
+		tapControl = false
+		if buttonCircle ~= nil then
+			buttonCircle:removeSelf()
+		end
+		tapCircle = display.newImage("blockout.png")
+		tapCircle.x = display.contentWidth/2
+		tapCircle.y = display.contentHeight/5 * 4.5 + 20
+		menuScreen:insert(tapCircle)
+	else
+		tapControl = true
+		if tapCircle ~= nil then
+			tapCircle:removeSelf()
+		end
+		buttonCircle = display.newImage("blockout.png")
+		buttonCircle.x = display.contentWidth/2 + 80
+		buttonCircle.y = display.contentHeight/5 * 4.5 + 20
+		menuScreen:insert(buttonCircle)
+	end
+
+end
+
 function addMenuScreen()
 	menuScreen = display.newGroup()
 	local mScreen = display.newImage("menuScreen.png")
 	local startButton = display.newImage("play_button.png")
 	
-	
-	--local fillBoardButton = display.newRect(display.contentWidth/2, display.contentHeight/4 * 3, 50, block_size)
-	--fillBoardButton:setFillColor(1,1,1)
 	local fillText = display.newText(menuScreen, "Fill Board", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
-	--fillText:setFillColor(0,0,0)
+
+	local soundEffectText = display.newText(menuScreen, "Sound Effects", display.contentWidth/4, display.contentHeight/4* 3, native.systemFontBold, 14)
+	
+	local musicText = display.newText(menuScreen, "music", display.contentWidth/4 * 3, display.contentHeight/4* 3, native.systemFontBold, 14)
+	
+	local controlText = display.newText(menuScreen, "Control: Tap on screen / Buttons", display.contentWidth/2, display.contentHeight/5*4.5, native.systemFontBold, 14)
+	
+	buttonCircle = display.newImage("blockout.png")
+	buttonCircle.x = display.contentWidth/2 + 80
+	buttonCircle.y = display.contentHeight/5 * 4.5 + 20
+	menuScreen:insert(buttonCircle)
 	
 	mScreen.x = display.contentWidth/2
 	mScreen.y = display.contentHeight/2
@@ -255,6 +322,10 @@ function addMenuScreen()
 	startButton.y = display.contentHeight/2
 	menuScreen:insert(startButton)
 	
+	soundEffectText:addEventListener("tap", soundEffect)
+	
+	controlText:addEventListener("tap", displayControl)
+	musicText:addEventListener("tap", soundMusic)
 	fillText:addEventListener("tap", changeFill)
 	startButton:addEventListener('tap', tweenMS)
 
@@ -556,7 +627,9 @@ end
 
 function freezePiece(freezeEvent)
 	if pieceCreate == true then
-		audio.play(click)
+		if soundEffects then
+			audio.play(click)
+		end
 		local pieces = pieceRotation(currentPiece)
 		--physics.removeBody(currentPiece)
 		physics.addBody(currentPiece, "static")
@@ -724,18 +797,33 @@ function create()
 	--physics.setDrawMode("hybrid")
 	physics.start()
 	physics.setGravity(0, 0)
+	
+	if tapControl == false then
 
-	--local leftB = display.newImage("left_button.png")
-	--leftB.x = display.contentWidth - 50
-	--leftB.y = display.contentHeight / 8 - 25
-	--leftB:scale(0.6, 0.6)
-	--leftB:addEventListener("tap", moveLeft)
+		local leftB = display.newImage("left_button.png")
+		leftB.x = display.contentWidth - 50
+		leftB.y = display.contentHeight / 8 - 25
+		leftB:scale(0.6, 0.6)
+		leftB:addEventListener("tap", moveLeft)
 
-	--local rightB = display.newImage("right_button.png")
-	--rightB.x = display.contentWidth - 50
-	--rightB.y = display.contentHeight / 4 -20
-	--rightB:scale(0.6, 0.6)
-	--rightB:addEventListener("tap", moveRight)
+		local rightB = display.newImage("right_button.png")
+		rightB.x = display.contentWidth - 50
+		rightB.y = display.contentHeight / 4 -20
+		rightB:scale(0.6, 0.6)
+		rightB:addEventListener("tap", moveRight)
+	
+		extra_group:insert(leftB)
+		extra_group:insert(rightB)
+		
+		leftB:addEventListener("tap", moveLeft)
+		rightB:addEventListener("tap", moveRight)
+	
+	else
+	
+		Runtime:addEventListener("tap", moveLeftGlobal)
+		Runtime:addEventListener("tap", moveRightGlobal)
+	
+	end
 
 	local rotateB = display.newImage("rotate.png")
 	rotateB.x = display.contentWidth - 50
@@ -750,8 +838,6 @@ function create()
 	
 	pauseB:addEventListener("tap", pauseGame)
 	
-	--extra_group:insert(leftB)
-	--extra_group:insert(rightB)
 	extra_group:insert(rotateB)
 	extra_group:insert(pauseB)
 
@@ -778,14 +864,10 @@ function create()
 	extra_group:insert(rightWall)
 
 	Runtime:addEventListener("enterFrame", movePiece)
-	
-	Runtime:addEventListener("tap", moveLeftGlobal)
-	Runtime:addEventListener("tap", moveRightGlobal)
-	
-	
-	--Runtime:addEventListener("collision", onCollision)
-	--Runtime:addEventListener("preCollision", leftWallCollision)
-	--Runtime:addEventListener("preCollision", rightWallCollision)
+
+	if music then
+		--start music
+	end
 end
 
 function pieceRotation(currentPiece)
@@ -1045,5 +1127,3 @@ addMenuScreen()
 
 --need to potentaily fix error on check move
 --potentially implement breakout.
-
---pause button
