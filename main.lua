@@ -5,6 +5,8 @@
 -----------------------------------------------------------------------------------------
 highScores = require("highScore")
 
+options = {loop = -1}
+
 fillBoard = true
 fillBoardCircle = {}
 
@@ -58,6 +60,8 @@ pause_text = {}
 
 click = audio.loadSound("tap4.wav")
 
+the_music = audio.loadSound("steppin.wav")
+
 
 display1 = display.newRect(0,0,0,0)
 display2 = display.newRect(0,0,0,0)
@@ -74,12 +78,14 @@ local tweenMS = {}
 function pauseGame()
 	if pause == false then
 		pause = true
+		audio.pause()
 		pause_block = display.newRect(0,0,1000, 1000)
 		pause_block:setFillColor(0,0,0)
 		pause_block:addEventListener("tap", pauseGame)
 		pauseText = display.newText("PAUSED", display.contentWidth/2, display.contentHeight/2, native.systemFontBold, 18)
 	else
 		pause = false
+		audio.play(the_music, options)
 		pause_block:removeSelf()
 		pauseText:removeSelf()
 	end
@@ -246,7 +252,6 @@ function changeFill()
 	end
 end
 
-
 function soundEffect()
 	if soundEffects then
 		soundEffects = false
@@ -339,6 +344,7 @@ function tweenMS:tap(e)
 end
 
 function goAway()
+	audio.pause()
 	os.exit()
 end
 
@@ -394,13 +400,14 @@ function fail()
 			nextPieceGroup:removeSelf()
 		end
 		scoreGroup:removeSelf()
+		print(pieceLines)
+		pieceLines:removeSelf()
 		--nextPieceGroup:removeSelf()
 	end
 end
 
 function createPiece()
 	updateScore(0)
-	--print("createPiece")
 	canRotate = true
 	pieceCreate = true
 	
@@ -454,12 +461,8 @@ function updateBoard(the_pieces)
 		j = math.floor(currentPiece.x/board_offset)
 		
 		--well checks are actually working at the moment. 
-		
-		print(i)
-		print(j)
 
 		if i + the_pieces.piece1y > board_height or j + the_pieces.piece1x > board_width or j + the_pieces.piece1x < 0 or i + the_pieces.piece1y < 0 then
-			print("failed")
 			pause = true
 			fail()
 			return
@@ -471,7 +474,6 @@ function updateBoard(the_pieces)
 		end
 		
 		if i + the_pieces.piece2y > board_height or j + the_pieces.piece2x > board_width or j + the_pieces.piece2x < 0 or i + the_pieces.piece2y < 0 then
-			print("failed")
 			pause = true
 			fail()
 			return
@@ -482,7 +484,6 @@ function updateBoard(the_pieces)
 			physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
 		end
 		if i + the_pieces.piece3y > board_height or j + the_pieces.piece3x > board_width  or j + the_pieces.piece3x < 0 or i + the_pieces.piece3y < 0 then
-			print("failed")
 			pause = true
 			fail()
 			return
@@ -493,7 +494,6 @@ function updateBoard(the_pieces)
 			physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
 		end
 		if i + the_pieces.piece4y > board_height or j + the_pieces.piece4x > board_width  or j + the_pieces.piece4x < 0 or i + the_pieces.piece4y < 0 then
-			print("failed")
 			pause = true
 			fail()
 			return
@@ -815,8 +815,6 @@ function create()
 		extra_group:insert(leftB)
 		extra_group:insert(rightB)
 		
-		leftB:addEventListener("tap", moveLeft)
-		rightB:addEventListener("tap", moveRight)
 	
 	else
 	
@@ -866,7 +864,7 @@ function create()
 	Runtime:addEventListener("enterFrame", movePiece)
 
 	if music then
-		--start music
+		audio.play(the_music, options)
 	end
 end
 
