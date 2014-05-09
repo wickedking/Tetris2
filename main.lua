@@ -3,6 +3,10 @@
 -- main.lua
 --
 -----------------------------------------------------------------------------------------
+highScores = require("highScore")
+
+fillBoard = true
+
 update = 0
 currentPiece = {}
 index = 4
@@ -51,6 +55,9 @@ display4 = display.newRect(0,0,0,0)
 
 local menuScreen = {}
 local tweenMS = {}
+
+--createTable()
+--saveFile()
 
 
 function pauseGame()
@@ -130,11 +137,11 @@ function drawPiece(the_pieces)
 	big_x = big_x + 1
 	big_x = (big_x * 21) + currentPiece.x
 	
-	local line1 = display.newLine(pieceLines, small_x , currentPiece.y - 19, small_x, 480)
-	local line2 = display.newLine(pieceLines, big_x, currentPiece.y - 19, big_x, 480)
+	local line1 = display.newLine(pieceLines, small_x , currentPiece.y - 35, small_x, 480)
+	local line2 = display.newLine(pieceLines, big_x, currentPiece.y - 35, big_x, 480)
 	
-	line1:setStrokeColor(0.5,0.5,0.5)
-	line2:setStrokeColor(0.5,0.5,0.5)
+	line1:setStrokeColor(0.33,0.0,1.0)
+	line2:setStrokeColor(0.33,0.0,1.0)
 	
 	
 	display1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset, block_size, block_size)
@@ -257,6 +264,8 @@ function fail()
 		gameOverGroup = display.newGroup()
 		start_over = false
 		pause = true
+		
+		pieceLines:removeSelf()
 		
 		extra_group:removeSelf()
 		
@@ -659,7 +668,15 @@ function leftWallCollision(event)
 			moveRight()
 		end
 	end
+end
 
+function fillBoard()
+	for number = 0, 10 do
+		i = math.random(13, 23)
+		j = math.random(0, 10)
+		board[i][j] = display.newRect((j * board_offset) + x_offset, (i * board_offset) + y_offset, block_size, block_size)
+		board[i][j]:setFillColor(math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100,math.random(low_color, high_color) / 100)
+	end
 end
  
 function create()
@@ -677,6 +694,11 @@ function create()
 	group = display.newGroup()
 	extra_group = display.newGroup()
 	createBoard()
+	
+	if fillBoard then
+		fillBoard()
+	end
+	
 	local physics = require("physics")
 	--physics.setDrawMode("hybrid")
 	physics.start()
