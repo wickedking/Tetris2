@@ -377,11 +377,11 @@ function redraw()
 	end
 end
 
-function rowFall(inital_row, total_rows) --need to redo for handling case of remove 1 and 3
+function rowFall(inital_row) --need to redo for handling case of remove 1 and 3
 	for i = inital_row, 0, -1 do
 		for j = 0, board_width do
 			if board[i][j] ~= 0 then
-				board[i + total_rows][j] = board[i][j]
+				board[i + 1][j] = board[i][j]
 				board[i][j] = 0
 			end
 		end
@@ -410,12 +410,8 @@ function removeRows()
 			 board[i][j]:removeSelf()
 			 board[i][j] = 0
 			end
-		--go back and delete row
-		--need to move pieces down
+			rowFall(the_row)
 		end
-	end
-	if rows ~= 0 then
-		rowFall(the_row, rows)
 	end
 	updateScore(rows)
 end
