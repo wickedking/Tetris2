@@ -57,11 +57,9 @@ block_size = 19
 pause_block = display.newRect(0,0,0,0)
 pause_text = {}
 
-
 click = audio.loadSound("tap4.wav")
 
 the_music = audio.loadSound("steppin.wav")
-
 
 display1 = display.newRect(0,0,0,0)
 display2 = display.newRect(0,0,0,0)
@@ -110,6 +108,7 @@ function deleteBoard()
 end
 
 function drawPiece(the_pieces)
+	pieceLines:removeSelf()
 	i = math.floor(currentPiece.y/height_offset)
 	j = math.floor(currentPiece.x/board_offset)
 
@@ -147,19 +146,21 @@ function drawPiece(the_pieces)
 		big_x = the_pieces.piece4x
 	end
 	
-	pieceLines:removeSelf()
+
 	pieceLines = display.newGroup()
 	
 	small_x = (small_x * 21) + currentPiece.x
 	big_x = big_x + 1
 	big_x = (big_x * 21) + currentPiece.x
 	
-	local line1 = display.newLine(pieceLines, small_x , currentPiece.y - 35, small_x, 480)
-	local line2 = display.newLine(pieceLines, big_x, currentPiece.y - 35, big_x, 480)
+	local line1 = display.newLine(small_x , currentPiece.y - 35, small_x, 480)
+	local line2 = display.newLine(big_x, currentPiece.y - 35, big_x, 480)
+	
+	pieceLines:insert(line1)
+	pieceLines:insert(line2)
 	
 	line1:setStrokeColor(0.33,0.0,1.0)
 	line2:setStrokeColor(0.33,0.0,1.0)
-	
 	
 	display1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset, block_size, block_size)
 	display2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + the_pieces.piece2y) * board_offset + y_offset, block_size, block_size)
@@ -363,8 +364,6 @@ function fail()
 		start_over = false
 		pause = true
 		
-		pieceLines:removeSelf()
-		
 		extra_group:removeSelf()
 		
 		Runtime:removeEventListener("enterFrame", movePiece)
@@ -400,9 +399,9 @@ function fail()
 			nextPieceGroup:removeSelf()
 		end
 		scoreGroup:removeSelf()
-		print(pieceLines)
 		pieceLines:removeSelf()
-		--nextPieceGroup:removeSelf()
+		pieceLines = display.newGroup()
+		print(pieceLines)
 	end
 end
 
@@ -770,6 +769,7 @@ function fillBoard()
 		j = math.random(0, 10)
 		board[i][j] = display.newRect((j * board_offset) + x_offset, (i * board_offset) + y_offset, block_size, block_size)
 		board[i][j]:setFillColor(math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100,math.random(low_color, high_color) / 100)
+		group:insert(board[i][j])
 	end
 end
  
