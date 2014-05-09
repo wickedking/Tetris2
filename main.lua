@@ -585,6 +585,26 @@ function moveRight()
 	drawPiece(pieceRotation(currentPiece))
 end
 
+function moveLeftGlobal(e) 
+	if (pause) then 
+		return
+	elseif (e.x < display.contentWidth/2) and checkMove(-1, 0)  then
+		currentPiece.x = currentPiece.x - 21
+	end
+	drawPiece(pieceRotation(currentPiece))
+	
+end
+
+function moveRightGlobal(e) 
+	if (pause) then 
+		return
+	elseif (e.x > display.contentWidth/2) and checkMove(1, 0) then  
+		currentPiece.x = currentPiece.x + 21
+	end
+	drawPiece(pieceRotation(currentPiece))
+	
+end
+
 function rightWallCollision(event)
 	if event.object1.myName == "Square" or event.object2.myName == "Square" then
 		if event.object1.myName == "rightWall" and event.object2.myName == "rightWall" then
@@ -623,17 +643,17 @@ function create()
 	physics.start()
 	physics.setGravity(0, 0)
 
-	local leftB = display.newImage("left_button.png")
-	leftB.x = display.contentWidth - 50
-	leftB.y = display.contentHeight / 8 - 25
-	leftB:scale(0.6, 0.6)
-	leftB:addEventListener("tap", moveLeft)
+	--local leftB = display.newImage("left_button.png")
+	--leftB.x = display.contentWidth - 50
+	--leftB.y = display.contentHeight / 8 - 25
+	--leftB:scale(0.6, 0.6)
+	--leftB:addEventListener("tap", moveLeft)
 
-	local rightB = display.newImage("right_button.png")
-	rightB.x = display.contentWidth - 50
-	rightB.y = display.contentHeight / 4 -20
-	rightB:scale(0.6, 0.6)
-	rightB:addEventListener("tap", moveRight)
+	--local rightB = display.newImage("right_button.png")
+	--rightB.x = display.contentWidth - 50
+	--rightB.y = display.contentHeight / 4 -20
+	--rightB:scale(0.6, 0.6)
+	--rightB:addEventListener("tap", moveRight)
 
 	local rotateB = display.newImage("rotate.png")
 	rotateB.x = display.contentWidth - 50
@@ -648,8 +668,8 @@ function create()
 	
 	pauseB:addEventListener("tap", pauseGame)
 	
-	extra_group:insert(leftB)
-	extra_group:insert(rightB)
+	--extra_group:insert(leftB)
+	--extra_group:insert(rightB)
 	extra_group:insert(rotateB)
 	extra_group:insert(pauseB)
 
@@ -676,6 +696,11 @@ function create()
 	extra_group:insert(rightWall)
 
 	Runtime:addEventListener("enterFrame", movePiece)
+	
+	Runtime:addEventListener("tap", moveLeftGlobal)
+	Runtime:addEventListener("tap", moveRightGlobal)
+	
+	
 	--Runtime:addEventListener("collision", onCollision)
 	--Runtime:addEventListener("preCollision", leftWallCollision)
 	--Runtime:addEventListener("preCollision", rightWallCollision)
