@@ -6,6 +6,7 @@
 highScores = require("highScore")
 
 fillBoard = true
+fillBoardCircle = {}
 
 update = 0
 currentPiece = {}
@@ -222,10 +223,29 @@ function createBoard()
 	end
 end
 
+function changeFill()
+	if fillBoard then
+		fillBoard = false
+		fillBoardCircle = display.newImage("blockout.png")
+		fillBoardCircle.x = display.contentWidth/2
+		fillBoardCircle.y = (display.contentHeight /4) * 3 + 20
+		menuScreen:insert(fillBoardCircle)
+	else 
+		fillBoard = true
+		fillBoardCircle:removeSelf()
+	end
+end
+
 function addMenuScreen()
 	menuScreen = display.newGroup()
 	local mScreen = display.newImage("menuScreen.png")
 	local startButton = display.newImage("play_button.png")
+	
+	
+	--local fillBoardButton = display.newRect(display.contentWidth/2, display.contentHeight/4 * 3, 50, block_size)
+	--fillBoardButton:setFillColor(1,1,1)
+	local fillText = display.newText(menuScreen, "Fill Board", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
+	--fillText:setFillColor(0,0,0)
 	
 	mScreen.x = display.contentWidth/2
 	mScreen.y = display.contentHeight/2
@@ -235,6 +255,7 @@ function addMenuScreen()
 	startButton.y = display.contentHeight/2
 	menuScreen:insert(startButton)
 	
+	fillText:addEventListener("tap", changeFill)
 	startButton:addEventListener('tap', tweenMS)
 
 end
