@@ -24,7 +24,7 @@ high_color = 100
 
 --Constants for the printing on screen. The offset for each
 x_offset = 10
-y_offset = 0
+y_offset = -12
 
 --the multiplier for the board values.
 board_offset = 21 --need to be set at run time
@@ -34,6 +34,9 @@ board_height = 23
 board_width = 10
 
 block_size = 19
+
+pause_block = display.newRect(0,0,0,0)
+pause_text = {}
 
 
 click = audio.loadSound("tap4.wav")
@@ -47,6 +50,20 @@ display4 = display.newRect(0,0,0,0)
 local menuScreen = {}
 local tweenMS = {}
 
+
+function pauseGame()
+	if pause == false then
+		pause = true
+		pause_block = display.newRect(0,0,1000, 1000)
+		pause_block:setFillColor(0,0,0)
+		pause_block:addEventListener("tap", pauseGame)
+		pauseText = display.newText("PAUSED", display.contentWidth/2, display.contentHeight/2, native.systemFontBold, 18)
+	else
+		pause = false
+		pause_block:removeSelf()
+		pauseText:removeSelf()
+	end
+end
 
 function randomizeColor()
 	for i = 0, board_height do
@@ -139,10 +156,10 @@ function updateScore(rows)
 	scoreGroup:removeSelf()
 	totalScore = totalScore + ( rows * 100)
 	scoreGroup = display.newGroup()
-	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/4) * 3, 50, 50)
+	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/5) * 3 + 20, 50, 50)
 	scoreBox:setFillColor(1,1,1)
 	scoreGroup:insert(scoreBox)
-	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 4) * 3, native.systemFontBold, 14)
+	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 5) * 3 + 20, native.systemFontBold, 14)
 	text:setFillColor(0,0,0)
 end
 
@@ -608,25 +625,33 @@ function create()
 
 	local leftB = display.newImage("left_button.png")
 	leftB.x = display.contentWidth - 50
-	leftB.y = display.contentHeight / 8
+	leftB.y = display.contentHeight / 8 - 25
 	leftB:scale(0.6, 0.6)
 	leftB:addEventListener("tap", moveLeft)
 
 	local rightB = display.newImage("right_button.png")
 	rightB.x = display.contentWidth - 50
-	rightB.y = display.contentHeight / 4 + 5
+	rightB.y = display.contentHeight / 4 -20
 	rightB:scale(0.6, 0.6)
 	rightB:addEventListener("tap", moveRight)
 
 	local rotateB = display.newImage("rotate.png")
 	rotateB.x = display.contentWidth - 50
-	rotateB.y = display.contentHeight /3 + 30
+	rotateB.y = display.contentHeight /3 + 10
 	rotateB:scale(0.6, 0.6)
 	rotateB:addEventListener("touch", rotate) --switch to tap
+	
+	local pauseB = display.newImage("pause.png")
+	pauseB.x = display.contentWidth - 50
+	pauseB.y = (display.contentHeight / 5 )* 2 + 45
+	pauseB:scale(0.5, 0.5)
+	
+	pauseB:addEventListener("tap", pauseGame)
 	
 	extra_group:insert(leftB)
 	extra_group:insert(rightB)
 	extra_group:insert(rotateB)
+	extra_group:insert(pauseB)
 
 	createPiece()
 
@@ -914,4 +939,4 @@ addMenuScreen()
 --need to potentaily fix error on check move
 --potentially implement breakout.
 
-
+--pause button
