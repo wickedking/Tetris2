@@ -7,18 +7,8 @@ json = require("json")
 highScore = {}
 
 function createTable()
-	highScore.name1 = "---"
-	highScore.name2 = "---"
-	highScore.name3 = "---"
-	highScore.name4 = "---"
-	highScore.name5 = "---"
-	highScore.name6 = "---"
-	highScore.name7 = "---"
-	highScore.name8 = "---"
-	highScore.name9 = "---"
-	highScore.name10 = "---"
 	highScore.score1 = 0
-	highScore.score2 = 0
+	highScore.score2 = 2
 	highScore.score3 = 0
 	highScore.score4 = 0
 	highScore.score5 = 0
@@ -68,7 +58,9 @@ function loadTable(filename)
     return nil	
 end
 
-function insertScore()
-
-
+function insertScore(score)
+	for i = 1, 10 do
+		highScore.score7 = score
+		--loop through and assign new location
+	end
 end

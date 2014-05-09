@@ -71,6 +71,10 @@ local tweenMS = {}
 
 --createTable()
 --saveFile()
+insertScore(13)
+saveFile()
+loadFile()
+print(highScore.score1)
 
 
 function pauseGame()
@@ -434,7 +438,6 @@ function createPiece()
 	balloon.height = 21
 	balloon.width = 21
 	balloon:scale(.3, .3)
-	--part1, part2, part3, part4 = piece()
 	balloon.myName = "Square"
 	balloon.bodyType = "dynamic"
 	balloon.x = 21 * 5
@@ -1062,65 +1065,6 @@ locations = {}
 	return locations
 end
 
-function piece() --TODO refactor each piece into its own method better coding
-	--t piece table coodinates
-	local partt2 = {-21, 0, -21, 21, 0, 21, 0,0}
-	local partt1 = {0,0, 0, 21, 21, 21, 21,0}
-	local partt3 = {21, 0, 21,21, 42,21, 42,0}
-	local partt4 = {0,21, 0,42, 21, 42, 21, 21} --done
-	
-	--z piece
-	local partz1 = {0,0,  0,21, 21,21, 21,0}
-	local partz2 = {-21,0, -21,21, 0,21, 0,0}
-	local partz3 = {0,21, 0,42, 21,42, 21,21}
-	local partz4 = {21,21, 21,42, 42,42, 42,21} --done
-	
-	--s piece
-	local parts1 = {0,0, 0,21, 21,21, 21,0}
-	local parts2 = {-21,21, -21,42, 0,42, 0,21}
-	local parts3 = {0,21, 0,42, 21,42, 21,21}
-	local parts4 = {21,0, 21,21, 42,21, 42,0} --done
-	
-	--o piece
-	local parto1 = {0,0, 0,21, 21,21, 21,0}
-	local parto2 = {0,21, 0,42, 21,42, 21,21}
-	local parto3 = {21,0, 21,21, 42,21, 42,0}
-	local parto4 = {21,21, 21,42, 42,42, 42,21} --done
-	
-	--i piece
-	local parti1 = {0,0, 0,21, 21,21, 21,0}
-	local parti2 = {0,-21, 0,0, 21,0, 21,-21}
-	local parti3 = {0,-42, 0,-21, 21,-21, 21,-42}
-	local parti4 = {0,21, 0,42, 21,42, 21,21}-- done
-	
-	--l piece
-	local partl2 = {0,-21, 0,0, 21,0, 21,-21}
-	local partl1 = {0,0, 0,21, 21,21, 21,0}
-	local partl3 = {0,21, 0,42, 21,42, 21,21}
-	local partl4 = {21,21, 21,42, 42,42, 42,21} -- done
-	
-	--j piece
-	local partj2 = {0,-21, 0,0, 21,0, 21,-21}
-	local partj1 = {0,0, 0,21, 21,21, 21,0}
-	local partj3 = {0,21, 0,42, 21,42, 21,21}
-	local partj4 = {-21,21, -21,42, 0,42, 0,21} -- done
-	
-	if index == 0 then
-		return partt1, partt2, partt3, partt4
-	elseif index == 1 then
-		return partz1, partz2, partz3, partz4
-	elseif index == 2 then
-		return parts1, parts2, parts3, parts4
-	elseif index == 3 then
-		return parto1, parto2, parto3, parto4
-	elseif index == 4 then
-		return parti1, parti2, parti3, parti4
-	elseif index == 5 then
-		return partl1, partl2, partl3, partl4
-	else 
-		return partj1, partj2, partj3, partj4
-	end
-end
 addMenuScreen()
 
 --need to potentaily fix error on check move
