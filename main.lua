@@ -4,7 +4,7 @@
 --
 -----------------------------------------------------------------------------------------
 update = 0
-currentPiece ={}
+currentPiece = {}
 index = 4
 pieceCreate = true
 board = {}
@@ -24,10 +24,11 @@ high_color = 100
 
 --Constants for the printing on screen. The offset for each
 x_offset = 10
-y_offset = 12
+y_offset = 0
 
 --the multiplier for the board values.
 board_offset = 21 --need to be set at run time
+height_offset = display.contentHeight / 23
 
 board_height = 23
 board_width = 10
@@ -45,6 +46,7 @@ display4 = display.newRect(0,0,0,0)
 
 local menuScreen = {}
 local tweenMS = {}
+
 
 function randomizeColor()
 	for i = 0, board_height do
@@ -65,7 +67,7 @@ function deleteBoard()
 end
 
 function drawPiece(the_pieces)
-	i = math.floor(currentPiece.y/board_offset)
+	i = math.floor(currentPiece.y/height_offset)
 	j = math.floor(currentPiece.x/board_offset)
 
 	if display1 ~= nil then
@@ -75,10 +77,10 @@ function drawPiece(the_pieces)
 		display4:removeSelf()
 	end
 	
-	display1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset , block_size, block_size)
-	display2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + the_pieces.piece2y) * board_offset + y_offset , block_size, block_size)
-	display3 = display.newRect((j + the_pieces.piece3x) * board_offset + x_offset, (i + the_pieces.piece3y) * board_offset + y_offset , block_size, block_size)
-	display4 = display.newRect((j + the_pieces.piece4x) * board_offset + x_offset, (i + the_pieces.piece4y) * board_offset + y_offset , block_size, block_size)
+	display1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset, block_size, block_size)
+	display2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + the_pieces.piece2y) * board_offset + y_offset, block_size, block_size)
+	display3 = display.newRect((j + the_pieces.piece3x) * board_offset + x_offset, (i + the_pieces.piece3y) * board_offset + y_offset, block_size, block_size)
+	display4 = display.newRect((j + the_pieces.piece4x) * board_offset + x_offset, (i + the_pieces.piece4y) * board_offset + y_offset, block_size, block_size)
 
 	group:insert(display1)
 	group:insert(display2)
@@ -86,8 +88,10 @@ function drawPiece(the_pieces)
 	group:insert(display4)
 end
 
-function drawNextPiece() --might need to undo
-
+function drawNextPiece()
+	if pause == true then
+		return
+	end
 	nextPieceGroup:removeSelf()
 	nextPieceGroup = display.newGroup()
 	local nextPiece = {}
@@ -129,6 +133,9 @@ function drawNextPiece() --might need to undo
 end
 
 function updateScore(rows)
+	if pause == true then
+		return
+	end
 	scoreGroup:removeSelf()
 	totalScore = totalScore + ( rows * 100)
 	scoreGroup = display.newGroup()
@@ -184,8 +191,6 @@ end
 
 function fail()
 	if start_over then
-		print(board_offset)
-		print(block_size)
 		deleteBoard()
 		board = {}
 		pieceCreate = false
@@ -222,8 +227,12 @@ function fail()
 		
 		yes:addEventListener('tap', recreate)
 		no:addEventListener('tap', goAway)
+		no:addEventListener('tap', goAway)
 		group:removeSelf()
-		--scoreGroup:removeSelf()
+		if nextPieceGroup ~= nil then
+			nextPieceGroup:removeSelf()
+		end
+		scoreGroup:removeSelf()
 		--nextPieceGroup:removeSelf()
 	end
 end
@@ -284,8 +293,12 @@ function updateBoard(the_pieces)
 		j = math.floor(currentPiece.x/board_offset)
 		
 		--well checks are actually working at the moment. 
+		
+		print(i)
+		print(j)
 
 		if i + the_pieces.piece1y > board_height or j + the_pieces.piece1x > board_width or j + the_pieces.piece1x < 0 or i + the_pieces.piece1y < 0 then
+			print("failed")
 			pause = true
 			fail()
 			return
@@ -297,6 +310,7 @@ function updateBoard(the_pieces)
 		end
 		
 		if i + the_pieces.piece2y > board_height or j + the_pieces.piece2x > board_width or j + the_pieces.piece2x < 0 or i + the_pieces.piece2y < 0 then
+			print("failed")
 			pause = true
 			fail()
 			return
@@ -306,9 +320,10 @@ function updateBoard(the_pieces)
 			group:insert(board[i + the_pieces.piece2y][j + the_pieces.piece2x])
 			physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
 		end
-		if i + the_pieces.piece3y > board_offset or j + the_pieces.piece3x > board_width  or j + the_pieces.piece3x < 0 or i + the_pieces.piece3y < 0 then
-			fail()
+		if i + the_pieces.piece3y > board_height or j + the_pieces.piece3x > board_width  or j + the_pieces.piece3x < 0 or i + the_pieces.piece3y < 0 then
+			print("failed")
 			pause = true
+			fail()
 			return
 		else
 			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*board_offset + x_offset, (i + the_pieces.piece3y)*board_offset + y_offset, block_size, block_size)
@@ -317,8 +332,9 @@ function updateBoard(the_pieces)
 			physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
 		end
 		if i + the_pieces.piece4y > board_height or j + the_pieces.piece4x > board_width  or j + the_pieces.piece4x < 0 or i + the_pieces.piece4y < 0 then
-			fail()
+			print("failed")
 			pause = true
+			fail()
 			return
 		else
 			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)* board_offset + x_offset, (i + the_pieces.piece4y)* board_offset + y_offset, block_size, block_size)
@@ -461,9 +477,9 @@ function freezePiece(freezeEvent)
 		currentPiece.myName = "death"
 		pieceCreate = false
 		randomizeColor()
-		timer.performWithDelay(1, updateBoard(pieces), 1)
+		updateBoard(pieces)
 		currentPiece:removeSelf()
-		timer.performWithDelay(10, createPiece, 1)
+		createPiece()
 	end
 end
 
@@ -574,8 +590,8 @@ function create()
 	start_over = true
 	pause = false
 	
-	nextPieceGroup:removeSelf()
-	nextPieceGroup:removeSelf()
+	nextPieceGroup = display.newGroup()
+	scoreGroup = display.newGroup()
 	
 	display1 = display.newRect(0,0,0,0)
 	display2 = display.newRect(0,0,0,0)
@@ -616,7 +632,7 @@ function create()
 
 	local floor = display.newImage("base.png")
 	floor.x = display.contentWidth/2
-	floor.y = display.contentHeight + 55
+	floor.y = display.contentHeight + 43
 	physics.addBody(floor, "static")
 	floor.myName = "Floor"
 
