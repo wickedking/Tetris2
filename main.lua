@@ -18,6 +18,8 @@ totalScore = 0
 scoreGroup = display.newGroup()
 nextPieceGroup = display.newGroup()
 
+pieceLines = display.newGroup()
+
 --Used to change range of random colors
 low_color = 20
 high_color = 100
@@ -93,6 +95,47 @@ function drawPiece(the_pieces)
 		display3:removeSelf()
 		display4:removeSelf()
 	end
+	local small_x = 10
+	local big_x = -10
+	
+	if the_pieces.piece1x < small_x then
+		small_x = the_pieces.piece1x
+	end
+	if the_pieces.piece2x < small_x then
+		small_x = the_pieces.piece2x
+	end
+	if the_pieces.piece3x < small_x then
+		small_x = the_pieces.piece3x
+	end
+	if the_pieces.piece4x < small_x then
+		small_x = the_pieces.piece4x
+	end
+	if the_pieces.piece1x > big_x then
+		big_x = the_pieces.piece1x
+	end
+	if the_pieces.piece2x > big_x then
+		big_x = the_pieces.piece2x
+	end
+	if the_pieces.piece3x > big_x then
+		big_x = the_pieces.piece3x
+	end
+	if the_pieces.piece4x > big_x then
+		big_x = the_pieces.piece4x
+	end
+	
+	pieceLines:removeSelf()
+	pieceLines = display.newGroup()
+	
+	small_x = (small_x * 21) + currentPiece.x
+	big_x = big_x + 1
+	big_x = (big_x * 21) + currentPiece.x
+	
+	local line1 = display.newLine(pieceLines, small_x , currentPiece.y - 19, small_x, 480)
+	local line2 = display.newLine(pieceLines, big_x, currentPiece.y - 19, big_x, 480)
+	
+	line1:setStrokeColor(0.5,0.5,0.5)
+	line2:setStrokeColor(0.5,0.5,0.5)
+	
 	
 	display1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset, block_size, block_size)
 	display2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + the_pieces.piece2y) * board_offset + y_offset, block_size, block_size)
