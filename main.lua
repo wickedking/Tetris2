@@ -37,6 +37,9 @@ nextPieceGroup = display.newGroup()
 
 pieceLines = display.newGroup()
 
+use_ghostPiece = true
+ghostGroup = nil
+
 --Used to change range of random colors
 low_color = 20
 high_color = 100
@@ -113,8 +116,8 @@ end
 
 function drawPiece(the_pieces)
 	pieceLines:removeSelf()
-	i = math.floor(currentPiece.y/height_offset)
-	j = math.floor(currentPiece.x/board_offset)
+	local i = math.floor(currentPiece.y/height_offset)
+	local j = math.floor(currentPiece.x/board_offset)
 
 	if display1 ~= nil then
 		display1:removeSelf()
@@ -175,6 +178,10 @@ function drawPiece(the_pieces)
 	group:insert(display2)
 	group:insert(display3)
 	group:insert(display4)
+	
+	if use_ghostPiece then
+		ghostPiece()
+	end
 end
 
 function drawNextPiece()
@@ -625,6 +632,54 @@ function checkMove(dx, dy)
 	end
 	
 	return can
+end
+
+function dropIndex()
+	local index = 0
+	for i = 1, 25 do
+		local test = checkMove(0,i)
+		if test then
+			index = i
+		else
+			break
+		end
+	end
+	return index
+end
+
+function ghostPiece()
+	local index = dropIndex()
+	local the_pieces = pieceRotation(currentPiece)
+	
+	local i = math.floor(currentPiece.y/height_offset)
+	local j = math.floor(currentPiece.x/board_offset)
+	
+	ghost1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + index + the_pieces.piece1y) * board_offset + y_offset, block_size, block_size)
+	ghost2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + index + the_pieces.piece2y) * board_offset + y_offset, block_size, block_size)
+	ghost3 = display.newRect((j + the_pieces.piece3x) * board_offset + x_offset, (i + index + the_pieces.piece3y) * board_offset + y_offset, block_size, block_size)
+	ghost4 = display.newRect((j + the_pieces.piece4x) * board_offset + x_offset, (i + index + the_pieces.piece4y) * board_offset + y_offset, block_size, block_size)
+	
+	ghost1:setFillColor(0, 0,1)
+	ghost2:setFillColor(0, 0,1)
+	ghost3:setFillColor(0, 0,1)
+	ghost4:setFillColor(0, 0,1)
+	
+	ghost1.alpha = .4
+	ghost2.alpha = .4
+	ghost3.alpha = .4
+	ghost4.alpha = .4
+	
+	
+	if ghostGroup ~= nil then
+		ghostGroup:removeSelf()
+	end
+	ghostGroup = display.newGroup()
+	
+	ghostGroup:insert(ghost1)
+	ghostGroup:insert(ghost2)
+	ghostGroup:insert(ghost3)
+	ghostGroup:insert(ghost4)
+	
 end
 
 function freezePiece(freezeEvent)
