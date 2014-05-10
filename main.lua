@@ -682,6 +682,11 @@ function ghostPiece()
 	
 end
 
+function dropPiece()
+	local index = dropIndex()
+	currentPiece.y = currentPiece.y + (index * height_offset)
+end
+
 function freezePiece(freezeEvent)
 	if pieceCreate == true then
 		if soundEffects then
