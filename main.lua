@@ -21,6 +21,10 @@ tapCircle = {}
 buttonCircle = {}
 
 update = 0
+update_number = 20
+
+updatePieceNumber = 1000
+
 currentPiece = {}
 index = 4
 pieceCreate = true
@@ -32,6 +36,7 @@ extra_group = {}
 start_over = true
 gameOverGroup = {}
 totalScore = 0
+totalScoreCopy = 0
 scoreGroup = display.newGroup()
 nextPieceGroup = display.newGroup()
 
@@ -74,10 +79,10 @@ local tweenMS = {}
 
 --createTable()
 --saveFile()
-insertScore(13)
-saveFile()
-loadFile()
-print(highScore.score1)
+--insertScore(13)
+--saveFile()
+--loadFile()
+--print(highScore.score1)
 
 
 function pauseGame()
@@ -234,12 +239,21 @@ function updateScore(rows)
 	end
 	scoreGroup:removeSelf()
 	totalScore = totalScore + ( rows * 100)
+	totalScoreCopy = totalScore + ( rows * 100)
 	scoreGroup = display.newGroup()
 	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/5) * 3 + 20, 50, 50)
 	scoreBox:setFillColor(1,1,1)
 	scoreGroup:insert(scoreBox)
 	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 5) * 3 + 20, native.systemFontBold, 14)
 	text:setFillColor(0,0,0)
+	
+	if totalScoreCopy / updatePieceNumber > 1 then
+		if update_number < 3 then
+			return
+		end
+		totalScoreCopy = totalScoreCopy % 1000
+		update_number = update_number - 2
+	end
 end
 
 function createBoard()
@@ -530,7 +544,7 @@ function redraw()
 	end
 end
 
-function rowFall(inital_row) --need to redo for handling case of remove 1 and 3
+function rowFall(inital_row) 
 	for i = inital_row, 0, -1 do
 		for j = 0, board_width do
 			if board[i][j] ~= 0 then
@@ -706,7 +720,7 @@ end
 
 function movePiece(moveEvent)
 	update = update + 1
-	if update % 20 == 0  and pause == false then
+	if update % update_number == 0  and pause == false then
 		if checkMove(0,1) then
 			currentPiece.y = currentPiece.y + board_offset
 		else
@@ -862,7 +876,6 @@ function create()
 	physics.setGravity(0, 0)
 	
 	if tapControl == false then
-
 		local leftB = display.newImage("left_button.png")
 		leftB.x = display.contentWidth - 50
 		leftB.y = display.contentHeight / 8 - 25
@@ -878,12 +891,9 @@ function create()
 		extra_group:insert(leftB)
 		extra_group:insert(rightB)
 		
-	
 	else
-	
 		Runtime:addEventListener("tap", moveLeftGlobal)
 		Runtime:addEventListener("tap", moveRightGlobal)
-	
 	end
 
 	local rotateB = display.newImage("rotate.png")
