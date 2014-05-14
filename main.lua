@@ -77,6 +77,9 @@ display4 = display.newRect(0,0,0,0)
 local menuScreen = {}
 local tweenMS = {}
 
+line1 = {}
+line2 = {}
+
 --createTable()
 --saveFile()
 --insertScore(13)
@@ -165,8 +168,8 @@ function drawPiece(the_pieces)
 	big_x = big_x + 1
 	big_x = (big_x * 21) + currentPiece.x
 	
-	local line1 = display.newLine(small_x , currentPiece.y - 35, small_x, 480)
-	local line2 = display.newLine(big_x, currentPiece.y - 35, big_x, 480)
+	line1 = display.newLine(small_x , currentPiece.y - 35, small_x, 480)
+	line2 = display.newLine(big_x, currentPiece.y - 35, big_x, 480)
 	
 	pieceLines:insert(line1)
 	pieceLines:insert(line2)
@@ -184,11 +187,9 @@ function drawPiece(the_pieces)
 	group:insert(display3)
 	group:insert(display4)
 	
-	if use_ghostPiece then
+	if use_ghostPiece and pause == false then
 		ghostPiece()
 	end
-	print(line1.x)
-	print(line2.x)
 end
 
 function drawNextPiece()
@@ -427,8 +428,11 @@ function fail()
 		end
 		scoreGroup:removeSelf()
 		pieceLines:removeSelf()
+		ghostGroup:removeSelf()
+		line1:removeSelf()
+		line2:removeSelf()
 		pieceLines = display.newGroup()
-		print(pieceLines)
+		ghostGroup = display.newGroup()
 	end
 end
 
@@ -586,8 +590,14 @@ function removeRows()
 end
 
 function checkTopRow()
+	--if board == nil then
+	--	return false
+	--end
 	local isPiece = false
 	for j = 0, board_width do
+		--if board[0][j] == nil then
+		--	return false
+		--end
 		if board[0][j] ~= 0 then
 		isPiece = true
 		break
