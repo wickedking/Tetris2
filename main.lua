@@ -187,6 +187,8 @@ function drawPiece(the_pieces)
 	if use_ghostPiece then
 		ghostPiece()
 	end
+	print(line1.x)
+	print(line2.x)
 end
 
 function drawNextPiece()
