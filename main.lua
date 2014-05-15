@@ -835,6 +835,18 @@ function moveRightGlobal(e)
 	
 end
 
+function dropPieceMotion(e)
+	local endY
+	if (e.phase == "ended") then
+		endY = e.y
+	end
+	if (pause) then
+		return
+	elseif (e.yStart < e.y) and (e.phase == "ended") then
+		dropPiece()
+	end
+end
+
 function rightWallCollision(event)
 	if event.object1.myName == "Square" or event.object2.myName == "Square" then
 		if event.object1.myName == "rightWall" and event.object2.myName == "rightWall" then
@@ -906,7 +918,10 @@ function create()
 	else
 		Runtime:addEventListener("tap", moveLeftGlobal)
 		Runtime:addEventListener("tap", moveRightGlobal)
+		Runtime:addEventListener("touch", dropPiece)
 	end
+	
+	--Runtime:addEventListener("touch", dropPiece)
 
 	local rotateB = display.newImage("rotate.png")
 	rotateB.x = display.contentWidth - 50
