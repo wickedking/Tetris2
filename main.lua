@@ -836,10 +836,10 @@ function moveRightGlobal(e)
 end
 
 function dropPieceMotion(e)
-	local endY
-	if (e.phase == "ended") then
-		endY = e.y
-	end
+	--local endY
+	--if (e.phase == "ended") then
+	--	endY = e.y
+	--end
 	if (pause) then
 		return
 	elseif (e.yStart < e.y) and (e.phase == "ended") then
@@ -918,7 +918,7 @@ function create()
 	else
 		Runtime:addEventListener("tap", moveLeftGlobal)
 		Runtime:addEventListener("tap", moveRightGlobal)
-		Runtime:addEventListener("touch", dropPiece)
+		Runtime:addEventListener("touch", dropPieceMotion)
 	end
 	
 	--Runtime:addEventListener("touch", dropPiece)
