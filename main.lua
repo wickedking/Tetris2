@@ -76,6 +76,7 @@ display4 = display.newRect(0,0,0,0)
 
 local menuScreen = {}
 local tweenMS = {}
+settingsScreenGroup = {}
 
 line1 = {}
 line2 = {}
@@ -87,6 +88,56 @@ line2 = {}
 --loadFile()
 --print(highScore.score1)
 
+fillImage = {}
+soundEffectImage = {}
+musicImage = {}
+controlImage = {}
+
+
+function settingsScreen()
+--sound effects
+--fill board
+--music
+--Tap on screen control
+
+	menuScreen:removeSelf()
+	settingScreenGroup = display.newGroup()
+
+	local fillText = display.newText(settingScreenGroup, "Fill Board", display.contentWidth/5, display.contentHeight/6, native.systemFontBold, 14)
+	local soundEffectText = display.newText(settingScreenGroup, "Sound Effects", display.contentWidth/5, display.contentHeight/6 * 2, native.systemFontBold, 14)
+	local musicText = display.newText(settingScreenGroup, "music", display.contentWidth/5, display.contentHeight/6 * 3, native.systemFontBold, 14)
+	local controlText = display.newText(settingScreenGroup, "Control: Tap on screen / Buttons", display.contentWidth/5, display.contentHeight/6 * 4, native.systemFontBold, 14)
+	
+	fillImage = display.newImage("off_button.png")
+	soundEffectImage = display.newImage("off_button.png")
+	musicImage = display.newImage("off_button.png")
+	controlImage = display.newImage("off_button.png")
+	
+	fillImage:scale(0.5, 0.5)
+	soundEffectImage:scale(0.5, 0.5)
+	musicImage:scale(0.5, 0.5)
+	controlImage:scale(0.5, 0.5)
+	
+	fillImage.x = display.contentWidth/2
+	soundEffectImage.x = display.contentWidth/2
+	musicImage.x = display.contentWidth/2
+	controlImage.x = display.contentWidth/2
+	
+	fillImage.y = display.contentHeight/6
+	soundEffectImage.y = display.contentHeight/6 * 2
+	musicImage.y = display.contentHeight/6 * 3
+	controlImage.y = display.contentHeight/6 * 4
+	
+	
+	soundEffectText:addEventListener("tap", soundEffect)
+	controlText:addEventListener("tap", displayControl)
+	musicText:addEventListener("tap", soundMusic)
+	fillText:addEventListener("tap", changeFill)
+	
+	
+	
+	
+end
 
 function pauseGame()
 	if pause == false then
@@ -335,18 +386,22 @@ function addMenuScreen()
 	local mScreen = display.newImage("menuScreen.png")
 	local startButton = display.newImage("play_button.png")
 	
-	local fillText = display.newText(menuScreen, "Fill Board", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
+	--local fillText = display.newText(menuScreen, "Fill Board", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
 
-	local soundEffectText = display.newText(menuScreen, "Sound Effects", display.contentWidth/4, display.contentHeight/4* 3, native.systemFontBold, 14)
+	--local soundEffectText = display.newText(menuScreen, "Sound Effects", display.contentWidth/4, display.contentHeight/4* 3, native.systemFontBold, 14)
 	
-	local musicText = display.newText(menuScreen, "music", display.contentWidth/4 * 3, display.contentHeight/4* 3, native.systemFontBold, 14)
+	--local musicText = display.newText(menuScreen, "music", display.contentWidth/4 * 3, display.contentHeight/4* 3, native.systemFontBold, 14)
 	
-	local controlText = display.newText(menuScreen, "Control: Tap on screen / Buttons", display.contentWidth/2, display.contentHeight/5*4.5, native.systemFontBold, 14)
+	--local controlText = display.newText(menuScreen, "Control: Tap on screen / Buttons", display.contentWidth/2, display.contentHeight/5*4.5, native.systemFontBold, 14)
 	
-	buttonCircle = display.newImage("blockout.png")
-	buttonCircle.x = display.contentWidth/2 + 80
-	buttonCircle.y = display.contentHeight/5 * 4.5 + 20
-	menuScreen:insert(buttonCircle)
+	--buttonCircle = display.newImage("blockout.png")
+	--buttonCircle.x = display.contentWidth/2 + 80
+	--buttonCircle.y = display.contentHeight/5 * 4.5 + 20
+	--menuScreen:insert(buttonCircle)
+	
+	local settingsText = display.newText(menuScreen, "Settings", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
+	
+	settingsText:addEventListener("tap", settingsScreen)
 	
 	mScreen.x = display.contentWidth/2
 	mScreen.y = display.contentHeight/2
@@ -356,11 +411,11 @@ function addMenuScreen()
 	startButton.y = display.contentHeight/2
 	menuScreen:insert(startButton)
 	
-	soundEffectText:addEventListener("tap", soundEffect)
+	--soundEffectText:addEventListener("tap", soundEffect)
 	
-	controlText:addEventListener("tap", displayControl)
-	musicText:addEventListener("tap", soundMusic)
-	fillText:addEventListener("tap", changeFill)
+	--controlText:addEventListener("tap", displayControl)
+	--musicText:addEventListener("tap", soundMusic)
+	--fillText:addEventListener("tap", changeFill)
 	startButton:addEventListener('tap', tweenMS)
 
 end
