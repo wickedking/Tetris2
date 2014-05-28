@@ -84,13 +84,6 @@ settingsScreenGroup = {}
 line1 = {}
 line2 = {}
 
---createTable()
---saveFile()
---insertScore(13)
---saveFile()
---loadFile()
---print(highScore.score1)
-
 fillImage = {}
 soundEffectImage = {}
 musicImage = {}
@@ -100,8 +93,9 @@ highScoreText = {}
 yourScoreText = {}
 
 highScore = {}
+highScore.score1 = 100
 highScore = loadTable("highScore.json")
-if highScore.score1 == nil then
+if highScore.score1 == 100 or highScore.score1 == nil then
 	highScore.score1 = 1500
 	saveTable(highScore, "highScore.json")
 end
@@ -1117,7 +1111,7 @@ function create()
 	if music then
 		audio.play(the_music, options)
 	end
-	--timer.performWithDelay(1000,fail, 1)
+	timer.performWithDelay(1000,fail, 1)
 end
 
 function pieceRotation(currentPiece)
