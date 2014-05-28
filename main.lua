@@ -1014,9 +1014,9 @@ function create()
 	else
 		Runtime:addEventListener("tap", moveLeftGlobal)
 		Runtime:addEventListener("tap", moveRightGlobal)
-		Runtime:addEventListener("touch", dropPieceMotion)
+		
 	end
-	
+	Runtime:addEventListener("touch", dropPieceMotion)
 	--Runtime:addEventListener("touch", dropPiece)
 
 	local rotateB = display.newImage("rotate.png")
