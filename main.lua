@@ -912,11 +912,10 @@ function moveRight()
 	end
 	drawPiece(pieceRotation(currentPiece))
 end
-
 function moveLeftGlobal(e) 
 	if (pause) then 
 		return
-	elseif (e.x < display.contentWidth/2) and checkMove(-1, 0)  then
+	elseif (e.x < 235/2) and checkMove(-1, 0)  then
 		currentPiece.x = currentPiece.x - 21
 	end
 	drawPiece(pieceRotation(currentPiece))
@@ -926,11 +925,10 @@ end
 function moveRightGlobal(e) 
 	if (pause) then 
 		return
-	elseif (e.x > display.contentWidth/2) and checkMove(1, 0) then  
+	elseif (e.x > 235/2) and (e.x < 235) and checkMove(1, 0) then  
 		currentPiece.x = currentPiece.x + 21
 	end
 	drawPiece(pieceRotation(currentPiece))
-	
 end
 
 function dropPieceMotion(e)
