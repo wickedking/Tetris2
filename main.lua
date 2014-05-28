@@ -94,6 +94,15 @@ soundEffectImage = {}
 musicImage = {}
 controlImage = {}
 
+highScoreText = {}
+yourScoreText = {}
+
+highScore = {}
+highScore = loadTable("highScore.json")
+if highScore.score1 == nil then
+	highScore.score1 = 1500
+	saveTable(highScore, "highScore.json")
+end
 
 function settingsScreen()
 --sound effects
@@ -531,6 +540,23 @@ function fail()
 		line2:removeSelf()
 		pieceLines = display.newGroup()
 		ghostGroup = display.newGroup()
+		
+		if totalScore > highScore.score1 then
+			highScore.score1 = totalScore
+			saveTable(highScore, "highScore.json")
+			display.newText(gameOverGroup, "NEW HIGHSCORE!", display.contentWidth/2, display.contentHeight/2 + 30, native.systemFontBold, 16)
+		end
+		
+
+		
+		highScoreText = display.newText(gameOverGroup, "High Score: "..highScore.score1, display.contentWidth/5 * 2- 30, display.contentHeight/2, native.systemFontBold, 14)
+		highScoreText:setFillColor(0,0,0)
+		
+		yourScoreText = display.newText(gameOverGroup, "Your Score: "..totalScore, display.contentWidth/5 * 4 - 35, display.contentHeight/2, native.systemFontBold, 14)
+		yourScoreText:setFillColor(0,0,0)
+		
+		
+		
 	end
 end
 
@@ -1066,6 +1092,7 @@ function create()
 	if music then
 		audio.play(the_music, options)
 	end
+	--timer.performWithDelay(1000,fail, 1)
 end
 
 function pieceRotation(currentPiece)

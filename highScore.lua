@@ -8,15 +8,15 @@ highScore = {}
 
 function createTable()
 	highScore.score1 = 0
-	highScore.score2 = 2
-	highScore.score3 = 0
-	highScore.score4 = 0
-	highScore.score5 = 0
-	highScore.score6 = 0
-	highScore.score7 = 0
-	highScore.score8 = 0
-	highScore.score9 = 0
-	highScore.score10 = 0
+	--highScore.score2 = 2
+	--highScore.score3 = 0
+	--highScore.score4 = 0
+	--highScore.score5 = 0
+	--highScore.score6 = 0
+	--highScore.score7 = 0
+	--highScore.score8 = 0
+	--highScore.score9 = 0
+	--highScore.score10 = 0
 end
 
 function saveFile()
