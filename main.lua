@@ -17,6 +17,8 @@ music = true
 musicCircle = {}
 background = {}
 
+level = 1
+
 tapControl = true
 tapCircle = {}
 buttonCircle = {}
@@ -338,10 +340,32 @@ function updateScore(rows)
 		if update_number < 3 then
 			return
 		end
-		totalScoreCopy = totalScoreCopy % 1000
-		update_number = update_number - 2
+		
+		level = level + 1
+		totalScoreCopy = totalScoreCopy % 100
+		update_number = update_number - 1
+		if (level % 2 == 0) then 
+			background:removeSelf()
+			background = display.newImage("spring.png", display.contentWidth/2, display.contentHeight/2)
+			background:toBack()
+		elseif (level % 3 == 0) then
+		background:removeSelf()
+			background = display.newImage("summer.png", display.contentWidth/2, display.contentHeight/2)
+			background:toBack()		
+		elseif(level % 4 == 0) then
+			background:removeSelf()
+			background = display.newImage("fall.png", display.contentWidth/2, display.contentHeight/2)
+			background:toBack()
+		else 
+			background:removeSelf()
+			background = display.newImage("winter.png", display.contentWidth/2, display.contentHeight/2)
+			background:toBack()
+		end
+		
+		
 	end
 end
+
 
 function createBoard()
 	for i = 0, board_height do
