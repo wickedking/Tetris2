@@ -106,7 +106,7 @@ function settingsScreen()
 	local fillText = display.newText(settingScreenGroup, "Fill Board", display.contentWidth/5, display.contentHeight/6, native.systemFontBold, 14)
 	local soundEffectText = display.newText(settingScreenGroup, "Sound Effects", display.contentWidth/5, display.contentHeight/6 * 2, native.systemFontBold, 14)
 	local musicText = display.newText(settingScreenGroup, "music", display.contentWidth/5, display.contentHeight/6 * 3, native.systemFontBold, 14)
-	local controlText = display.newText(settingScreenGroup, "Control: Tap on screen / Buttons", display.contentWidth/5, display.contentHeight/6 * 4, native.systemFontBold, 14)
+	local controlText = display.newText(settingScreenGroup, "Control: On for Tap", display.contentWidth/5, display.contentHeight/6 * 4, native.systemFontBold, 14)
 	
 	fillImage = display.newImage("off_button.png")
 	soundEffectImage = display.newImage("off_button.png")
@@ -118,10 +118,10 @@ function settingsScreen()
 	musicImage:scale(0.5, 0.5)
 	controlImage:scale(0.5, 0.5)
 	
-	fillImage.x = display.contentWidth/2
-	soundEffectImage.x = display.contentWidth/2
-	musicImage.x = display.contentWidth/2
-	controlImage.x = display.contentWidth/2
+	fillImage.x = display.contentWidth/4 * 3
+	soundEffectImage.x = display.contentWidth/4 * 3
+	musicImage.x = display.contentWidth/4 * 3
+	controlImage.x = display.contentWidth/4 * 3
 	
 	fillImage.y = display.contentHeight/6
 	soundEffectImage.y = display.contentHeight/6 * 2
@@ -134,8 +134,10 @@ function settingsScreen()
 	musicText:addEventListener("tap", soundMusic)
 	fillText:addEventListener("tap", changeFill)
 	
-	
-	
+	fillImage:addEventListener("tap", changeFill)
+	soundEffectImage:addEventListener("tap", soundEffect)
+	musicImage:addEventListener("tap", soundMusic)
+	controlImage:addEventListener("tap", displayControl)	
 	
 end
 
@@ -322,61 +324,80 @@ end
 function changeFill()
 	if fillBoard then
 		fillBoard = false
-		fillBoardCircle = display.newImage("blockout.png")
-		fillBoardCircle.x = display.contentWidth/2
-		fillBoardCircle.y = (display.contentHeight /4) * 3 + 20
-		menuScreen:insert(fillBoardCircle)
+		fillImage:removeSelf()
+		fillImage = display.newImage("on_button.png")
+		fillImage.x = display.contentWidth/ 4 * 3
+		fillImage.y = display.contentHeight / 6
+		fillImage:scale(0.5, 0.5)
+		fillImage:addEventListener("tap", changeFill)
 	else 
 		fillBoard = true
-		fillBoardCircle:removeSelf()
+		fillImage:removeSelf()
+		fillImage = display.newImage("off_button.png")
+		fillImage.x = display.contentWidth/ 4 * 3
+		fillImage.y = display.contentHeight / 6
+		fillImage:scale(0.5, 0.5)
+		fillImage:addEventListener("tap", changeFill)
 	end
 end
 
 function soundEffect()
 	if soundEffects then
 		soundEffects = false
-		soundEffectsCircle = display.newImage("blockout.png")
-		soundEffectsCircle.x = display.contentWidth/4
-		soundEffectsCircle.y = display.contentHeight/4* 3 + 20
-		menuScreen:insert(soundEffectsCircle)
+		soundEffectImage:removeSelf()
+		soundEffectImage = display.newImage("on_button.png")
+		soundEffectImage.x = display.contentWidth/4 * 3
+		soundEffectImage.y = display.contentHeight/6 * 2
+		soundEffectImage:scale(0.5, 0.5)
+		soundEffectImage:addEventListener("tap", soundEffect)
 	else
 		soundEffects = true
-		soundEffectsCircle:removeSelf()
+		soundEffectImage:removeSelf()
+		soundEffectImage = display.newImage("off_button.png")
+		soundEffectImage.x = display.contentWidth/4 * 3
+		soundEffectImage.y = display.contentHeight/6 * 2
+		soundEffectImage:scale(0.5, 0.5)
+		soundEffectImage:addEventListener("tap", soundEffect)
 	end
 end
 
 function soundMusic()
 	if music then
 		music = false
-		musicCircle = display.newImage("blockout.png")
-		musicCircle.x = display.contentWidth/4*3
-		musicCircle.y = display.contentHeight/4 * 3 + 20
-		menuScreen:insert(musicCircle)
+		musicImage:removeSelf()
+		musicImage = display.newImage("on_button.png")
+		musicImage.x = display.contentWidth/4 * 3
+		musicImage.y = display.contentHeight/6 * 3
+		musicImage:scale(0.5, 0.5)
+		musicImage:addEventListener("tap", soundMusic)
 	else
 		music = true
-		musicCircle:removeSelf()
+		musicImage = display.newImage("off_button.png")
+		musicImage.x = display.contentWidth/4 * 3
+		musicImage.y = display.contentHeight/6 * 3
+		musicImage:scale(0.5, 0.5)
+		musicImage:addEventListener("tap", soundMusic)
 	end
 end
 
 function displayControl()
 	if tapControl then
 		tapControl = false
-		if buttonCircle ~= nil then
-			buttonCircle:removeSelf()
-		end
-		tapCircle = display.newImage("blockout.png")
-		tapCircle.x = display.contentWidth/2
-		tapCircle.y = display.contentHeight/5 * 4.5 + 20
-		menuScreen:insert(tapCircle)
+		controlImage:removeSelf()
+		controlImage = display.newImage("on_button.png")
+		controlImage.x = display.contentWidth/4 * 3
+		controlImage.y = display.contentHeight/6 * 4
+		controlImage:scale(0.5, 0.5)
+		controlImage:addEventListener("tap", displayControl)
+		
 	else
 		tapControl = true
-		if tapCircle ~= nil then
-			tapCircle:removeSelf()
-		end
-		buttonCircle = display.newImage("blockout.png")
-		buttonCircle.x = display.contentWidth/2 + 80
-		buttonCircle.y = display.contentHeight/5 * 4.5 + 20
-		menuScreen:insert(buttonCircle)
+		controlImage:removeSelf()
+		controlImage = display.newImage("off_button.png")
+		controlImage.x = display.contentWidth/4 * 3
+		controlImage.y = display.contentHeight/6 * 4
+		controlImage:scale(0.5, 0.5)
+		controlImage:addEventListener("tap", displayControl)
 	end
 
 end
