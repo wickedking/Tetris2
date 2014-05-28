@@ -15,6 +15,7 @@ soundEffectsCircle = {}
 
 music = true
 musicCircle = {}
+background = {}
 
 tapControl = true
 tapCircle = {}
@@ -1038,6 +1039,10 @@ function create()
 	extra_group:insert(rightWall)
 
 	Runtime:addEventListener("enterFrame", movePiece)
+	
+	background = display.newImage("winter.png", display.contentWidth/2, display.contentHeight/2)
+	background:toBack();
+	
 
 	if music then
 		audio.play(the_music, options)
