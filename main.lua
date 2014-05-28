@@ -109,10 +109,12 @@ function settingsScreen()
 	local musicText = display.newText(settingScreenGroup, "music", display.contentWidth/5, display.contentHeight/6 * 3, native.systemFontBold, 14)
 	local controlText = display.newText(settingScreenGroup, "Control: On for Tap", display.contentWidth/5, display.contentHeight/6 * 4, native.systemFontBold, 14)
 	
-	fillImage = display.newImage("off_button.png")
-	soundEffectImage = display.newImage("off_button.png")
-	musicImage = display.newImage("off_button.png")
-	controlImage = display.newImage("off_button.png")
+	local backText = display.newText(settingScreenGroup, "Main Menu", display.contentWidth/2, display.contentHeight/6 * 5, native.systemFontBold, 14)
+	
+	fillImage = display.newImage("on_button.png")
+	soundEffectImage = display.newImage("on_button.png")
+	musicImage = display.newImage("on_button.png")
+	controlImage = display.newImage("on_button.png")
 	
 	fillImage:scale(0.5, 0.5)
 	soundEffectImage:scale(0.5, 0.5)
@@ -139,7 +141,26 @@ function settingsScreen()
 	soundEffectImage:addEventListener("tap", soundEffect)
 	musicImage:addEventListener("tap", soundMusic)
 	controlImage:addEventListener("tap", displayControl)	
+	backText:addEventListener("tap", backToMenu)
 	
+end
+
+function backToMenu()
+	settingScreenGroup:removeSelf()
+	settingScreenGroup = display.newGroup()
+	
+	fillImage:removeSelf()
+	soundEffectImage:removeSelf()
+	musicImage:removeSelf()
+	controlImage:removeSelf()
+	
+	fillImage = display.newRect(0,0,0,0)
+	soundEffectImage = display.newRect(0,0,0,0)
+	musicImage = display.newRect(0,0,0,0)
+	controlImage = display.newRect(0,0,0,0)
+	
+	addMenuScreen()
+
 end
 
 function pauseGame()
@@ -326,7 +347,7 @@ function changeFill()
 	if fillBoard then
 		fillBoard = false
 		fillImage:removeSelf()
-		fillImage = display.newImage("on_button.png")
+		fillImage = display.newImage("off_button.png")
 		fillImage.x = display.contentWidth/ 4 * 3
 		fillImage.y = display.contentHeight / 6
 		fillImage:scale(0.5, 0.5)
@@ -334,7 +355,7 @@ function changeFill()
 	else 
 		fillBoard = true
 		fillImage:removeSelf()
-		fillImage = display.newImage("off_button.png")
+		fillImage = display.newImage("on_button.png")
 		fillImage.x = display.contentWidth/ 4 * 3
 		fillImage.y = display.contentHeight / 6
 		fillImage:scale(0.5, 0.5)
@@ -346,7 +367,7 @@ function soundEffect()
 	if soundEffects then
 		soundEffects = false
 		soundEffectImage:removeSelf()
-		soundEffectImage = display.newImage("on_button.png")
+		soundEffectImage = display.newImage("off_button.png")
 		soundEffectImage.x = display.contentWidth/4 * 3
 		soundEffectImage.y = display.contentHeight/6 * 2
 		soundEffectImage:scale(0.5, 0.5)
@@ -354,7 +375,7 @@ function soundEffect()
 	else
 		soundEffects = true
 		soundEffectImage:removeSelf()
-		soundEffectImage = display.newImage("off_button.png")
+		soundEffectImage = display.newImage("on_button.png")
 		soundEffectImage.x = display.contentWidth/4 * 3
 		soundEffectImage.y = display.contentHeight/6 * 2
 		soundEffectImage:scale(0.5, 0.5)
@@ -366,14 +387,14 @@ function soundMusic()
 	if music then
 		music = false
 		musicImage:removeSelf()
-		musicImage = display.newImage("on_button.png")
+		musicImage = display.newImage("off_button.png")
 		musicImage.x = display.contentWidth/4 * 3
 		musicImage.y = display.contentHeight/6 * 3
 		musicImage:scale(0.5, 0.5)
 		musicImage:addEventListener("tap", soundMusic)
 	else
 		music = true
-		musicImage = display.newImage("off_button.png")
+		musicImage = display.newImage("on_button.png")
 		musicImage.x = display.contentWidth/4 * 3
 		musicImage.y = display.contentHeight/6 * 3
 		musicImage:scale(0.5, 0.5)
@@ -385,7 +406,7 @@ function displayControl()
 	if tapControl then
 		tapControl = false
 		controlImage:removeSelf()
-		controlImage = display.newImage("on_button.png")
+		controlImage = display.newImage("off_button.png")
 		controlImage.x = display.contentWidth/4 * 3
 		controlImage.y = display.contentHeight/6 * 4
 		controlImage:scale(0.5, 0.5)
@@ -394,7 +415,7 @@ function displayControl()
 	else
 		tapControl = true
 		controlImage:removeSelf()
-		controlImage = display.newImage("off_button.png")
+		controlImage = display.newImage("on_button.png")
 		controlImage.x = display.contentWidth/4 * 3
 		controlImage.y = display.contentHeight/6 * 4
 		controlImage:scale(0.5, 0.5)
