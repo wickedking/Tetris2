@@ -880,12 +880,12 @@ function rotate()
 	if currentPiece == nil then
 		return
 	end
-	if canRotate == false then
-		canRotate = true
-		return
-	else 
-		canRotate = false
-	end
+	--if canRotate == false then
+	--	canRotate = true
+	--	return
+	--else 
+	--	canRotate = false
+	--end
 	if currentPiece.type == "oPiece" then
 		return
 	elseif currentPiece.type == "iPiece" or currentPiece.type == "zPiece" or  currentPiece.type == "sPiece" then
@@ -938,6 +938,7 @@ function moveRight()
 	end
 	drawPiece(pieceRotation(currentPiece))
 end
+
 function moveLeftGlobal(e) 
 	if (pause) then 
 		return
@@ -1049,7 +1050,7 @@ function create()
 	rotateB.x = display.contentWidth - 50
 	rotateB.y = display.contentHeight /3 + 10
 	rotateB:scale(0.6, 0.6)
-	rotateB:addEventListener("touch", rotate) --switch to tap
+	rotateB:addEventListener("tap", rotate) --switch to tap
 	
 	local pauseB = display.newImage("pause.png")
 	pauseB.x = display.contentWidth - 50
