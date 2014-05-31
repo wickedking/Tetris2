@@ -150,11 +150,6 @@ function settingsScreen()
 		controlImage = display.newImage("off_button.png")
 	end
 	
-	--fillImage = display.newImage("on_button.png")
-	--soundEffectImage = display.newImage("on_button.png")
-	--musicImage = display.newImage("on_button.png")
-	--controlImage = display.newImage("on_button.png")
-	
 	fillImage:scale(0.5, 0.5)
 	soundEffectImage:scale(0.5, 0.5)
 	musicImage:scale(0.5, 0.5)
@@ -512,11 +507,12 @@ function addMenuScreen()
 	startButton:scale( .5, .5)
 	
 	--local settingsText = display.newText(menuScreen, "Settings", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
-	local settingsButton = display.newImage("setting.png")
-	settingsButton:scale(0.6, 0.6)
+	local settingsButton = display.newImage("settings-button.png")
+	settingsButton:scale(0.13, 0.13)
+
 	
 	settingsButton.x = display.contentWidth/4 * 3.25
-	settingsButton.y = display.contentHeight/4 * 3.75
+	settingsButton.y = display.contentHeight/4 * 3.70
 	
 	--settingsText:setFillColor(255, 0, 0)
 	--settingsText:toFront()
@@ -527,7 +523,7 @@ function addMenuScreen()
 	startButton.name = 'startB'
 	menuScreen:insert(mScreen)
 	startButton.x = display.contentWidth/4
-	startButton.y = display.contentHeight/4 * 3.7
+	startButton.y = display.contentHeight/4 * 3.6
 	menuScreen:insert(startButton)
 	menuScreen:insert(settingsButton)
 	--soundEffectText:addEventListener("tap", soundEffect)
@@ -1058,7 +1054,7 @@ function leftWallCollision(event)
 	end
 end
 
-function fillBoard()
+function fillBoardCreate()
 	for number = 0, 10 do
 		i = math.random(13, 23)
 		j = math.random(0, 10)
@@ -1085,7 +1081,7 @@ function create()
 	createBoard()
 	
 	if fillBoard then
-		fillBoard()
+		fillBoardCreate()
 	end
 	
 	local physics = require("physics")
