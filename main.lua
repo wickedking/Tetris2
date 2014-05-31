@@ -1,61 +1,84 @@
 -----------------------------------------------------------------------------------------
 --
 -- main.lua
---
+-- Made by WickedKing1392 and ElementBox
 -----------------------------------------------------------------------------------------
 highScores = require("highScore")
 
+--Implement better garbage collection
 timer.performWithDelay(1, function() collectgarbage("collect") end)
 
+--The music options. 
 options = {loop = -1}
 
+--Global variable for filling the board.
 fillBoard = true
-fillBoardCircle = {}
 
+--Global variable used for if sound effects are to be used.
 soundEffects = true
-soundEffectsCircle = {}
 
+--Global table used to switch and hold the different audio files.
 sfx = {}
-
 sfx.theme = audio.loadStream("theme.mp3")
 sfx.level_one = audio.loadStream("level_one.mp3")
 sfx.level_two = audio.loadStream("level_two.mp3")
 sfx.level_three = audio.loadStream("level_three.mp3")
 sfx.level_four = audio.loadStream("level_four.mp3")
 
+--Global variable for if music is to be used.
 music = true
-musicCircle = {}
+
+--Global table for the background.
 background = {}
 
+--The current level.
 level = 1
 
+--Global variable for if control is tapping or buttons.
 tapControl = true
-tapCircle = {}
-buttonCircle = {}
 
+--Counter for the number of frames that have passed since the start.
 update = 0
+--The number of frames need to pass to force the piece down.
 update_number = 20
-
+--The score amount needed to reach the next level.
 updatePieceNumber = 100
 
+--Reference to the current falling piece.
 currentPiece = {}
+--The next piece to create
 index = 4
+--Used to stop new pieces from being created
 pieceCreate = true
+--The reference to the board
 board = {}
+--Used to allow pieces to be rotated.
 canRotate = true
+--Flag if the game is paused
 pause = false
+--The group that holds all the drawn pieces.
 group = {}
+--The group that holds a reference to all the extra stuff on the screen.
 extra_group = {}
+--Used to replay the game or to exit
 start_over = true
+--Holds a reference to all the items when the game fails
 gameOverGroup = {}
+--The score
 totalScore = 0
+--Internal copy of the score used to calculate the next level
 totalScoreCopy = 0
+--A reference to the score display items
 scoreGroup = display.newGroup()
+--A reference to the next piece display items
 nextPieceGroup = display.newGroup()
 
+--A reference to the lines display items
 pieceLines = display.newGroup()
 
+--A flag for using the ghost piece or not
 use_ghostPiece = true
+--A reference to the ghost piece display items.
 ghostGroup = nil
 
 --Used to change range of random colors
@@ -70,38 +93,47 @@ y_offset = -12
 board_offset = 21 --need to be set at run time
 height_offset = display.contentHeight / 23
 
+--The constants for the board dimensions.
 board_height = 23
 board_width = 10
 
+--A constants for printing the block sizes
 block_size = 19
 
+--A block used to block the screen when paused
 pause_block = display.newRect(0,0,0,0)
+--A reference to the text when paused
 pause_text = {}
 
+--The reference to the sound effect.
 click = audio.loadSound("tap4.wav")
 
---the_music = audio.loadSound("stepping.wav")
-
+--References to the individual blocks of the current piece.
 display1 = display.newRect(0,0,0,0)
 display2 = display.newRect(0,0,0,0)
 display3 = display.newRect(0,0,0,0)
 display4 = display.newRect(0,0,0,0)
 
+--References to the menu and listeners.
 local menuScreen = {}
 local tweenMS = {}
 settingsScreenGroup = {}
 
+--Actual references to the lines for the pieces
 line1 = {}
 line2 = {}
 
+--References to the settings buttons
 fillImage = {}
 soundEffectImage = {}
 musicImage = {}
 controlImage = {}
 
+--References to the text for the scores when failed.
 highScoreText = {}
 yourScoreText = {}
 
+--References to the highscore table, score and file.
 highScore = {}
 highScore.score1 = 100
 highScore = loadTable("highScore.json")
@@ -111,11 +143,9 @@ highScore = loadTable("highScore.json")
 --	saveTable(highScore, "highScore.json")
 --end
 
+--Used to populate the settingsScreen with all the buttons, listeners and text.
 function settingsScreen()
---sound effects
---fill board
---music
---Tap on screen control
+	--TODO add controls for the pieceLines and ghostPiece
 
 	menuScreen:removeSelf()
 	audio.stop()
@@ -128,7 +158,7 @@ function settingsScreen()
 	
 	local backText = display.newText(settingScreenGroup, "Main Menu", display.contentWidth/2, display.contentHeight/6 * 5, native.systemFontBold, 14)
 	
-	
+	--Used to create the correct button depending on the value of the corresponding flags.
 	if fillBoard == true then
 		fillImage = display.newImage("on_button.png")
 	else 
@@ -150,27 +180,25 @@ function settingsScreen()
 		controlImage = display.newImage("off_button.png")
 	end
 	
+	--Scaling for the current image
 	fillImage:scale(0.5, 0.5)
 	soundEffectImage:scale(0.5, 0.5)
 	musicImage:scale(0.5, 0.5)
 	controlImage:scale(0.5, 0.5)
 	
+	-- The x values of the buttons
 	fillImage.x = display.contentWidth/4 * 3
 	soundEffectImage.x = display.contentWidth/4 * 3
 	musicImage.x = display.contentWidth/4 * 3
 	controlImage.x = display.contentWidth/4 * 3
 	
+	--The y values of the buttons
 	fillImage.y = display.contentHeight/6
 	soundEffectImage.y = display.contentHeight/6 * 2
 	musicImage.y = display.contentHeight/6 * 3
 	controlImage.y = display.contentHeight/6 * 4
 	
-	
-	soundEffectText:addEventListener("tap", soundEffect)
-	controlText:addEventListener("tap", displayControl)
-	musicText:addEventListener("tap", soundMusic)
-	fillText:addEventListener("tap", changeFill)
-	
+	--The event listeners for the buttons	
 	fillImage:addEventListener("tap", changeFill)
 	soundEffectImage:addEventListener("tap", soundEffect)
 	musicImage:addEventListener("tap", soundMusic)
@@ -1358,6 +1386,3 @@ locations = {}
 end
 
 addMenuScreen()
-
---need to potentaily fix error on check move
---potentially implement breakout.
