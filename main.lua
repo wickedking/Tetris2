@@ -117,6 +117,7 @@ function settingsScreen()
 --Tap on screen control
 
 	menuScreen:removeSelf()
+	audio.stop()
 	settingScreenGroup = display.newGroup()
 
 	local fillText = display.newText(settingScreenGroup, "Fill Board", display.contentWidth/5, display.contentHeight/6, native.systemFontBold, 14)
@@ -1146,7 +1147,7 @@ function create()
 	
 
 	if music then
-		audio.play(sfx.level_four, options)
+		audio.play(sfx.level_one, options)
 	end
 	--timer.performWithDelay(1000,fail, 1)
 end
