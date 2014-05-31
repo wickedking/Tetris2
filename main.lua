@@ -5,6 +5,7 @@
 -----------------------------------------------------------------------------------------
 highScores = require("highScore")
 
+
 options = {loop = -1}
 
 fillBoard = true
@@ -12,6 +13,14 @@ fillBoardCircle = {}
 
 soundEffects = true
 soundEffectsCircle = {}
+
+sfx = {}
+
+sfx.theme = audio.loadSound("theme.mp3")
+sfx.level_one = audio.loadSound("level_one.mp3")
+sfx.level_two = audio.loadSound("level_two.mp3")
+sfx.level_three = audio.loadSound("level_three.mp3")
+sfx.level_four = audio.loadSound("level_four.mp3")
 
 music = true
 musicCircle = {}
@@ -26,7 +35,7 @@ buttonCircle = {}
 update = 0
 update_number = 20
 
-updatePieceNumber = 1000
+updatePieceNumber = 100
 
 currentPiece = {}
 index = 4
@@ -49,8 +58,8 @@ use_ghostPiece = true
 ghostGroup = nil
 
 --Used to change range of random colors
-low_color = 20
-high_color = 100
+low_color = 50
+high_color = 51
 
 --Constants for the printing on screen. The offset for each
 x_offset = 10
@@ -70,7 +79,7 @@ pause_text = {}
 
 click = audio.loadSound("tap4.wav")
 
-the_music = audio.loadSound("steppin.wav")
+--the_music = audio.loadSound("stepping.wav")
 
 display1 = display.newRect(0,0,0,0)
 display2 = display.newRect(0,0,0,0)
@@ -95,10 +104,11 @@ yourScoreText = {}
 highScore = {}
 highScore.score1 = 100
 highScore = loadTable("highScore.json")
-if highScore.score1 == 100 or highScore.score1 == nil then
-	highScore.score1 = 1500
-	saveTable(highScore, "highScore.json")
-end
+
+--if highScore.score1 == 100 then -- highScore.score1 == nil then
+--	highScore.score1 = 1500
+--	saveTable(highScore, "highScore.json")
+--end
 
 function settingsScreen()
 --sound effects
@@ -330,30 +340,44 @@ function updateScore(rows)
 	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 5) * 3 + 20, native.systemFontBold, 14)
 	text:setFillColor(0,0,0)
 	
-	if totalScoreCopy / updatePieceNumber > 1 then
+	if totalScoreCopy / updatePieceNumber > 1 and totalScore % 100 then
 		if update_number < 3 then
 			return
 		end
 		
 		level = level + 1
-		totalScoreCopy = totalScoreCopy % 100
-		update_number = update_number - 1
-		if (level % 2 == 0) then 
+		--totalScoreCopy = totalScoreCopy % 1000
+		
+		audio.stop()
+		if (level == 2) then 
+			if update_number > 18 then
+				update_number = update_number - 2
+			end
+			audio.play(sfx.level_two, options)
 			background:removeSelf()
 			background = display.newImage("spring.png", display.contentWidth/2, display.contentHeight/2)
 			background:toBack()
-		elseif (level % 3 == 0) then
-		background:removeSelf()
+		elseif (level == 3) then
+			if update_number > 16 then
+				update_number = update_number - 2
+			end
+			audio.play(sfx.level_three, options)
+			background:removeSelf()
 			background = display.newImage("summer.png", display.contentWidth/2, display.contentHeight/2)
 			background:toBack()		
-		elseif(level % 4 == 0) then
+		elseif(level == 4) then
+			if update_number > 14 then
+				update_number = update_number - 2
+			end
+			audio.play(sfx.level_four, options)
 			background:removeSelf()
 			background = display.newImage("fall.png", display.contentWidth/2, display.contentHeight/2)
 			background:toBack()
-		else 
-			background:removeSelf()
-			background = display.newImage("winter.png", display.contentWidth/2, display.contentHeight/2)
-			background:toBack()
+			
+--		else 
+--			background:removeSelf()
+--			background = display.newImage("winter.png", display.contentWidth/2, display.contentHeight/2)
+--			background:toBack()
 		end
 		
 		
@@ -453,9 +477,10 @@ end
 
 function addMenuScreen()
 	menuScreen = display.newGroup()
-	local mScreen = display.newImage("menuScreen.png")
-	local startButton = display.newImage("play_button.png")
-	
+	local mScreen = display.newImage("splash_other.png")
+	mScreen:toBack()
+	local startButton = display.newImage("start.png")
+	startButton:scale( .5, .5)
 	--local fillText = display.newText(menuScreen, "Fill Board", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
 
 	--local soundEffectText = display.newText(menuScreen, "Sound Effects", display.contentWidth/4, display.contentHeight/4* 3, native.systemFontBold, 14)
@@ -469,30 +494,42 @@ function addMenuScreen()
 	--buttonCircle.y = display.contentHeight/5 * 4.5 + 20
 	--menuScreen:insert(buttonCircle)
 	
-	local settingsText = display.newText(menuScreen, "Settings", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
+
 	
-	settingsText:addEventListener("tap", settingsScreen)
+	--local settingsText = display.newText(menuScreen, "Settings", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
+	local settingsButton = display.newImage("settings.png")
 	
-	mScreen.x = display.contentWidth/2
+	settingsButton.x = display.contentWidth/4 * 3.25
+	settingsButton.y = display.contentHeight/4 * 3.75
+	
+	--settingsText:setFillColor(255, 0, 0)
+	--settingsText:toFront()
+	settingsButton:addEventListener("tap", settingsScreen)
+	
+	mScreen.x = display.contentWidth/2 
 	mScreen.y = display.contentHeight/2
 	startButton.name = 'startB'
 	menuScreen:insert(mScreen)
-	startButton.x = display.contentWidth/2
-	startButton.y = display.contentHeight/2
+	startButton.x = display.contentWidth/4
+	startButton.y = display.contentHeight/4 * 3.7
 	menuScreen:insert(startButton)
-	
+	menuScreen:insert(settingsButton)
 	--soundEffectText:addEventListener("tap", soundEffect)
 	
 	--controlText:addEventListener("tap", displayControl)
 	--musicText:addEventListener("tap", soundMusic)
 	--fillText:addEventListener("tap", changeFill)
 	startButton:addEventListener('tap', tweenMS)
+	if music then 
+		audio.play(sfx.theme, options)
+	end
 
 end
 
 function tweenMS:tap(e)
 	if (e.target.name == 'startB') then
 		transition.to(menuScreen, {time = 400, y = -menuScreen.height * 2, transition = easing.outExpo, onComplete = addGameScreen})
+		audio.stop()
 		create()
 	end
 end
@@ -1109,9 +1146,9 @@ function create()
 	
 
 	if music then
-		audio.play(the_music, options)
+		audio.play(sfx.level_four, options)
 	end
-	timer.performWithDelay(1000,fail, 1)
+	--timer.performWithDelay(1000,fail, 1)
 end
 
 function pieceRotation(currentPiece)
