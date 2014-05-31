@@ -386,7 +386,6 @@ function updateScore(rows)
 	end
 end
 
-
 function createBoard()
 	for i = 0, board_height do
 	board[i] = {}
@@ -483,20 +482,6 @@ function addMenuScreen()
 	mScreen:toBack()
 	local startButton = display.newImage("start.png")
 	startButton:scale( .5, .5)
-	--local fillText = display.newText(menuScreen, "Fill Board", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
-
-	--local soundEffectText = display.newText(menuScreen, "Sound Effects", display.contentWidth/4, display.contentHeight/4* 3, native.systemFontBold, 14)
-	
-	--local musicText = display.newText(menuScreen, "music", display.contentWidth/4 * 3, display.contentHeight/4* 3, native.systemFontBold, 14)
-	
-	--local controlText = display.newText(menuScreen, "Control: Tap on screen / Buttons", display.contentWidth/2, display.contentHeight/5*4.5, native.systemFontBold, 14)
-	
-	--buttonCircle = display.newImage("blockout.png")
-	--buttonCircle.x = display.contentWidth/2 + 80
-	--buttonCircle.y = display.contentHeight/5 * 4.5 + 20
-	--menuScreen:insert(buttonCircle)
-	
-
 	
 	--local settingsText = display.newText(menuScreen, "Settings", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
 	local settingsButton = display.newImage("settings.png")
@@ -1200,22 +1185,22 @@ locations = {}
 		end
 	elseif currentPiece.type == "sPiece" then
 		if currentPiece.rotation == 0 then 
-			locations["piece1x"] = 0
+			locations["piece1x"] = -1
 			locations["piece1y"] = 0
-			locations["piece2x"] = 1
-			locations["piece2y"] = 0
-			locations["piece3x"] = 0
-			locations["piece3y"] = 1
-			locations["piece4x"] = -1
-			locations["piece4y"] = 1
-		elseif currentPiece.rotation == 90 then
-			locations["piece1x"] = -2
-			locations["piece1y"] = -1
-			locations["piece2x"] = -2
+			locations["piece2x"] = 0
 			locations["piece2y"] = 0
 			locations["piece3x"] = -1
+			locations["piece3y"] = 1
+			locations["piece4x"] = -2
+			locations["piece4y"] = 1
+		elseif currentPiece.rotation == 90 then
+			locations["piece1x"] = -1
+			locations["piece1y"] = -1
+			locations["piece2x"] = -1
+			locations["piece2y"] = 0
+			locations["piece3x"] = 0
 			locations["piece3y"] = 0
-			locations["piece4x"] = -1
+			locations["piece4x"] = 0
 			locations["piece4y"] = 1
 	end
 	elseif currentPiece.type == "zPiece" then --screwed
