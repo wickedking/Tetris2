@@ -128,10 +128,32 @@ function settingsScreen()
 	
 	local backText = display.newText(settingScreenGroup, "Main Menu", display.contentWidth/2, display.contentHeight/6 * 5, native.systemFontBold, 14)
 	
-	fillImage = display.newImage("on_button.png")
-	soundEffectImage = display.newImage("on_button.png")
-	musicImage = display.newImage("on_button.png")
-	controlImage = display.newImage("on_button.png")
+	
+	if fillBoard == true then
+		fillImage = display.newImage("on_button.png")
+	else 
+		fillImage = display.newImage("off_button.png")
+	end
+	if soundEffects == true then
+		soundEffectImage = display.newImage("on_button.png")
+	else 
+		soundEffectImage = display.newImage("off_button.png")
+	end
+	if music == true then
+		musicImage = display.newImage("on_button.png")
+	else 
+		musicImage = display.newImage("off_button.png")
+	end
+	if tapControl == true then
+		controlImage = display.newImage("on_button.png")
+	else 
+		controlImage = display.newImage("off_button.png")
+	end
+	
+	--fillImage = display.newImage("on_button.png")
+	--soundEffectImage = display.newImage("on_button.png")
+	--musicImage = display.newImage("on_button.png")
+	--controlImage = display.newImage("on_button.png")
 	
 	fillImage:scale(0.5, 0.5)
 	soundEffectImage:scale(0.5, 0.5)
