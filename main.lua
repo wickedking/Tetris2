@@ -5,6 +5,7 @@
 -----------------------------------------------------------------------------------------
 highScores = require("highScore")
 
+timer.performWithDelay(1, function() collectgarbage("collect") end)
 
 options = {loop = -1}
 
@@ -536,7 +537,7 @@ function tweenMS:tap(e)
 end
 
 function goAway()
-	audio.pause()
+	audio.stop()
 	os.exit()
 end
 
