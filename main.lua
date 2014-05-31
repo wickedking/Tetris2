@@ -356,6 +356,7 @@ function updateScore(rows)
 				update_number = update_number - 2
 			end
 			audio.stop()
+			audio.dispose(sfx.level_one)
 			audio.play(sfx.level_two, options)
 			background:removeSelf()
 			background = display.newImage("spring.png", display.contentWidth/2, display.contentHeight/2)
@@ -365,6 +366,7 @@ function updateScore(rows)
 				update_number = update_number - 2
 			end
 			audio.stop()
+			audio.dispose(sfx.level_two)
 			audio.play(sfx.level_three, options)
 			background:removeSelf()
 			background = display.newImage("summer.png", display.contentWidth/2, display.contentHeight/2)
@@ -374,6 +376,7 @@ function updateScore(rows)
 				update_number = update_number - 2
 			end
 			audio.stop()
+			audio.dispose(sfx.level_three)
 			audio.play(sfx.level_four, options)
 			background:removeSelf()
 			background = display.newImage("fall.png", display.contentWidth/2, display.contentHeight/2)
@@ -487,7 +490,8 @@ function addMenuScreen()
 	startButton:scale( .5, .5)
 	
 	--local settingsText = display.newText(menuScreen, "Settings", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
-	local settingsButton = display.newImage("settings.png")
+	local settingsButton = display.newImage("setting.png")
+	settingsButton:scale(0.6, 0.6)
 	
 	settingsButton.x = display.contentWidth/4 * 3.25
 	settingsButton.y = display.contentHeight/4 * 3.75
