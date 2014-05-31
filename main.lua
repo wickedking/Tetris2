@@ -17,11 +17,11 @@ soundEffectsCircle = {}
 
 sfx = {}
 
-sfx.theme = audio.loadSound("theme.mp3")
-sfx.level_one = audio.loadSound("level_one.mp3")
-sfx.level_two = audio.loadSound("level_two.mp3")
-sfx.level_three = audio.loadSound("level_three.mp3")
-sfx.level_four = audio.loadSound("level_four.mp3")
+sfx.theme = audio.loadStream("theme.mp3")
+sfx.level_one = audio.loadStream("level_one.mp3")
+sfx.level_two = audio.loadStream("level_two.mp3")
+sfx.level_three = audio.loadStream("level_three.mp3")
+sfx.level_four = audio.loadStream("level_four.mp3")
 
 music = true
 musicCircle = {}
@@ -350,11 +350,12 @@ function updateScore(rows)
 		level = level + 1
 		--totalScoreCopy = totalScoreCopy % 1000
 		
-		audio.stop()
+
 		if (level == 2) then 
 			if update_number > 18 then
 				update_number = update_number - 2
 			end
+			audio.stop()
 			audio.play(sfx.level_two, options)
 			background:removeSelf()
 			background = display.newImage("spring.png", display.contentWidth/2, display.contentHeight/2)
@@ -363,6 +364,7 @@ function updateScore(rows)
 			if update_number > 16 then
 				update_number = update_number - 2
 			end
+			audio.stop()
 			audio.play(sfx.level_three, options)
 			background:removeSelf()
 			background = display.newImage("summer.png", display.contentWidth/2, display.contentHeight/2)
@@ -371,6 +373,7 @@ function updateScore(rows)
 			if update_number > 14 then
 				update_number = update_number - 2
 			end
+			audio.stop()
 			audio.play(sfx.level_four, options)
 			background:removeSelf()
 			background = display.newImage("fall.png", display.contentWidth/2, display.contentHeight/2)
