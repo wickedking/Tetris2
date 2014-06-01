@@ -207,7 +207,9 @@ function settingsScreen()
 	
 end
 
+--Listener method used to remove the settings Screen and go back to main menu.
 function backToMenu()
+	--Remove all buttons and text and recreate menu Screen.
 	settingScreenGroup:removeSelf()
 	settingScreenGroup = display.newGroup()
 	
@@ -216,6 +218,7 @@ function backToMenu()
 	musicImage:removeSelf()
 	controlImage:removeSelf()
 	
+	--Used to keep a blank reference, to keep other code from removing nil references.
 	fillImage = display.newRect(0,0,0,0)
 	soundEffectImage = display.newRect(0,0,0,0)
 	musicImage = display.newRect(0,0,0,0)
@@ -225,6 +228,7 @@ function backToMenu()
 
 end
 
+--Listener method used to pause and unpause the game. Stops the pieces from moving and blocks the screen.
 function pauseGame()
 	if pause == false then
 		pause = true
@@ -241,6 +245,7 @@ function pauseGame()
 	end
 end
 
+--Used to randomize the color of all the blocks currently on the board.
 function randomizeColor()
 	for i = 0, board_height do
 		for j = 0, board_width do
@@ -251,6 +256,7 @@ function randomizeColor()
 	end
 end
 
+--Deletes the references to all the blocks in the board to all deletion of blocks.
 function deleteBoard()
 	for i =0, board_height do
 		for j = 0, board_width do
@@ -259,8 +265,10 @@ function deleteBoard()
 	end
 end
 
+--Used to draw the currentPiece thats falling.
 function drawPiece(the_pieces)
 	pieceLines:removeSelf()
+	--Mapping the actual location to the board locations.
 	local i = math.floor(currentPiece.y/height_offset)
 	local j = math.floor(currentPiece.x/board_offset)
 
@@ -270,9 +278,11 @@ function drawPiece(the_pieces)
 		display3:removeSelf()
 		display4:removeSelf()
 	end
+	
 	local small_x = 10
 	local big_x = -10
 	
+	--calculates the smallest and biggest x offsets of the piece.
 	if the_pieces.piece1x < small_x then
 		small_x = the_pieces.piece1x
 	end
@@ -305,6 +315,7 @@ function drawPiece(the_pieces)
 	big_x = big_x + 1
 	big_x = (big_x * 21) + currentPiece.x
 	
+	--Displays the lines off the currentPiece
 	line1 = display.newLine(small_x , currentPiece.y - 35, small_x, 480)
 	line2 = display.newLine(big_x, currentPiece.y - 35, big_x, 480)
 	
@@ -314,6 +325,7 @@ function drawPiece(the_pieces)
 	line1:setStrokeColor(0.33,0.0,1.0)
 	line2:setStrokeColor(0.33,0.0,1.0)
 	
+	--Draws the piece on the screen
 	display1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset, block_size, block_size)
 	display2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + the_pieces.piece2y) * board_offset + y_offset, block_size, block_size)
 	display3 = display.newRect((j + the_pieces.piece3x) * board_offset + x_offset, (i + the_pieces.piece3y) * board_offset + y_offset, block_size, block_size)
@@ -329,6 +341,7 @@ function drawPiece(the_pieces)
 	end
 end
 
+--Draws the next piece to be created, in the corner.
 function drawNextPiece()
 	if pause == true then
 		return
@@ -337,6 +350,8 @@ function drawNextPiece()
 	nextPieceGroup = display.newGroup()
 	local nextPiece = {}
 	local type = {}
+	
+	--Switch to calculate the next pieces.
 	if index == 0 then
 		type = "tPiece"
 	elseif index == 1 then
@@ -353,8 +368,9 @@ function drawNextPiece()
 		type = "jPiece"
 	end
 	
-	i = 20
-	j = 13
+	--Offsets
+	local i = 20
+	local j = 13
 	
 	nextPiece["rotation"] = 0
 	nextPiece["type"] = type
@@ -373,6 +389,7 @@ function drawNextPiece()
 	
 end
 
+--Used to update the score and change levels
 function updateScore(rows)
 	if pause == true then
 		return
@@ -387,15 +404,13 @@ function updateScore(rows)
 	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 5) * 3 + 20, native.systemFontBold, 14)
 	text:setFillColor(0,0,0)
 	
+	--If user has reached enough points for the next level.
 	if totalScoreCopy / updatePieceNumber > 1 and totalScore % 100 then
 		if update_number < 3 then
 			return
 		end
-		
 		level = level + 1
 		--totalScoreCopy = totalScoreCopy % 1000
-		
-
 		if (level == 2) then 
 			if update_number > 18 then
 				update_number = update_number - 2
@@ -432,11 +447,10 @@ function updateScore(rows)
 --			background = display.newImage("winter.png", display.contentWidth/2, display.contentHeight/2)
 --			background:toBack()
 		end
-		
-		
 	end
 end
 
+--Creates the table that is the board.
 function createBoard()
 	for i = 0, board_height do
 	board[i] = {}
@@ -446,6 +460,7 @@ function createBoard()
 	end
 end
 
+--Listener method used to change if the board is to be filled or not.
 function changeFill()
 	if fillBoard then
 		fillBoard = false
@@ -466,6 +481,7 @@ function changeFill()
 	end
 end
 
+--Listener method used to change if sound effects are to be used.
 function soundEffect()
 	if soundEffects then
 		soundEffects = false
@@ -486,6 +502,7 @@ function soundEffect()
 	end
 end
 
+--Listener method used to change if music is to be used.
 function soundMusic()
 	if music then
 		music = false
@@ -505,6 +522,7 @@ function soundMusic()
 	end
 end
 
+--Listener method used to change the control method from tapping to buttons.
 function displayControl()
 	if tapControl then
 		tapControl = false
@@ -527,6 +545,7 @@ function displayControl()
 
 end
 
+--Creates the main menu screen.
 function addMenuScreen()
 	menuScreen = display.newGroup()
 	local mScreen = display.newImage("splash_other.png")
@@ -534,38 +553,30 @@ function addMenuScreen()
 	local startButton = display.newImage("start.png")
 	startButton:scale( .5, .5)
 	
-	--local settingsText = display.newText(menuScreen, "Settings", display.contentWidth/2, display.contentHeight/4 * 3, native.systemFontBold, 14)
 	local settingsButton = display.newImage("settings-button.png")
 	settingsButton:scale(0.13, 0.13)
-
-	
 	settingsButton.x = display.contentWidth/4 * 3.25
 	settingsButton.y = display.contentHeight/4 * 3.70
-	
-	--settingsText:setFillColor(255, 0, 0)
-	--settingsText:toFront()
 	settingsButton:addEventListener("tap", settingsScreen)
 	
 	mScreen.x = display.contentWidth/2 
 	mScreen.y = display.contentHeight/2
-	startButton.name = 'startB'
 	menuScreen:insert(mScreen)
-	startButton.x = display.contentWidth/4
-	startButton.y = display.contentHeight/4 * 3.6
 	menuScreen:insert(startButton)
 	menuScreen:insert(settingsButton)
-	--soundEffectText:addEventListener("tap", soundEffect)
 	
-	--controlText:addEventListener("tap", displayControl)
-	--musicText:addEventListener("tap", soundMusic)
-	--fillText:addEventListener("tap", changeFill)
+	startButton.name = 'startB'
+	startButton.x = display.contentWidth/4
+	startButton.y = display.contentHeight/4 * 3.6
 	startButton:addEventListener('tap', tweenMS)
+	
 	if music then 
 		audio.play(sfx.theme, options)
 	end
 
 end
 
+--Listener method used to transition from the main menu to the game.
 function tweenMS:tap(e)
 	if (e.target.name == 'startB') then
 		transition.to(menuScreen, {time = 400, y = -menuScreen.height * 2, transition = easing.outExpo, onComplete = addGameScreen})
@@ -574,17 +585,20 @@ function tweenMS:tap(e)
 	end
 end
 
+--Listener method used to kill the app.
 function goAway()
 	audio.stop()
 	os.exit()
 end
 
+--Listener method used to restart the game
 function recreate()
 	gameOverGroup:removeSelf()
 	timer.performWithDelay(1000, create, 1)
 	nextPieceGroup = display.newGroup()
 end
 
+--Used to stop the game when the user fails.
 function fail()
 	if start_over then
 		deleteBoard()
@@ -597,7 +611,6 @@ function fail()
 		extra_group:removeSelf()
 		
 		Runtime:removeEventListener("enterFrame", movePiece)
-		Runtime:removeEventListener("collision", onCollision)
 
 		local yes = display.newImage("yes.png")
 		yes.x = display.contentWidth/4
@@ -641,20 +654,17 @@ function fail()
 			saveTable(highScore, "highScore.json")
 			display.newText(gameOverGroup, "NEW HIGHSCORE!", display.contentWidth/2, display.contentHeight/2 + 30, native.systemFontBold, 16)
 		end
-		
-
-		
+	
 		highScoreText = display.newText(gameOverGroup, "High Score: "..highScore.score1, display.contentWidth/5 * 2- 30, display.contentHeight/2, native.systemFontBold, 14)
 		highScoreText:setFillColor(0,0,0)
 		
 		yourScoreText = display.newText(gameOverGroup, "Your Score: "..totalScore, display.contentWidth/5 * 4 - 35, display.contentHeight/2, native.systemFontBold, 14)
 		yourScoreText:setFillColor(0,0,0)
 		
-		
-		
 	end
 end
 
+--Used to create the currentPiece
 function createPiece()
 	updateScore(0)
 	canRotate = true
@@ -698,6 +708,7 @@ function createPiece()
 	drawNextPiece()
 end
 
+--Used to make the board match the screen.
 function updateBoard(the_pieces)
 --will be called will freezeing piece
 --will create new objects on board and then display.
@@ -755,6 +766,7 @@ function updateBoard(the_pieces)
 	end
 end
 
+--Redraws the entire board and randomizes the color.
 function redraw()
 	group:removeSelf()
 	group = display.newGroup()
@@ -769,6 +781,7 @@ function redraw()
 	end
 end
 
+--Used to move rows down after completion of of a line.
 function rowFall(inital_row) 
 	for i = inital_row, 0, -1 do
 		for j = 0, board_width do
@@ -781,6 +794,7 @@ function rowFall(inital_row)
 	redraw()
 end
 
+--Used to find and remove any completed rows.
 function removeRows()
 	rows = 0
 	the_row = 0
@@ -808,15 +822,10 @@ function removeRows()
 	updateScore(rows)
 end
 
+--Method to calculate if the top row has been filled. if so game over. 
 function checkTopRow()
-	--if board == nil then
-	--	return false
-	--end
 	local isPiece = false
 	for j = 0, board_width do
-		--if board[0][j] == nil then
-		--	return false
-		--end
 		if board[0][j] ~= 0 then
 		isPiece = true
 		break
@@ -825,6 +834,7 @@ function checkTopRow()
 	return isPiece
 end
 
+--The logic to check if a move is possible given the numbers passed in, on the x and y axis.
 function checkMove(dx, dy)
 	if currentPiece == nil then
 		return false
@@ -879,6 +889,7 @@ function checkMove(dx, dy)
 	return can
 end
 
+--Calculates the x value to drop the piece in the current location.
 function dropIndex()
 	local index = 0
 	for i = 1, 25 do
@@ -892,6 +903,7 @@ function dropIndex()
 	return index
 end
 
+--Displays the ghost piece on the screen.
 function ghostPiece()
 	local index = dropIndex()
 	local the_pieces = pieceRotation(currentPiece)
@@ -927,11 +939,13 @@ function ghostPiece()
 	
 end
 
+--Listener method to drop the current piece.
 function dropPiece()
 	local index = dropIndex()
 	currentPiece.y = currentPiece.y + (index * height_offset)
 end
 
+--Freezes the current piece updates the board and creates a new piece.
 function freezePiece(freezeEvent)
 	if pieceCreate == true then
 		if soundEffects then
@@ -949,6 +963,7 @@ function freezePiece(freezeEvent)
 	end
 end
 
+--Forces the piece down after so many frames has passed.
 function movePiece(moveEvent)
 	update = update + 1
 	if update % update_number == 0  and pause == false then
@@ -961,26 +976,11 @@ function movePiece(moveEvent)
 	end
 end
 
-function onCollision(event)
-	if event.object1.myName == "Square" or event.object2.myName == "Square" then
-		if event.object1.myName ~= "leftWall" and event.object2.myName ~= "leftWall" then
-			if event.object1.myName ~= "rightWall" and event.object2.myName ~= "rightWall" then
-				timer.performWithDelay(1, freezePiece, 1)
-			end
-		end
-	end
-end
-
+--Rotates the current piece.
 function rotate()
 	if currentPiece == nil then
 		return
 	end
-	--if canRotate == false then
-	--	canRotate = true
-	--	return
-	--else 
-	--	canRotate = false
-	--end
 	if currentPiece.type == "oPiece" then
 		return
 	elseif currentPiece.type == "iPiece" or currentPiece.type == "zPiece" or  currentPiece.type == "sPiece" then
@@ -1014,6 +1014,7 @@ function rotate()
 	drawPiece(pieceRotation(currentPiece))
 end
 
+--Listener method called when asked to move the piece left. if possible moves, if not nothing.
 function moveLeft()
 	if currentPiece == nil then
 		return
@@ -1024,6 +1025,7 @@ function moveLeft()
 	drawPiece(pieceRotation(currentPiece))
 end
 
+--Listener method called when asked to move the piece right. if possible moves, if not nothing.
 function moveRight()
 	if currentPiece == nil then
 		return
@@ -1034,6 +1036,7 @@ function moveRight()
 	drawPiece(pieceRotation(currentPiece))
 end
 
+--Listener method for moving left using tap controls.
 function moveLeftGlobal(e) 
 	if (pause) then 
 		return
@@ -1044,6 +1047,7 @@ function moveLeftGlobal(e)
 	
 end
 
+--Listener method for moving right using tap controls.
 function moveRightGlobal(e) 
 	if (pause) then 
 		return
@@ -1053,11 +1057,8 @@ function moveRightGlobal(e)
 	drawPiece(pieceRotation(currentPiece))
 end
 
+--Listener method for droping the piece using tap controls
 function dropPieceMotion(e)
-	--local endY
-	--if (e.phase == "ended") then
-	--	endY = e.y
-	--end
 	if (pause) then
 		return
 	elseif (e.yStart < e.y) and (e.phase == "ended") then
@@ -1065,23 +1066,7 @@ function dropPieceMotion(e)
 	end
 end
 
-function rightWallCollision(event)
-	if event.object1.myName == "Square" or event.object2.myName == "Square" then
-		if event.object1.myName == "rightWall" and event.object2.myName == "rightWall" then
-			moveLeft()
-		end
-	end
-
-end
-
-function leftWallCollision(event)
-	if event.object1.myName == "Square" or event.object2.myName == "Square" then
-		if event.object1.myName == "leftWall" or event.object2.myName == "leftWall" then
-			moveRight()
-		end
-	end
-end
-
+--Prepopulates the boards with random blocks
 function fillBoardCreate()
 	for number = 0, 10 do
 		i = math.random(13, 23)
@@ -1092,6 +1077,7 @@ function fillBoardCreate()
 	end
 end
  
+--Creates the game and all the stuff.
 function create()
 	start_over = true
 	pause = false
@@ -1112,8 +1098,8 @@ function create()
 		fillBoardCreate()
 	end
 	
+	--Dont think physics is necassary anymore. left in cause it doesn't cause problems for now.
 	local physics = require("physics")
-	--physics.setDrawMode("hybrid")
 	physics.start()
 	physics.setGravity(0, 0)
 	
@@ -1139,7 +1125,6 @@ function create()
 		
 	end
 	Runtime:addEventListener("touch", dropPieceMotion)
-	--Runtime:addEventListener("touch", dropPiece)
 
 	local rotateB = display.newImage("rotate.png")
 	rotateB.x = display.contentWidth - 50
@@ -1191,6 +1176,8 @@ function create()
 	--timer.performWithDelay(1000,fail, 1)
 end
 
+--A horrible hard coded method for each rotation for each piece using a local x and y 
+--reference based off a central point. 
 function pieceRotation(currentPiece)
 --return xy, xy, xy, xy from current location of subpieces. 
 --so a t piece in the down position at 105, 21 would return
@@ -1385,4 +1372,5 @@ locations = {}
 	return locations
 end
 
+--Starts the game by starting the menu screen. game is reactionary after this point. 
 addMenuScreen()
