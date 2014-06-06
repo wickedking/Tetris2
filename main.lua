@@ -120,8 +120,8 @@ local tweenMS = {}
 settingsScreenGroup = {}
 
 --Actual references to the lines for the pieces
-line1 = {}
-line2 = {}
+line1 = display.newRect(0,0,0,0)
+line2 = display.newRect(0,0,0,0)
 
 --References to the settings buttons
 fillImage = {}
@@ -315,9 +315,12 @@ function drawPiece(the_pieces)
 	big_x = big_x + 1
 	big_x = (big_x * 21) + currentPiece.x
 	
+	--line1:removeSelf()
+	--line2:removeSelf()
+	
 	--Displays the lines off the currentPiece
-	line1 = display.newLine(small_x , currentPiece.y - 35, small_x, 480)
-	line2 = display.newLine(big_x, currentPiece.y - 35, big_x, 480)
+	local line1 = display.newLine(small_x , currentPiece.y - 35, small_x, 480)
+	local line2 = display.newLine(big_x, currentPiece.y - 35, big_x, 480)
 	
 	pieceLines:insert(line1)
 	pieceLines:insert(line2)
@@ -395,15 +398,15 @@ function updateScore(rows)
 		return
 	end
 	scoreGroup:removeSelf()
-	totalScore = totalScore + ( rows * 100)
-	totalScoreCopy = totalScore + ( rows * 100)
+	totalScore = totalScore + (rows * 100)
+	totalScoreCopy = totalScore + (rows * 100)
 	scoreGroup = display.newGroup()
 	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/5) * 3 + 20, 50, 50)
 	scoreBox:setFillColor(1,1,1)
 	scoreGroup:insert(scoreBox)
 	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 5) * 3 + 20, native.systemFontBold, 14)
 	text:setFillColor(0,0,0)
-	
+	scoreGroup:insert(text)
 	--If user has reached enough points for the next level.
 	if totalScoreCopy / updatePieceNumber > 1 and totalScore % 100 then
 		if update_number < 3 then
@@ -514,6 +517,7 @@ function soundMusic()
 		musicImage:addEventListener("tap", soundMusic)
 	else
 		music = true
+		musicImage:removeSelf()
 		musicImage = display.newImage("on_button.png")
 		musicImage.x = display.contentWidth/4 * 3
 		musicImage.y = display.contentHeight/6 * 3
@@ -642,10 +646,10 @@ function fail()
 			nextPieceGroup:removeSelf()
 		end
 		scoreGroup:removeSelf()
-		pieceLines:removeSelf()
 		ghostGroup:removeSelf()
-		line1:removeSelf()
-		line2:removeSelf()
+		--line1:removeSelf()
+		--line2:removeSelf()
+		pieceLines:removeSelf()
 		pieceLines = display.newGroup()
 		ghostGroup = display.newGroup()
 		
