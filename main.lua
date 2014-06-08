@@ -674,10 +674,11 @@ function createPiece()
 	canRotate = true
 	pieceCreate = true
 	
-	local balloon = display.newImage("box.png")
+	local balloon = display.newImage("base.png")
 	balloon.width = 21
 	balloon.height = 21
-
+	balloon:scale(0,0)
+	
 	local balloon = display.newGroup()
 	if index == 0 then
 		balloon.type = "tPiece"
@@ -699,7 +700,6 @@ function createPiece()
 	balloon.width = 21
 	balloon:scale(.3, .3)
 	balloon.myName = "Square"
-	balloon.bodyType = "dynamic"
 	balloon.x = 21 * 5
 	balloon.y = -50
 	
