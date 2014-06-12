@@ -560,11 +560,11 @@ function addMenuScreen()
 	menuScreen = display.newGroup()
 	local mScreen = display.newImage("splash_other.png")
 	mScreen:toBack()
-	local startButton = display.newImage("start.png")
-	startButton:scale( .5, .5)
+	local startButton = display.newImage("start4.png")
+	startButton:scale( 0.65, 0.65)
 	
-	local settingsButton = display.newImage("settings-button.png")
-	settingsButton:scale(0.13, 0.13)
+	local settingsButton = display.newImage("settings.png")
+	settingsButton:scale(0.08, 0.08)
 	settingsButton.x = display.contentWidth/4 * 3.25
 	settingsButton.y = display.contentHeight/4 * 3.70
 	settingsButton:addEventListener("tap", settingsScreen)
@@ -576,8 +576,8 @@ function addMenuScreen()
 	menuScreen:insert(settingsButton)
 	
 	startButton.name = 'startB'
-	startButton.x = display.contentWidth/4
-	startButton.y = display.contentHeight/4 * 3.6
+	startButton.x = display.contentWidth/5
+	startButton.y = display.contentHeight/4 * 3.6 + 8
 	startButton:addEventListener('tap', tweenMS)
 	
 	if music then 
