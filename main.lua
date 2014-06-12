@@ -722,10 +722,7 @@ function createPiece()
 	
 	currentPiece = balloon
 	balloon.isFixedRotation = true
-	index = index + 1
-	if index > 6 then
-		index = 0
-	end
+	index = math.random(7)
 	drawNextPiece()
 end
 
@@ -1197,7 +1194,7 @@ function create()
 		audio.play(sfx.level_one, options)
 	end
 	Runtime:addEventListener("system", onSystemEvent)
-	timer.performWithDelay(1000,fail, 1)
+	--timer.performWithDelay(1000,fail, 1)
 end
 
 function onSystemEvent(event)
