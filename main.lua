@@ -419,48 +419,70 @@ function updateScore(rows)
 		print("update level")
 		print("totalScoreCopy = "..totalScoreCopy)
 		print(totalScore)
-		if update_number < 3 then
-			return
-		end
+		--if update_number < 3 then
+		--	return
+		--end
 		level = level + 1
 		print(level)
 		totalScoreCopy = totalScoreCopy % updatePieceNumber
-		if (level == 2) then 
-			if update_number > 18 then
+		if (level % 4 == 2) then 
+			if update_number > 2 then
 				update_number = update_number - 2
 			end
 			audio.stop()
-			audio.dispose(sfx.level_one)
+			--audio.dispose(sfx.level_one)
 			audio.play(sfx.level_two, options)
 			background:removeSelf()
 			background = display.newImage("spring2.png", display.contentWidth/2, display.contentHeight/2)
 			background.width = display.contentWidth
 			background.height = display.contentHeight
 			background:toBack()
-		elseif (level == 3) then
-			if update_number > 16 then
+		elseif (level % 4 == 3) then
+			if update_number > 2 then
 				update_number = update_number - 2
 			end
 			audio.stop()
-			audio.dispose(sfx.level_two)
+			--audio.dispose(sfx.level_two)
 			audio.play(sfx.level_three, options)
 			background:removeSelf()
 			background = display.newImage("summer2.png", display.contentWidth/2, display.contentHeight/2)
 			background.width = display.contentWidth
 			background.height = display.contentHeight	
 			background:toBack()		
-		elseif(level == 4) then
-			if update_number > 14 then
+		elseif(level % 4 == 0) then
+			if update_number > 2 then
 				update_number = update_number - 2
 			end
 			audio.stop()
-			audio.dispose(sfx.level_three)
+			--audio.dispose(sfx.level_three)
 			audio.play(sfx.level_four, options)
 			background:removeSelf()
 			background = display.newImage("fall2.png", display.contentWidth/2, display.contentHeight/2)
 			background.width = display.contentWidth
 			background.height = display.contentHeight
 			background:toBack()
+		else
+			if update_number > 2 then
+				update_number = update_number - 2
+			end
+			print(1)
+			audio.stop()
+			print(2)
+			--audio.dispose(sfx.level_four)
+			print(3)
+			audio.play(sfx.level_one, options)
+			print(4)
+			background:removeSelf()
+			print(5)
+			background = display.newImage("winter2.png", display.contentWidth/2, display.contentHeight/2)
+			print(6)
+			background.width = display.contentWidth
+			print(7)
+			background.height = display.contentHeight
+			print(8)
+			background:toBack()
+			print(9)
+		
 		end
 	end
 end
@@ -728,7 +750,7 @@ function createPiece()
 	
 	currentPiece = balloon
 	balloon.isFixedRotation = true
-	index = math.random(8)
+	index = math.random(0,6)
 	drawNextPiece()
 end
 
