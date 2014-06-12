@@ -595,10 +595,21 @@ function tweenMS:tap(e)
 	end
 end
 
+--function used to exit after a second.
+function empty()
+	timer.performWithDelay(1000,os.exit())
+end
+
 --Listener method used to kill the app.
 function goAway()
 	audio.stop()
-	os.exit()
+	foreground = display.newImage("thank-you.png", display.contentWidth/2, display.contentHeight/2)
+	foreground.width = display.contentWidth
+	foreground.height = display.contentHeight
+	
+	foreground:toFront()
+	--timer.performWithDelay(10000, os.exit())
+	timer.performWithDelay(1000, empty, 1)
 end
 
 --Listener method used to restart the game
@@ -1186,7 +1197,7 @@ function create()
 		audio.play(sfx.level_one, options)
 	end
 	Runtime:addEventListener("system", onSystemEvent)
-	--timer.performWithDelay(1000,fail, 1)
+	timer.performWithDelay(1000,fail, 1)
 end
 
 function onSystemEvent(event)
