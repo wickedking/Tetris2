@@ -422,7 +422,9 @@ function updateScore(rows)
 			audio.dispose(sfx.level_one)
 			audio.play(sfx.level_two, options)
 			background:removeSelf()
-			background = display.newImage("spring.png", display.contentWidth/2, display.contentHeight/2)
+			background = display.newImage("spring2.png", display.contentWidth/2, display.contentHeight/2)
+			background.width = display.contentWidth
+			background.height = display.contentHeight
 			background:toBack()
 		elseif (level == 3) then
 			if update_number > 16 then
@@ -432,7 +434,9 @@ function updateScore(rows)
 			audio.dispose(sfx.level_two)
 			audio.play(sfx.level_three, options)
 			background:removeSelf()
-			background = display.newImage("summer.png", display.contentWidth/2, display.contentHeight/2)
+			background = display.newImage("summer2.png", display.contentWidth/2, display.contentHeight/2)
+			background.width = display.contentWidth
+			background.height = display.contentHeight	
 			background:toBack()		
 		elseif(level == 4) then
 			if update_number > 14 then
@@ -442,7 +446,9 @@ function updateScore(rows)
 			audio.dispose(sfx.level_three)
 			audio.play(sfx.level_four, options)
 			background:removeSelf()
-			background = display.newImage("fall.png", display.contentWidth/2, display.contentHeight/2)
+			background = display.newImage("fall2.png", display.contentWidth/2, display.contentHeight/2)
+			background.width = display.contentWidth
+			background.height = display.contentHeight
 			background:toBack()
 			
 --		else 
@@ -1170,14 +1176,23 @@ function create()
 
 	Runtime:addEventListener("enterFrame", movePiece)
 	
-	background = display.newImage("winter.png", display.contentWidth/2, display.contentHeight/2)
+	background = display.newImage("winter2.png", display.contentWidth/2, display.contentHeight/2)
+	background.width = display.contentWidth
+	background.height = display.contentHeight
 	background:toBack();
 	
 
 	if music then
 		audio.play(sfx.level_one, options)
 	end
+	Runtime:addEventListener("system", onSystemEvent)
 	--timer.performWithDelay(1000,fail, 1)
+end
+
+function onSystemEvent(event)
+	if event.name == "applicationSuspend" then
+		pauseGame()
+	end
 end
 
 --A horrible hard coded method for each rotation for each piece using a local x and y 
