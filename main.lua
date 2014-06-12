@@ -268,6 +268,12 @@ end
 --Used to draw the currentPiece thats falling.
 function drawPiece(the_pieces)
 	pieceLines:removeSelf()
+	if currentPiece == nil then
+		return
+	end
+	if currentPiece.y == nil then
+		return
+	end
 	--Mapping the actual location to the board locations.
 	local i = math.floor(currentPiece.y/height_offset)
 	local j = math.floor(currentPiece.x/board_offset)
@@ -398,8 +404,8 @@ function updateScore(rows)
 		return
 	end
 	scoreGroup:removeSelf()
+	totalScoreCopy = totalScoreCopy + (rows * 100)
 	totalScore = totalScore + (rows * 100)
-	totalScoreCopy = totalScore + (rows * 100)
 	scoreGroup = display.newGroup()
 	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/5) * 3 + 20, 50, 50)
 	scoreBox:setFillColor(1,1,1)
@@ -407,13 +413,18 @@ function updateScore(rows)
 	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 5) * 3 + 20, native.systemFontBold, 14)
 	text:setFillColor(0,0,0)
 	scoreGroup:insert(text)
-	--If user has reached enough points for the next level.
-	if totalScoreCopy / updatePieceNumber > 1 and totalScore % 100 then
+	--If user has reached enough points for the next level
+	--print(level)
+	if totalScoreCopy >= updatePieceNumber then
+		print("update level")
+		print("totalScoreCopy = "..totalScoreCopy)
+		print(totalScore)
 		if update_number < 3 then
 			return
 		end
 		level = level + 1
-		--totalScoreCopy = totalScoreCopy % 1000
+		print(level)
+		totalScoreCopy = totalScoreCopy % updatePieceNumber
 		if (level == 2) then 
 			if update_number > 18 then
 				update_number = update_number - 2
@@ -450,11 +461,6 @@ function updateScore(rows)
 			background.width = display.contentWidth
 			background.height = display.contentHeight
 			background:toBack()
-			
---		else 
---			background:removeSelf()
---			background = display.newImage("winter.png", display.contentWidth/2, display.contentHeight/2)
---			background:toBack()
 		end
 	end
 end
@@ -722,7 +728,7 @@ function createPiece()
 	
 	currentPiece = balloon
 	balloon.isFixedRotation = true
-	index = math.random(7)
+	index = math.random(8)
 	drawNextPiece()
 end
 
@@ -855,6 +861,9 @@ end
 --The logic to check if a move is possible given the numbers passed in, on the x and y axis.
 function checkMove(dx, dy)
 	if currentPiece == nil then
+		return false
+	end
+	if currentPiece.x == nil then
 		return false
 	end
 	local can = false
